@@ -70,6 +70,7 @@ When you start working on the project, you may also want to set up a build syste
     - **The multithread library in Python creates a threadpool and separates threads into native processes which can be managed by the OS**
 
  - What does `func GOMAXPROCS(n int) int` change? 
+    - **GOMAXPROCS changes the maximum number of Go-processes i.e. native threads in Go**
 
 
 
