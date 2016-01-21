@@ -72,6 +72,7 @@ When you start working on the project, you may also want to set up a build syste
 4: Finally some code
 --------------------
 
+et eller annet balle
 Implement this in C, Python and Go:  
 (Look at the "helloworld" examples in this directory (top of this page) for how to create threads.)
 
