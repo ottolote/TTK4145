@@ -50,12 +50,18 @@ When you start working on the project, you may also want to set up a build syste
     - *Concurrency is two or more tasks running simultaniously with overlapping time, not nescessarily at the same instant*
     - *Parallellism is two or more tasks running literally at the same time, like in a multicore processor*
  - Why have machines become increasingly multicore in the past decade?
+    - *The OS uses multiple threads, and having these run simultaniously with true parallellism increases throughput*
  - What kinds of problems motivates the need for concurrent execution? (Or phrased differently: What problems do concurrency help in solving?)
+    - *Concurrency facilitates running multiple processes at a time, helps modularize the system*
  - Does creating concurrent programs make the programmer's life easier? Harder? Maybe both? (Come back to this after you have worked on part 4 of this exercise)
 
 <!-- -->
  - What are the differences between processes, threads, green threads, and coroutines?
+    - *Processes receives an allocated memory space from the OS and cannot access another process' memory.*
+    - *Threads can optionally share memory with other threads if the process running the threads allows it.*
+    - *Green threads are threads not natively scheduled by the operating system but rather from runtime libraries. This means the threads are not managed by the OS and cannot for example run on multiple cores**
  - Which one of these do `pthread_create()` (C/POSIX), `threading.Thread()` (Python), `go` (Go) create?
+    - *pthread_create() creates a native thread*
  - How does pythons Global Interpreter Lock (GIL) influence the way a python Thread behaves?
  - With this in mind: What is the workaround for the GIL (Hint: it's another module)?
  - What does `func GOMAXPROCS(n int) int` change? 
