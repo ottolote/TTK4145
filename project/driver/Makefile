@@ -16,12 +16,15 @@ TARGET = elevator
 # top-level rule, to compile everything.
 all: $(TARGET)
 
+# simulator libraries
+SIMLIB = ../simulator/source/simelev.a
+
 # Define all object files.
-ELEVOBJ = $(ELEVSRC:.c=.o) simelev.a 
+ELEVOBJ = $(ELEVSRC:.c=.o)  
 
 # rule to link the program
 $(TARGET): $(ELEVOBJ)
-	$(CC) $^ -o $@ $(LDFLAGS)
+	$(CC) $^ -o $@ $(SIMLIB) $(LDFLAGS) 
 
 # Compile: create object files from C source files.
 %.o : %.c
