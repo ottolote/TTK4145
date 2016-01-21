@@ -63,11 +63,12 @@ When you start working on the project, you may also want to set up a build syste
     - **Coroutines yield for eachother and thereby manage themselves**
  - Which one of these do `pthread_create()` (C/POSIX), `threading.Thread()` (Python), `go` (Go) create?
     - **pthread_create() creates a native thread**
+    - **threading.Thread() creates a native thread but limited by the GIL unless using the multiprocess library**
  - How does pythons Global Interpreter Lock (GIL) influence the way a python Thread behaves?
     - **The GIL is a mutex that prevents threads from accessing resources already in use by other threads.**
 
  - With this in mind: What is the workaround for the GIL (Hint: it's another module)?
-    - **The multithread library in Python creates a threadpool and separates threads into native processes which can be managed by the OS**
+    - **The multiprocess library in Python creates a threadpool and separates threads into native processes which can be managed by the OS**
 
  - What does `func GOMAXPROCS(n int) int` change? 
     - **GOMAXPROCS changes the maximum number of Go-processes i.e. native threads in Go**
