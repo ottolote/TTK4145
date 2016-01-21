@@ -4,22 +4,35 @@
 #include <pthread.h>
 #include <stdio.h>
 
+int i = 0;
 
 // Note the return type: void*
-void* someThreadFunction(){
-    printf("Hello from a thread!\n");
+void* reduce_i(){
+    for (int j = 0; j<1000000; j++) {
+        i--;
+    }
     return NULL;
 }
 
 
+// Note the return type: void*
+void* increase_i(){
+    for (int j = 0; j<1000000; j++) {
+        i++;
+    }
+    return NULL;
+}
 
 int main(){
-    pthread_t someThread;
-    pthread_create(&someThread, NULL, someThreadFunction, NULL);
+    pthread_t thread1;
+    pthread_t thread2;
+    pthread_create(&thread1, NULL, reduce_i, NULL);
+    pthread_create(&thread2, NULL, increase_i, NULL);
     // Arguments to a thread would be passed here ---------^
     
-    pthread_join(someThread, NULL);
-    printf("Hello from main!\n");
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+    printf("%d\t",i);
     return 0;
     
 }
