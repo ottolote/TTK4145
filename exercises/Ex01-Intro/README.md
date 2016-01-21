@@ -45,6 +45,8 @@ When you start working on the project, you may also want to set up a build syste
 (Remember to use all the resources at your disposal. Asking the internet isn't a form of "cheating", it's a way of learning.)
 
  - What is concurrency? What is parallelism? What's the difference?
+    - *Concurrency is two or more tasks running simultaniously with overlapping time, not nescessarily at the same instant*
+    - *Parallellism is two or more tasks running literally at the same time, like in a multicore processor*
  - Why have machines become increasingly multicore in the past decade?
  - What kinds of problems motivates the need for concurrent execution? (Or phrased differently: What problems do concurrency help in solving?)
  - Does creating concurrent programs make the programmer's life easier? Harder? Maybe both? (Come back to this after you have worked on part 4 of this exercise)
