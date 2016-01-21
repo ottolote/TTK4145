@@ -54,7 +54,7 @@ When you start working on the project, you may also want to set up a build syste
  - What kinds of problems motivates the need for concurrent execution? (Or phrased differently: What problems do concurrency help in solving?)
     - **Concurrency facilitates running multiple processes at a time, helps modularize the system**
  - Does creating concurrent programs make the programmer's life easier? Harder? Maybe both? (Come back to this after you have worked on part 4 of this exercise)
-saaaatan
+
 <!-- -->
  - What are the differences between processes, threads, green threads, and coroutines?
     - **Processes receives an allocated memory space from the OS and cannot access another process' memory.**
@@ -64,6 +64,8 @@ saaaatan
  - Which one of these do `pthread_create()` (C/POSIX), `threading.Thread()` (Python), `go` (Go) create?
     - **pthread_create() creates a native thread**
  - How does pythons Global Interpreter Lock (GIL) influence the way a python Thread behaves?
+	- **The GIL is a mutex that prevents threads from accessing resources already in use by other threads.**
+
  - With this in mind: What is the workaround for the GIL (Hint: it's another module)?
 
  - What does `func GOMAXPROCS(n int) int` change? 
@@ -73,7 +75,6 @@ saaaatan
 4: Finally some code
 --------------------
 
-et eller annet balle
 Implement this in C, Python and Go:  
 (Look at the "helloworld" examples in this directory (top of this page) for how to create threads.)
 
