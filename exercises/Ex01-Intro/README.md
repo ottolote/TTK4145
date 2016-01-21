@@ -54,7 +54,7 @@ When you start working on the project, you may also want to set up a build syste
  - What kinds of problems motivates the need for concurrent execution? (Or phrased differently: What problems do concurrency help in solving?)
     - **Concurrency facilitates running multiple processes at a time, helps modularize the system**
  - Does creating concurrent programs make the programmer's life easier? Harder? Maybe both? (Come back to this after you have worked on part 4 of this exercise)
-
+The satan is strong in this one
 <!-- -->
  - What are the differences between processes, threads, green threads, and coroutines?
     - **Processes receives an allocated memory space from the OS and cannot access another process' memory.**
