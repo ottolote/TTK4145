@@ -61,7 +61,7 @@ When you start working on the project, you may also want to set up a build syste
     - **Threads can optionally share memory with other threads if the process running the threads allows it.**
     - **Green threads are threads not natively scheduled by the operating system but rather from runtime libraries. This means the threads are not managed by the OS and cannot for example run on multiple cores**
  - Which one of these do `pthread_create()` (C/POSIX), `threading.Thread()` (Python), `go` (Go) create?
-    - **pthread_create() creates a native thread**
+    - **pthread_create() creates a native thread kuk**
  - How does pythons Global Interpreter Lock (GIL) influence the way a python Thread behaves?
  - With this in mind: What is the workaround for the GIL (Hint: it's another module)?
  - What does `func GOMAXPROCS(n int) int` change? 
