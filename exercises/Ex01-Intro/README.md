@@ -1,3 +1,5 @@
+*Answers are in cursive or as code in separate files*
+
 Exercise 1 : Hello World
 ========================
 
