@@ -1,4 +1,4 @@
-*Answers are in cursive or as code in separate files*
+**Answers are in bold or as code in separate files**
 
 Exercise 1 : Hello World
 ========================
