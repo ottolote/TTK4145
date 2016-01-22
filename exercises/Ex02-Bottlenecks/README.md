@@ -1,3 +1,5 @@
+**Answers are in bold or as code in separate files**
+
 Exercise 2 : Bottlenecks
 ========================
 
@@ -6,9 +8,13 @@ Mutex and Channel basics
 
 First some theory. What is:
  - An atomic operation?
+    - **An atomic operation is an operation which completes in one step compared to other threads. That way the atomic operation cannot be interfered with mid operation by other threads**
  - A semaphore?
+    - **A semaphore is a variable or an abstract data type for controlling access to a resource. A common simple implementation is a counting semaphore where processes can increment or decrement the semaphore and it's value is used to control access**
  - A mutex?
+    - **A mutex is a variable or abstract datatype for controlling access to a resource but differs from a semaphore in that it locks or unlocks a resource thereby making it `mutually exclusive` to processes. A semaphore with a max count of 1 can be considered a mutex.**
  - A critical section?
+    - **A critical section is a part of a program which requires mutual exclusion of access and cannot be concurrently executed by more than one of the programs processes.**
 
 
 ___
