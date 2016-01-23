@@ -84,10 +84,10 @@ int main() {
   }
 
   //Set option (SO_REUSEADDR) to reuse outbound port
-  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int)) < 0) { 
-    printf("setsockopt(SO_REUSEADDR) failed");
-    exit(1);
-  }
+  // if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int)) < 0) { 
+  //   printf("setsockopt(SO_REUSEADDR) failed");
+  //   exit(1);
+  // }
 
   // Bind the local address to the socket with bind() using the socket file descriptor fd and addrinfo collected by getaddrinfo
   if (bind(fd,res->ai_addr,res->ai_addrlen)==-1) {
