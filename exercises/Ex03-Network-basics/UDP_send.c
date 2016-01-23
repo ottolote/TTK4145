@@ -8,9 +8,9 @@
 #include <errno.h>
 
 int main(){ 
-  char *message = "Åååhåhåhåhåhåhhå wololo";
-  const char* hostname = 0; //localhost
-  const char* portname = "daytime"; //testing
+  char *message = "X";
+  const char* hostname = 0; //wildcard, send to all?
+  const char* portname = "daytime"; // port 13 = daytime
   struct addrinfo* res=0;
   struct addrinfo hints;
   memset(&hints, 0, sizeof(hints));
@@ -48,9 +48,12 @@ int main(){
     exit(1);
   }
 
-  if (sendto(fd,message,sizeof(message),0,res->ai_addr,res->ai_addrlen)==-1) {
-    printf("unable to send");
-    exit(1);
+  for (int i = 0; i<1000000; i++) {
+    if (sendto(fd,message,sizeof(message),0,res->ai_addr,res->ai_addrlen)==-1) {
+      printf("unable to send");
+      exit(1);
+    }
+    usleep(1000000);
   }
   
 }

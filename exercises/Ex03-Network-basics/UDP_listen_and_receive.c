@@ -7,7 +7,7 @@
 #include <string.h>
 
 // for
-//  - 
+//  - usleep()
 #include <unistd.h>
 
 // for: 
@@ -30,7 +30,7 @@
 
 // for
 //  - 
-#include <netinet/in.h>
+// #include <netinet/in.h>
 
 // for 
 //  - exit()
@@ -47,7 +47,7 @@ int handle_datagram(char* buffer, int count);
 
 int main() {
   const char* hostname=0; // wildcard 
-  const char* portname="Echoserver"; //Application-level name?
+  const char* portname="daytime"; // daytime service = port 13
 
   // Initialize hints (addrinfo struct) to zero
   struct addrinfo hints;
@@ -103,7 +103,10 @@ int main() {
   char buffer[549];
   struct sockaddr_storage src_addr;
   socklen_t src_addr_len=sizeof(src_addr);
+
+  printf("listening\n");
   ssize_t count=recvfrom(fd,buffer,sizeof(buffer),0,(struct sockaddr*)&src_addr,&src_addr_len);
+  printf("received\n");
   if (count==-1) {
       printf("%s",strerror(errno));
       exit(1);
@@ -118,9 +121,12 @@ int main() {
 
 // Printf all characters in buffer
 int handle_datagram(char *buffer, int count) {
-  for (int i = 0; i < count; i++) {
-    printf("%c", buffer[i]);
-  }
+  printf("handling datagram\n");
+  count++;
+  count--;
+  //for (int i = 0; i < count; i++) {
+    printf("%c", buffer[0]);
+  //}
   return 0;
 }
 
