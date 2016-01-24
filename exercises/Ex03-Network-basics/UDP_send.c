@@ -1,59 +1,105 @@
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <errno.h>
-
-int main(){ 
-  char *message = "X";
-  const char* hostname = 0; //wildcard, send to all?
-  const char* portname = "daytime"; // port 13 = daytime
-  struct addrinfo* res=0;
-  struct addrinfo hints;
-  memset(&hints, 0, sizeof(hints));
-
-//   //socket file descriptor
-//   sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+// UDP_send.c
+// Otto Kristoffer Lote
+// www.github.com/ottolote/TTK4145/exercises/Ex03-Network-basics/
 // 
-//   if (sockfd < 0) { 
-//     printf("Unable to setup socket\n");
-//     exit(1);
-//   }
+// Written using this great guide:
+// http://www.beej.us/guide/bgnet/output/html/singlepage/bgnet.html
+//
+// Works with both IPv4 and IPv6
+
+
+// for 
+//  - printf()
+//  - fprintf()
+#include <stdio.h>
+
+// for 
+//  - exit()
+#include <stdlib.h>
+
+// for
+//  - memset()
+#include <string.h>
+
+// for
+//  - usleep()
+//  - close()
+#include <unistd.h>
+
+// for: 
+//  - getaddrinfo()
+//  - freeaddrinfo()
+//  - struct addrinfo
+//  - AF_UNSPEC
+//  - SOCK_DGRAM
+//  - AI_PASSIVE
+//  - AI_ADDRCONFIG
+#include <netdb.h>
+
+#define SERVERPORT "30000"
 
 
 
-  hints.ai_family=AF_UNSPEC;
-  hints.ai_socktype=SOCK_DGRAM;
-  hints.ai_protocol=0;
-  hints.ai_flags=AI_ADDRCONFIG;
+int main(int argc, char *argv[]) {
 
-  int err=getaddrinfo(hostname,portname,&hints,&res);
-  if (err!=0) {
-      printf("failed to resolve remote socket address (err=%d)",err);
-      exit(1);
-  }
-  
-
-  int fd=socket(res->ai_family,res->ai_socktype,res->ai_protocol);
-  if (fd==-1) {
-    printf("unable to setup socket");
-  }
-
-  //Set option (SO_REUSEADDR) to reuse outbound port
-  if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int)) < 0) { 
-    printf("setsockopt(SO_REUSEADDR) failed");
+  // If arguments passed is not two + 1 (you count the executable's name)
+  if(argc != 3) {
+    fprintf(stderr, "usage: %s <hostname> <message>\n", argv[0]);
     exit(1);
   }
 
-  for (int i = 0; i<1000000; i++) {
-    if (sendto(fd,message,sizeof(message),0,res->ai_addr,res->ai_addrlen)==-1) {
-      printf("unable to send");
-      exit(1);
-    }
-    usleep(1000000);
+  int retval;
+
+  // Initialize structs of type addrinfo
+  // - hints:       for specifying initial options
+  // - clientinfo:  using specified hints to fill in possible clientinfo
+  // clientinfo is pointer to first element in linked list of possible clientinfo
+  struct addrinfo hints, *clientinfo; 
+  memset(&hints, 0, sizeof(hints));
+
+  hints.ai_family = AF_UNSPEC; // Use IPv4 or IPv6, AF_INET for forced IPv4
+  hints.ai_socktype = SOCK_DGRAM; // Only send datagrams
+
+  // Evaluation of assignment is equal to left operand after assignment
+  if ( (retval = getaddrinfo(argv[1], SERVERPORT, &hints, &clientinfo)) != 0 ) {
+    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(retval));
+    return 1;
   }
-  
+
+  struct addrinfo *p;
+  int sockfd;
+
+  // loop through linked list and try to make a socket
+  for (p = clientinfo; p != NULL; p = p->ai_next) {
+
+    // Try to set up socket with addrinfo in p
+    if((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1){
+      perror("socket"); // perror prints argument, then print errno
+      continue;
+    }
+
+    break; //break if successful
+  }
+
+  if(p == NULL) {
+    fprintf(stderr, "failed to create socket");
+    return 2;
+  }
+      
+  // Release memory occupied by clientinfo
+  freeaddrinfo(clientinfo);
+
+  int numbytes;
+
+  // Send package with data from argument 2
+  if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
+           p->ai_addr, p->ai_addrlen)) == -1) {
+      perror("sendto");
+      exit(1);
+  }
+
+  printf("sent %d bytes to %s\n", numbytes, argv[1]);
+  close(sockfd);
+
+  return 0;
 }
