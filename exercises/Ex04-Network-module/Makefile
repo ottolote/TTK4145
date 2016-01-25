@@ -24,7 +24,7 @@ $(TARGET): $(ELEVOBJ)
 	$(CC) $^ -o $@ $(LDFLAGS) 
 
 # Compile: create object files from C source files.
-%.o : %.c
+%.o : %.c %.h
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 # rule for cleaning re-compilable files.

@@ -48,6 +48,8 @@ void* networkHandlerFunc() { // running as thread
   hints.ai_socktype = SOCK_DGRAM; // Only listen for datagrams
   hints.ai_flags = AI_PASSIVE; // Set ip to my ip (for server socket)
 
+
+
   int retval;
   // Evaluation of assignment is equal to left operand after assignment
   if ( (retval = getaddrinfo(NULL, MYPORT, &hints, &servinfo)) != 0 ) {
@@ -55,15 +57,16 @@ void* networkHandlerFunc() { // running as thread
     return NULL;
   }
 
-  struct addrinfo *p;
-  int sockfd;
+
 
   // loop through linked list and bind to first possible
+  struct addrinfo *p;
+  int sockfd;
   for (p = servinfo; p != NULL; p = p->ai_next) {
 
     // Try to set up socket with addrinfo in p
     if((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1){
-      perror("socket"); // perror prints argument, then print errno
+      perror("socket"); // perror prints argument, then prints errno
       continue;
     }
 
@@ -74,7 +77,7 @@ void* networkHandlerFunc() { // running as thread
       continue;
     }
 
-    break; //break if successful
+    break; //break if successful or out of options
   }
 
   if(p == NULL) {
@@ -85,13 +88,19 @@ void* networkHandlerFunc() { // running as thread
   // Release memory occupied by servinfo
   freeaddrinfo(servinfo);
 
-  struct sockaddr_storage senders_addr; // struct to store IPv4 sockaddr AND/OR IPv6 sockaddr
-  char buf[MAXBUFLEN]; // Receive buffer
+
+
+
+
+  char buf[MAXBUFLEN]; // Initialize receive buffer
+  struct sockaddr_storage senders_addr; // struct to store IPv4 sockaddr OR IPv6 sockaddr from sender
   socklen_t addr_len = sizeof senders_addr;
   char s[INET6_ADDRSTRLEN]; // string s is never longer than INET6_ADDRSTRLEN
   int numbytes;
 
 
+
+  // Fill receivebuffer with message, print buffer, repeat
   while(1) {
     printf("networkhandler: Waiting for datagram packets at port %s\n", MYPORT);
 
@@ -109,11 +118,11 @@ void* networkHandlerFunc() { // running as thread
     printf("networkhandler: packet is %d bytes long\n", numbytes);
 
     buf[numbytes] = '\0'; // Add nullcharacter to buffer for printf
-    printf("networkhandler: packet contains:\n%s\n\n", buf);
+    printf("networkhandler: packet contains: \"%s\"\n", buf);
   }
 
 
-  close(sockfd);
+  close(sockfd); 
 
   return 0;
 }
