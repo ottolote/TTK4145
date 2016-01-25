@@ -1,9 +1,15 @@
-#vim swap-files
+# vim swap-files
 **/*.swp
 **/*.swo
 
-#ycm config files
+# ycm config files
 **/.ycm_extra_conf.py*
 
-#temporary compiled file
+# temporary compiled file
 **/a.out
+
+# C object files 
+**/*.o
+
+# Library files
+**/*.a
