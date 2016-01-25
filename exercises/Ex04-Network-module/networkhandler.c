@@ -35,7 +35,7 @@ void *get_in_addr(struct sockaddr *sa);
 
 
 
-void* networkHandlerFunc() { // running as thread
+void* networkHandlerRoutine() { // running as thread
   
   // Initialize structs of type addrinfo
   // - hints:     for specifying initial options

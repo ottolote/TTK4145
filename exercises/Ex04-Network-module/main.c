@@ -22,7 +22,7 @@ int main() {
   pthread_t network_handler;
 
   // Start networkhandler
-  pthread_create(&network_handler, NULL, networkHandlerFunc, NULL);
+  pthread_create(&network_handler, NULL, networkHandlerRoutine, NULL);
 
   // Wait for network_handler
   pthread_join(network_handler, NULL);
