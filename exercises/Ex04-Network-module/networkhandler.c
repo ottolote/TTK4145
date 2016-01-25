@@ -129,7 +129,7 @@ void* networkHandlerRoutine() { // running as thread
 
 
 // From www.beej.us
-// get sockaddr, IPv4 or IPv6:
+// Chack if IPv4 or IPv6 and cast accordingly
 void *get_in_addr(struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET) {
