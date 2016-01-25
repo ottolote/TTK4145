@@ -13,3 +13,6 @@
 
 # Library files
 **/*.a
+
+# compiled binaries
+project/driver/elevator
