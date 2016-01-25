@@ -37,6 +37,8 @@ void *get_in_addr(struct sockaddr *sa);
 
 void* networkHandlerRoutine() { // running as thread
   
+  // INIT //
+
   // Initialize structs of type addrinfo
   // - hints:     for specifying initial options
   // - servinfo.  using specified hints to fill in possible servinfo
@@ -56,7 +58,6 @@ void* networkHandlerRoutine() { // running as thread
     fprintf(stderr, "networkhandler: getaddrinfo: %s\n", gai_strerror(retval));
     return NULL;
   }
-
 
 
   // loop through linked list and bind to first possible
@@ -91,6 +92,7 @@ void* networkHandlerRoutine() { // running as thread
 
 
 
+  // LOOP //
 
   char buf[MAXBUFLEN]; // Initialize receive buffer
   struct sockaddr_storage senders_addr; // struct to store IPv4 sockaddr OR IPv6 sockaddr from sender
