@@ -95,7 +95,7 @@ void* networkHandlerRoutine() { // running as thread
   char buf[MAXBUFLEN]; // Initialize receive buffer
   struct sockaddr_storage senders_addr; // struct to store IPv4 sockaddr OR IPv6 sockaddr from sender
   socklen_t addr_len = sizeof senders_addr;
-  char s[INET6_ADDRSTRLEN]; // string s is never longer than INET6_ADDRSTRLEN
+  char addr_str[INET6_ADDRSTRLEN]; 
   int numbytes;
 
 
@@ -104,7 +104,11 @@ void* networkHandlerRoutine() { // running as thread
   while(1) {
     printf("networkhandler: Waiting for datagram packets at port %s\n", MYPORT);
 
-    // recvfrom receives packet and stores sender's address
+
+    // - recvfrom receives packet and stores sender's address
+    // - sockaddr_storage (senders_addr) can be cast to sockaddr 
+    //      and both IPv4 and IPv6 information is magically cast 
+    //      correctly into sockaddr
     if((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0,
             (struct sockaddr*)&senders_addr, &addr_len)) == -1) {
       perror("recvfrom");
@@ -113,11 +117,12 @@ void* networkHandlerRoutine() { // running as thread
 
     printf("networkhandler: received packet from: %s\n", 
         inet_ntop(senders_addr.ss_family, 
-          get_in_addr((struct sockaddr*)&senders_addr), s, sizeof s));
+          get_in_addr((struct sockaddr*)&senders_addr), addr_str, sizeof addr_str));
 
     printf("networkhandler: packet is %d bytes long\n", numbytes);
 
     buf[numbytes] = '\0'; // Add nullcharacter to buffer for printf
+
     printf("networkhandler: packet contains: \"%s\"\n", buf);
   }
 
@@ -126,7 +131,6 @@ void* networkHandlerRoutine() { // running as thread
 
   return 0;
 }
-
 
 // From www.beej.us
 // Chack if IPv4 or IPv6 and cast accordingly
