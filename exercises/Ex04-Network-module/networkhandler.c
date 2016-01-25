@@ -11,7 +11,7 @@
 //  - Message passing
 //  - Crash checking? 
 //  - Return values when unsuccessful
-//  - Do something useful and not just print message buffer
+//  - Do something useful except just printing message buffer
 //  - Check buffer truncation
 
 #include <stdio.h>
@@ -77,7 +77,7 @@ void* networkHandlerRoutine() { // running as thread
       continue;
     }
 
-    break; //break if successful or out of options
+    break; //break if successful
   }
 
   if(p == NULL) {
@@ -96,8 +96,7 @@ void* networkHandlerRoutine() { // running as thread
   struct sockaddr_storage senders_addr; // struct to store IPv4 sockaddr OR IPv6 sockaddr from sender
   socklen_t addr_len = sizeof senders_addr;
   char addr_str[INET6_ADDRSTRLEN]; 
-  int numbytes;
-
+  int byteCount;
 
 
   // Fill receivebuffer with message, print buffer, repeat
@@ -108,27 +107,27 @@ void* networkHandlerRoutine() { // running as thread
     // - recvfrom receives packet and stores sender's address
     // - sockaddr_storage (senders_addr) can be cast to sockaddr 
     //      and both IPv4 and IPv6 information is magically cast 
-    //      correctly into sockaddr
-    if((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1, 0,
+    //      correctly into sockaddr and addr_len automatically
+    //      reduced if truncation is detected
+    if((byteCount = recvfrom(sockfd, buf, MAXBUFLEN-1, 0,
             (struct sockaddr*)&senders_addr, &addr_len)) == -1) {
       perror("recvfrom");
       exit(1);
     }
 
+
+    // Print packet info and message
+    buf[byteCount] = '\0'; // Add nullcharacter to buffer for printf
     printf("networkhandler: received packet from: %s\n", 
         inet_ntop(senders_addr.ss_family, 
-          get_in_addr((struct sockaddr*)&senders_addr), addr_str, sizeof addr_str));
-
-    printf("networkhandler: packet is %d bytes long\n", numbytes);
-
-    buf[numbytes] = '\0'; // Add nullcharacter to buffer for printf
-
+          get_in_addr((struct sockaddr*)&senders_addr),
+            addr_str, sizeof addr_str));
+    printf("networkhandler: packet is %d bytes long\n", byteCount);
     printf("networkhandler: packet contains: \"%s\"\n", buf);
-  }
+  } // end of while
 
 
   close(sockfd); 
-
   return 0;
 }
 
