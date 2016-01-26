@@ -22,10 +22,15 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+#include "terminalcolors.h"
 #include "networkhandler.h"
 
 #define MAXBUFLEN 549 // could be bigger, 549 was good according to random site
 #define MYPORT "30000"
+
+// FOR 
+#define NETWORKSTRING "[ " TCOLOR_BLUE "networkhandler" TCOLOR_NC " ]: "
+
 
 // Private functions:
 // get sockaddress IPv4 or IPv6
@@ -36,7 +41,6 @@ void *get_in_addr(struct sockaddr *sa);
 
 
 void* networkHandlerRoutine() { // running as thread
-  
   // INIT //
 
   // Initialize structs of type addrinfo
@@ -103,7 +107,7 @@ void* networkHandlerRoutine() { // running as thread
 
   // Fill receivebuffer with message, print buffer, repeat
   while(1) {
-    printf("networkhandler: Waiting for datagram packets at port %s\n", MYPORT);
+    printf( NETWORKSTRING "Waiting for datagram packets at port %s\n", MYPORT);
 
 
     // - recvfrom receives packet and stores sender's address
@@ -120,12 +124,12 @@ void* networkHandlerRoutine() { // running as thread
 
     // Print packet info and message
     buf[byteCount] = '\0'; // Add nullcharacter to buffer for printf
-    printf("networkhandler: received packet from: %s\n", 
+    printf( NETWORKSTRING "received packet from: %s\n", 
         inet_ntop(senders_addr.ss_family, 
           get_in_addr((struct sockaddr*)&senders_addr),
             addr_str, sizeof addr_str));
-    printf("networkhandler: packet is %d bytes long\n", byteCount);
-    printf("networkhandler: packet contains: \"%s\"\n", buf);
+    printf( NETWORKSTRING "packet is %d bytes long\n", byteCount);
+    printf( NETWORKSTRING "packet contains: \"%s\"\n", buf);
   } // end of while
 
 
