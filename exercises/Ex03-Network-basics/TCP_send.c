@@ -36,8 +36,11 @@
 //  - AI_ADDRCONFIG
 #include <netdb.h>
 
-#define SERVERPORT "20004"
+#define MAXBUFLEN 100
 
+#define SERVERPORT "34933"
+
+void *get_in_addr(struct sockaddr *sa);
 
 
 int main(int argc, char *argv[]) {
@@ -58,7 +61,7 @@ int main(int argc, char *argv[]) {
   memset(&hints, 0, sizeof(hints));
 
   hints.ai_family = AF_UNSPEC; // Use IPv4 or IPv6, AF_INET for forced IPv4
-  hints.ai_socktype = SOCK_DGRAM; // Only send datagrams
+  hints.ai_socktype = SOCK_STREAM; // Only send datagrams
 
   // Evaluation of assignment is equal to left operand after assignment
   if ( (retval = getaddrinfo(argv[1], SERVERPORT, &hints, &clientinfo)) != 0 ) {
@@ -78,13 +81,24 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
+    if(connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+      close(sockfd);
+      perror("client: connect");
+      continue;
+    }
+
     break; //break if successful
   }
 
   if(p == NULL) {
-    fprintf(stderr, "failed to create socket");
+    fprintf(stderr, "failed to connect");
     return 2;
   }
+
+  char s[INET6_ADDRSTRLEN];
+  inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
+      s, sizeof s);
+  printf("client: connecting to %s\n", s);
       
   // Release memory occupied by clientinfo
   freeaddrinfo(clientinfo);
@@ -92,14 +106,36 @@ int main(int argc, char *argv[]) {
   int numbytes;
 
   // Send package with data from argument 2
-  if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
-           p->ai_addr, p->ai_addrlen)) == -1) {
-      perror("sendto");
+  if ((numbytes = send(sockfd, argv[2], strlen(argv[2]), 0 )) == -1) {
+      perror("send");
       exit(1);
   }
 
   printf("sent %d bytes to %s\n", numbytes, argv[1]);
+
+  char buf[MAXBUFLEN];
+
+  if((numbytes =  recv(sockfd, buf, MAXBUFLEN-1, 0)) == -1) {
+    perror("recv");
+    exit(1);
+  }
+
+  buf[numbytes] = '\0';
+
+  printf("client: received '%s'\n", buf);
+
   close(sockfd);
 
   return 0;
+}
+
+// From www.beej.us
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET) {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
