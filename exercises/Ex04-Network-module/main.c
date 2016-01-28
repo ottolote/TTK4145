@@ -14,8 +14,6 @@
 
 #include "networkhandler.h"
 
-#define MAXBUFLEN 100 // could be bigger
-#define MYPORT "30000"
 
 
 int main() {
