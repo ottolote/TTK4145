@@ -33,4 +33,6 @@ clean:
 
 rebuild:	clean all
 
+
+# for declaring targets as not actual files.
 .PHONY: all rebuild clean
