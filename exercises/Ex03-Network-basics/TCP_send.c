@@ -38,7 +38,7 @@
 
 #define MAXBUFLEN 100
 
-#define SERVERPORT "33546"
+#define SERVERPORT "30000"
 
 void *get_in_addr(struct sockaddr *sa);
 
@@ -107,24 +107,24 @@ int main(int argc, char *argv[]) {
   char sendstr[MAXBUFLEN]; // could be different from MAXBUFLEN
 
   do {
-    gets(sendstr);
-    // Send package with data from argument 2
-    if ((numbytes = send(sockfd, sendstr, strlen(sendstr)+1, 0 )) == -1) {
-        perror("send");
-        exit(1);
-    }
+     gets(sendstr);
+     // Send package with data from argument 2
+     if ((numbytes = send(sockfd, sendstr, strlen(sendstr)+1, 0 )) == -1) {
+         perror("send");
+         exit(1);
+     }
+ 
+     printf("sent %d bytes to %s\n", numbytes, argv[1]);
 
-    printf("sent %d bytes to %s\n", numbytes, argv[1]);
+     char buf[MAXBUFLEN];
 
-//     char buf[MAXBUFLEN];
-
-//     if((numbytes =  recv(sockfd, buf, MAXBUFLEN-1, 0)) == -1) {
-//       perror("recv");
-//       exit(1);
-//     }
-// 
-//     buf[numbytes] = '\0';
-//     printf("client: received '%s'\n", buf);
+     if((numbytes =  recv(sockfd, buf, MAXBUFLEN-1, 0)) == -1) {
+       perror("recv");
+       exit(1);
+     }
+ 
+     buf[numbytes] = '\0';
+     printf("client: received '%s'\n", buf);
       printf("%d\n", strcmp(sendstr, "kuk"));
   } while (strcmp(sendstr, "nope") != 0);
 
