@@ -38,7 +38,7 @@
 
 #define MAXBUFLEN 100
 
-#define SERVERPORT "34933"
+#define SERVERPORT "33546"
 
 void *get_in_addr(struct sockaddr *sa);
 
@@ -46,8 +46,8 @@ void *get_in_addr(struct sockaddr *sa);
 int main(int argc, char *argv[]) {
 
   // If arguments passed is not two + 1 (you count the executable's name)
-  if(argc != 3) {
-    fprintf(stderr, "usage: %s <hostname> <message>\n", argv[0]);
+  if(argc != 2) {
+    fprintf(stderr, "usage: %s <hostname>\n", argv[0]);
     exit(1);
   }
 
@@ -104,25 +104,31 @@ int main(int argc, char *argv[]) {
   freeaddrinfo(clientinfo);
 
   int numbytes;
+  char sendstr[MAXBUFLEN]; // could be different from MAXBUFLEN
 
-  // Send package with data from argument 2
-  if ((numbytes = send(sockfd, argv[2], strlen(argv[2]), 0 )) == -1) {
-      perror("send");
-      exit(1);
-  }
+  do {
+    gets(sendstr);
+    // Send package with data from argument 2
+    if ((numbytes = send(sockfd, sendstr, strlen(sendstr)+1, 0 )) == -1) {
+        perror("send");
+        exit(1);
+    }
 
-  printf("sent %d bytes to %s\n", numbytes, argv[1]);
+    printf("sent %d bytes to %s\n", numbytes, argv[1]);
 
-  char buf[MAXBUFLEN];
+//     char buf[MAXBUFLEN];
 
-  if((numbytes =  recv(sockfd, buf, MAXBUFLEN-1, 0)) == -1) {
-    perror("recv");
-    exit(1);
-  }
+//     if((numbytes =  recv(sockfd, buf, MAXBUFLEN-1, 0)) == -1) {
+//       perror("recv");
+//       exit(1);
+//     }
+// 
+//     buf[numbytes] = '\0';
+//     printf("client: received '%s'\n", buf);
+      printf("%d\n", strcmp(sendstr, "kuk"));
+  } while (strcmp(sendstr, "nope") != 0);
 
-  buf[numbytes] = '\0';
 
-  printf("client: received '%s'\n", buf);
 
   close(sockfd);
 

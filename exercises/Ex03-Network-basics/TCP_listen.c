@@ -105,6 +105,8 @@ int main() {
     fprintf(stderr, "failed to bind to socket");
     return 2;
   }
+
+  printf("listening for connections\n");
       
   if(listen(sockfd, 5) == -1) {
     perror("listen");
@@ -128,14 +130,16 @@ int main() {
     exit(1);
   }
 
-  if((numbytes =  recv(new_fd, buf, MAXBUFLEN-1, 0)) == -1) {
-    perror("recv");
-    exit(1);
-  }
+  do {
+    if((numbytes =  recv(new_fd, buf, MAXBUFLEN-1, 0)) == -1) {
+      perror("recv");
+      exit(1);
+    }
 
-  buf[numbytes] = '\0';
+    buf[numbytes] = '\0';
 
-  printf("server: received '%s'\n", buf);
+    printf("server: received '%s'\n", buf);
+  } while (strcmp(buf,"stop"));
 
   close(sockfd);
 
