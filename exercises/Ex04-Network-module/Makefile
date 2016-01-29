@@ -1,11 +1,11 @@
 # Which compiler to use
-CC = gcc
+CC = gcc-4.8
 
 # Compiler flags go here.
 CFLAGS = -std=gnu11 -g -Wall -Wextra
 
 # Linker flags go here.
-LDFLAGS = -lcomedi -lm -lpthread
+LDFLAGS = -lcomedi -lm -lpthread -lstdc++
 
 # list of sources
 ELEVSRC = main.c networkhandler.c
