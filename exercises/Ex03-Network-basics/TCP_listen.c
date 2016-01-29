@@ -139,6 +139,16 @@ int main() {
     buf[numbytes] = '\0';
 
     printf("server: received '%s'\n", buf);
+    
+    gets(buf);
+    // Send package with data from argument 2
+    if ((numbytes = send(sockfd, buf, strlen(buf)+1, 0 )) == -1) {
+        perror("send");
+        exit(1);
+    }
+
+    printf("sent %d bytes to %s\n", numbytes, argv[1]);
+    
   } while (strcmp(buf,"stop"));
 
   close(sockfd);
