@@ -38,7 +38,7 @@
 
 #define MAXBUFLEN 100
 
-#define SERVERPORT "33546"
+#define SERVERPORT "300000"
 
 void *get_in_addr(struct sockaddr *sa);
 
