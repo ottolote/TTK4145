@@ -1,39 +1,41 @@
 # Which compiler to use
 CC = gcc
 
-# Compiler flags go here.
-CFLAGS = -std=gnu11 -g -Wall -Wextra
-
-# Linker flags go here.
-LDFLAGS = -lcomedi -lm -lpthread -lphobos2
-
-# list of sources
-ELEVSRC = elev.c io.c main.c
-
-# program executable file name.
 TARGET = elevator
 
-# top-level rule, to compile everything.
-all: $(TARGET)
+CFLAGS = -std=gnu11 -g -Wall -Wextra
+LDFLAGS = -lcomedi -lm -lpthread -lphobos2
 
-# simulator libraries
-SIMLIB = ../simulator/source/simelev.a
 
-# Define all object files.
+ELEVSRC = elev.c io.c main.c
 ELEVOBJ = $(ELEVSRC:.c=.o)  
 
-# rule to link the program
-$(TARGET): $(ELEVOBJ)
+
+all: $(TARGET)
+
+
+sim: $(SIMTARGET)
+
+SIMTARGET = ../simulator/source/simelev.a
+SIMSRC = ../simulator/source/sim_backend.d ../simulator/source/timer_event.d 
+SIMLDFLAGS = -lib
+
+$(SIMTARGET): $(SIMSRC)
+	dmd $(SIMSRC) $(SIMLDFLAGS) -of$@
+
+
+
+$(TARGET): $(ELEVOBJ) $(SIMTARGET)
 	$(CC) $^ -o $@ $(SIMLIB) $(LDFLAGS) 
 
-# Compile: create object files from C source files.
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
-# rule for cleaning re-compilable files.
+
+
 clean:
-	rm -f $(TARGET) $(ELEVOBJ)
+	rm -f $(TARGET) $(ELEVOBJ) $(SIMTARGET)
 
 rebuild:	clean all
 
-.PHONY: all rebuild clean
+.PHONY: all rebuild clean sim

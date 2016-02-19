@@ -1,9 +1,9 @@
 TARGET = boost_testing
 
 CFLAGS = -g -Wall 
-LDFLAGS = -lcomedi -lrt -lboost_system -lboost_thread -lstdc++
+LDFLAGS = -lcomedi -lrt -lboost_system -lboost_thread -lstdc++ 
 
-SOURCES = asio_testing5.cpp
+SOURCES = thread_com.cpp
 
 all:$(TARGET)
 
