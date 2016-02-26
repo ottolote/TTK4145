@@ -1,9 +1,10 @@
 TARGET = boost_testing
 
 CFLAGS = -g -Wall 
-LDFLAGS = -lcomedi -lrt -lboost_system -lboost_thread -lstdc++ 
+LDFLAGS = -lcomedi -lboost_system -lpthread -lstdc++ 
+#-lrt #-lboost_thread
 
-SOURCES = asio_testing5.cpp
+SOURCES = boost_udp_test3.cpp
 
 all:$(TARGET)
 

@@ -36,7 +36,7 @@
 //  - AI_ADDRCONFIG
 #include <netdb.h>
 
-#define SERVERPORT "20004"
+#define SERVERPORT "20003"
 
 
 
