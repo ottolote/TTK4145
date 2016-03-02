@@ -4,31 +4,43 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp>
 
-class handler {
-	public:
-		void schmandler() {
-			std::cout << "schmandler schschmandler\n";
-		}
+class Network {
+    public:
+//         Network() 
+//             : timeout_timer(io, boost::posix_time::seconds(1)) 
+//         {
+//                     timeout_timer.async_wait([=] { this->doStuff();});
+// 
+//         }
 
-		void threadfunc(boost::asio::io_service *io) {
-			// doStuff();
-			boost::asio::deadline_timer t(*io, boost::posix_time::seconds(1));
 
-			io->post( boost::bind(&handler::schmandler,this));
-		}
+        void run() {
+            io.run();
+        }
 
-};
+        void doStuff() {
+                std::cout << "handler schmandler\n";
+        }
+
+        void post() {
+                io.post([=] { Network::doStuff();});
+        }
+    private:
+            boost::asio::io_service io;
+
+//            boost::asio::deadline_timer timeout_timer;
+
+}; //end of class Network
+
+
 
 int main() {
-	boost::asio::io_service io;
 
-	std::cout << "Before io.run()\n";
+    Network Networkhandler;
+    Networkhandler.post();
 
-	boost::thread t(boost::bind(&handler::threadfunc, &io));
-	io.run();
+    boost::thread t([=] { Network::run();})
+        return 0;
 
-	std::cout << "io.run() done\n";
-
-	return 0;
 }
 
