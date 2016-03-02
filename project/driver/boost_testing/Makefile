@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -g -Wall -std=gnu++11
 LDFLAGS = -lcomedi -lrt -lboost_system -lboost_thread -lstdc++ 
 
-SOURCES = thread_com.cpp
+SOURCES = asio_testing5.cpp
 
 all:$(TARGET)
 

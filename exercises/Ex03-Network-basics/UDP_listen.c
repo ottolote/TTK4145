@@ -49,7 +49,7 @@
 #include <sys/socket.h>
 
 #define MAXBUFLEN 100 // could be bigger
-#define MYPORT "30000"
+#define MYPORT "20003"
 
 // get sockaddress IPv4 or IPv6
 void *get_in_addr(struct sockaddr *sa);
