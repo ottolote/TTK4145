@@ -18,9 +18,15 @@ procedure exercise7 is
     protected body Transaction_Manager is
         entry Finished when Finished_Gate_Open or Finished'Count = N is
         begin
-            ------------------------------------------
-            -- PART 3: Complete the exit protocol here
-            ------------------------------------------
+	    If Finished'Count = 1 then
+	        Finished_Gate_Open := False;
+		Aborted := False;
+	    elsif Finished'Count = N then
+	        Finished_Gate_Open := True;
+		Should_Commit := True;
+	    Finished'Count := Finished'Count -1;
+	    end if;
+
         end Finished;
 
         procedure Signal_Abort is
@@ -41,9 +47,14 @@ procedure exercise7 is
     function Unreliable_Slow_Add (x : Integer) return Integer is
     Error_Rate : Constant := 0.15;  -- (between 0 and 1)
     begin
-        -------------------------------------------
-        -- PART 1: Create the transaction work here
-        -------------------------------------------
+        if Random(Gen) <= Error_Rate then
+            delay Duration(Random(Gen));
+            raise Count_Failed;
+            return -1;
+        else
+            delay Duration(8 * Random(Gen));
+            return x + 10;
+	end if;
     end Unreliable_Slow_Add;
 
 
@@ -61,9 +72,16 @@ procedure exercise7 is
             Put_Line ("Worker" & Integer'Image(Initial) & " started round" & Integer'Image(Round_Num));
             Round_Num := Round_Num + 1;
 
-            ---------------------------------------
-            -- PART 2: Do the transaction work here             
-            ---------------------------------------
+            begin
+	        Num := Unreliable_Slow_Add(0);
+		if Num = 10 then
+		    Manager.Finished;
+		end if;
+            exception
+	        when Count_Failed =>
+		    Manager.Signal_Abort;
+            end;
+
             
             if Manager.Commit = True then
                 Put_Line ("  Worker" & Integer'Image(Initial) & " comitting" & Integer'Image(Num));
@@ -71,9 +89,8 @@ procedure exercise7 is
                 Put_Line ("  Worker" & Integer'Image(Initial) &
                              " reverting from" & Integer'Image(Num) &
                              " to" & Integer'Image(Prev));
-                -------------------------------------------
-                -- PART 2: Roll back to previous value here
-                -------------------------------------------
+
+		Num := Prev;
             end if;
 
             Prev := Num;
