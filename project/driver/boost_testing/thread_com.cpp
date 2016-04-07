@@ -6,6 +6,7 @@
 
 #define RECVBUFFER_LEN 40
 #define MYPORT 30000
+//#define TARGETPORT "30000"
 
 // using c++11 (lambdas instead of boost::bind)
 //
@@ -154,7 +155,7 @@ int main() {
             new std::string("test")); 
 
     for (int i = 0; i<8; i++) {
-        Networkhandler.send("127.0.0.1", message);
+        Networkhandler.send("localhost", message);
         usleep(500000);
     }
 
