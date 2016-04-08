@@ -1,3 +1,5 @@
+#include "terminalcolors.h"
+
 #include <iostream>
 #include <unistd.h>
 #include <boost/asio.hpp>
@@ -30,7 +32,25 @@ using namespace boost;
 using boost::asio::ip::udp;
 
 
+// This is for colorized tidy output
+// usage:
+//
+//      cout << NH "message to be written" 
+//
+#define NH "[" TCOLOR_LIGHTBLUE "NetworkHandler" TCOLOR_NC "] : "
+
+
+
 class Network {
+    private:
+        asio::io_service io;
+        udp::socket socket_;
+        udp::endpoint remote_endpoint_;
+        udp::endpoint target_endpoint_;
+        boost::array<char, RECVBUFFER_LEN> recv_buffer_;
+        asio::deadline_timer timeout_timer;
+
+
     public:
         Network() 
             : socket_(io, udp::endpoint(udp::v4(), MYPORT)),
@@ -45,6 +65,8 @@ class Network {
         }
 
 
+
+
         void run() {
             io.run();
             std::cout << "networkthread reached end\n";
@@ -52,11 +74,15 @@ class Network {
         }
 
 
+
+
         void doStuff() {
             std::cout << "handler schmandler is doing stuff\n";
             refresh_timeout_timer();
             return;
         }
+
+
 
         void send(std::string host, shared_ptr<std::string> message) {
 
@@ -74,19 +100,14 @@ class Network {
         }
 
 
+
+
         void post() {
             io.post([&] { doStuff(); });
             return;
         }
 
 
-    private:
-        asio::io_service io;
-        udp::socket socket_;
-        udp::endpoint remote_endpoint_;
-        udp::endpoint target_endpoint_;
-        boost::array<char, RECVBUFFER_LEN> recv_buffer_;
-        asio::deadline_timer timeout_timer;
 
 
         void start_receive() {
@@ -95,19 +116,23 @@ class Network {
                     boost::bind(&Network::handle_receive, this,
                         asio::placeholders::error, 
                         asio::placeholders::bytes_transferred));
-                    
         }
+
+
+
 
         void handle_send(shared_ptr<std::string> message,
                 const boost::system::error_code& e,
                 std::size_t bytes_transferred) {
-            std::cout << "sent message: " << *message << std::endl;;
+            std::cout << NH "sent message: " << *message << std::endl;;
         }
+
+
 
 
         void handle_receive(const boost::system::error_code& e,
                 std::size_t bytes_transferred) {
-            std::cout << "received message: '" << std::string(recv_buffer_.begin(), recv_buffer_.begin() + bytes_transferred) << "'\n";
+            std::cout << NH "received message: '" << std::string(recv_buffer_.begin(), recv_buffer_.begin() + bytes_transferred) << "'\n";
 
             // TRYING TO CHECK FOR TRUNCATION, NOT WORKING
             // std::cout << e << std::endl;
@@ -119,17 +144,22 @@ class Network {
             start_receive();
         }
 
+
+
+
         void timeout(const system::error_code &e) {
             // don't do anything if the timeout was pushed 
             //      (aborted and refreshed by refresh_timeout_timer() )
             if (e == asio::error::operation_aborted) {return;}
 
             // Handle the timeout
-            std::cout << "NetworkThread timed out, we should probably deal with this and tell main something is wrong\n";
+            std::cout << NH "NetworkThread timed out, we should probably deal with this and tell main something is wrong\n";
             return;
         }
 
         
+
+
         void refresh_timeout_timer() {
             timeout_timer.cancel(); 
             timeout_timer.expires_from_now(posix_time::milliseconds(1000));
@@ -146,17 +176,21 @@ int main() {
 
     // Start ayncronous Networkhandler in new thread
     Network Networkhandler; // Thread object
-    thread NetworkThread([&] { 
-            Networkhandler.run(); });
+    thread NetworkThread([&] {
+        Networkhandler.run();   // Thread function
+    });
+
 
     // create shared pointer for message to be sent (boost::shared_ptr)
     shared_ptr<std::string> message(
             new std::string("test")); 
 
+
     for (int i = 0; i<8; i++) {
         Networkhandler.send("127.0.0.1", message);
         usleep(500000);
     }
+
 
     message.reset();
 

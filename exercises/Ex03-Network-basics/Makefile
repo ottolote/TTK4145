@@ -9,10 +9,12 @@ SOURCES = asio_nethandler.cpp
 
 all:$(TARGET)
 
-$(TARGET): 
-	$(CC) $(CFLAGS) -o $@ $(SOURCES) $(LDFLAGS) $< 
+$(TARGET): $(SOURCES)
+	$(CC) $(CFLAGS) -o $@ $(SOURCES) $(LDFLAGS) 
 
 clean:
 	rm -rf $(TARGET)
 
-.PHONY: clean all
+rebuild: clean all
+
+.PHONY: clean all rebuild
