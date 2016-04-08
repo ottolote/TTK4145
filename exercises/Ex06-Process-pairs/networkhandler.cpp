@@ -41,6 +41,18 @@ using boost::asio::ip::udp;
 #define NH "[" TCOLOR_LIGHTBLUE "NetworkHandler" TCOLOR_NC "] : "
 
 
+Network::Network() 
+    : socket_(io, udp::endpoint(udp::v4(), MYPORT)),
+      timeout_timer(io, posix_time::milliseconds(1000))
+{
+    timeout_timer.async_wait([&](const boost::system::error_code& e) {
+            //this function will be run at the end of the timer
+            timeout(e);
+    });
+
+    start_receive();
+}
+
 
 void Network::run() {
     io.run();
@@ -51,11 +63,11 @@ void Network::run() {
 
 
 
-void Network::doStuff() {
-    std::cout << "handler schmandler is doing stuff\n";
-    refresh_timeout_timer();
-    return;
-}
+//void Network::doStuff() {
+//    std::cout << "handler schmandler is doing stuff\n";
+//    refresh_timeout_timer();
+//    return;
+//}
 
 
 
@@ -77,10 +89,10 @@ void Network::send(std::string host, shared_ptr<std::string> message) {
 
 
 
-void Network::post() {
-    io.post([&] { doStuff(); });
-    return;
-}
+//void Network::post() {
+//    io.post([&] { doStuff(); });
+//    return;
+//}
 
 
 
