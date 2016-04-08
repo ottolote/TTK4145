@@ -1,20 +1,34 @@
-TARGET = networkhandler
+# Which compiler to use
+# CC = gcc
+CCPP = g++
 
-CC = gcc
+TARGET = test
 
-CFLAGS = -g -Wall -std=gnu++11
-LDFLAGS = -lcomedi -lrt -lboost_system -lboost_thread -lpthread -lstdc++ 
+#CFLAGS = -std=gnu11 -g -Wall -Wextra
+CPPFLAGS = -std=gnu++11 -g -Wall -Wextra
+LDFLAGS = -lm -lboost_system -lboost_thread -lpthread -lstdc++
 
-SOURCES = asio_nethandler.cpp
+#SRC = test.c
+SRCPP = networkhandler.cpp
 
-all:$(TARGET)
+OBJ = $(SRCPP:.cpp=.o) #$(SRC:.c=.o)
 
-$(TARGET): $(SOURCES)
-	$(CC) $(CFLAGS) -o $@ $(SOURCES) $(LDFLAGS) 
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ) 
+	$(CCPP) -o $@ $(LDFLAGS) $^
+
+%.o : 
+	$(CCPP) $(CPPFLAGS) -c $< -o $@ 
+
+
+#%.o : %.c
+#	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:
-	rm -rf $(TARGET)
+	rm -f $(TARGET) $(OBJ)
 
-rebuild: clean all
+rebuild:	clean all
 
-.PHONY: clean all rebuild
+.PHONY: all rebuild clean 
