@@ -1,48 +1,41 @@
 with Ada.Text_IO, Ada.Integer_Text_IO, Ada.Numerics.Float_Random;
 use  Ada.Text_IO, Ada.Integer_Text_IO, Ada.Numerics.Float_Random;
 
-procedure exercise7 is
+procedure exercise8 is
 
     Count_Failed    : exception;    -- Exception to be raised when counting fails
     Gen             : Generator;    -- Random number generator
 
     protected type Transaction_Manager (N : Positive) is
         entry Finished;
-        function Commit return Boolean;
+        entry Wait_Until_Aborted; 
         procedure Signal_Abort;
     private
         Finished_Gate_Open  : Boolean := False;
         Aborted             : Boolean := False;
-        Should_Commit       : Boolean := True;
+        
     end Transaction_Manager;
     protected body Transaction_Manager is
         entry Finished when Finished_Gate_Open or Finished'Count = N is
         begin
-            Should_Commit := not Aborted;
             Finished_Gate_Open := Finished'Count /= 0;
             if not Finished_Gate_Open then
                 Aborted := False;
---            If Finished'Count = 1 then
---                Finished_Gate_Open := False;
---                Aborted := False;
---            elsif Finished'Count = N then
---                Finished_Gate_Open := True;
---                Should_Commit := True;
-            --Finished'Count = 1;
-            end if;
-            ------------------------------------------
+            end if;            
         end Finished;
+        
+        entry Wait_Until_Aborted when Aborted is
+        begin
+            if Wait_Until_Aborted'Count = 0 then
+                Aborted := False;
+            end if;
+        end;
 
         procedure Signal_Abort is
         begin
             Aborted := True;
         end Signal_Abort;
 
-        function Commit return Boolean is
-        begin
-            return Should_Commit;
-        end Commit;
-        
     end Transaction_Manager;
 
 
@@ -51,17 +44,16 @@ procedure exercise7 is
     function Unreliable_Slow_Add (x : Integer) return Integer is
     Error_Rate : Constant := 0.15;  -- (between 0 and 1)
     begin
-        -------------------------------------------
-        -- PART 1: Create the transaction work here
-        if Random(Gen) <= Error_Rate then
-            delay Duration(Random(Gen));
-            raise Count_Failed;
-            --return -1;
-        else
-            delay Duration(8.0*Random(Gen));
+        if Random(Gen) > Error_Rate then
+            delay Duration(3.5 + Random(Gen));
             return x + 10;
+        else
+            delay Duration(0.5 * Random(Gen));
+            raise Count_Failed;
         end if;
     end Unreliable_Slow_Add;
+
+
 
 
 
@@ -78,27 +70,22 @@ procedure exercise7 is
             Put_Line ("Worker" & Integer'Image(Initial) & " started round" & Integer'Image(Round_Num));
             Round_Num := Round_Num + 1;
 
-            begin
-                Num := Unreliable_Slow_Add(Prev);
---                if Num = 10 then
---                    Manager.Finished;
---                end if;
-            exception
-                when Count_Failed =>
-                    Manager.Signal_Abort;
-            end;
-            Manager.Finished;
-
             
-            if Manager.Commit = True then
-                Put_Line ("  Worker" & Integer'Image(Initial) & " comitting" & Integer'Image(Num));
-            else
-                Put_Line ("  Worker" & Integer'Image(Initial) &
-                             " reverting from" & Integer'Image(Num) &
-                             " to" & Integer'Image(Prev));
-
-                Num := Prev;
-            end if;
+        select
+                
+                Manager.Wait_Until_Aborted;
+                Num := Prev + 5;        
+                Put_Line(" Worker" & Integer'Image(Initial) & " comitting" & Integer'Image(Num));
+        then abort
+                begin
+                        Num := Unreliable_Slow_Add(Prev);
+                        Put_Line ("  Worker" & Integer'Image(Initial) & " comitting" & Integer'Image(Num));
+                exception
+                     when Count_Failed => 
+                         Manager.Signal_Abort;
+                end;
+                Manager.Finished;
+        end select;
 
             Prev := Num;
             delay 0.5;
@@ -114,7 +101,7 @@ procedure exercise7 is
 
 begin
     Reset(Gen); -- Seed the random number generator
-end exercise7;
+end exercise8;
 
 
 
