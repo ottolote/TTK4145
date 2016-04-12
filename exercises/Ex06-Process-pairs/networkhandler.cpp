@@ -55,6 +55,7 @@ Network::Network()
 
 
 void Network::run() {
+
     io.run();
     std::cout << "networkthread reached end\n";
     return;
@@ -111,7 +112,10 @@ void Network::start_receive() {
 void Network::handle_send(shared_ptr<std::string> message,
         const boost::system::error_code& e,
         std::size_t bytes_transferred) {
-    std::cout << NH "sent message: " << *message << std::endl;;
+    if(e == asio::error::host_not_found) { exit(1) ; }
+
+    std::cout << NH "sent message: " << *message << " - " 
+            << bytes_transferred << " bytes\n";
 }
 
 
@@ -119,7 +123,8 @@ void Network::handle_send(shared_ptr<std::string> message,
 
 void Network::handle_receive(const boost::system::error_code& e,
         std::size_t bytes_transferred) {
-    std::cout << NH "received message: '" << std::string(recv_buffer_.begin(), recv_buffer_.begin() + bytes_transferred) << "'\n";
+    if(e == asio::error::network_unreachable) { exit(1); }
+    std::cout << NH "received message: '" << std::string(recv_buffer_.begin(), recv_buffer_.begin() + bytes_transferred) << "' - " << bytes_transferred << " bytes\n";
 
     // TRYING TO CHECK FOR TRUNCATION, NOT WORKING
     // std::cout << e << std::endl;

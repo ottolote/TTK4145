@@ -8,12 +8,16 @@ using boost::asio::ip::udp;
 
 int main() {
 
-    // Start ayncronous Networkhandler in new thread
+    asio::io_service io;
+
+
+    // Start asyncronous Networkhandler in new thread
     Network Networkhandler; // Thread object
     thread NetworkThread([&] {
         Networkhandler.run();   // Thread function
     });
 
+     
 
     // create shared pointer for message to be sent (boost::shared_ptr)
     shared_ptr<std::string> message(

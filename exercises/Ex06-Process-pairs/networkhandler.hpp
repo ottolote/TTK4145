@@ -15,6 +15,7 @@ class Network {
         boost::asio::ip::udp::endpoint target_endpoint_;
         boost::array<char, NETWORK_RECVBUFFER_LEN> recv_buffer_;
         boost::asio::deadline_timer timeout_timer;
+        boost::asio::io_service *parent_io;
 
 
     public:
