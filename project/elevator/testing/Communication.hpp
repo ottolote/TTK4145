@@ -1,3 +1,9 @@
+/*
+ *
+ * Communication.hpp
+ *
+ * */
+
 #pragma once
 
 #include "networkhandler.hpp"
@@ -12,7 +18,7 @@
 
 class Network;
 
-class Threadmanager {
+class Communication {
     private:
         boost::asio::io_service io;
         boost::asio::deadline_timer timeout_timer;
@@ -20,8 +26,8 @@ class Threadmanager {
 
 
     public:
-        Threadmanager();
-        void init_parent_channel(
+        Communication();
+        void add_reference_to(
                 boost::shared_ptr<Network> _NM);
         void start();
         void doStuff();

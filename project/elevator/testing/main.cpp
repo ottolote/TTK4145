@@ -1,4 +1,10 @@
-#include "Thread_handler.hpp"
+/*
+ *
+ * main.hpp
+ *
+ * */
+
+#include "generic_thread.hpp"
 #include "networkhandler.hpp"
 
 #include <iostream>
@@ -9,22 +15,18 @@ using boost::asio::ip::udp;
 
 int main() {
 
-    asio::io_service io;
+    boost::shared_ptr<Network> NH( new Network );
+    boost::shared_ptr<generic_thread> GT( new generic_thread );;
 
 
-    
-    // Start asyncronous Networkhandler in new thread
-    shared_ptr<Network> Networkhandlerpointer( new Network ); // Thread object
     thread NetworkThread([&] {
-        Networkhandlerpointer->run();   // Thread function
+        NH->run();   // Thread function
     });
 
-    shared_ptr<Threadmanager> TM( new Threadmanager );;
-    TM->init_parent_channel(Networkhandlerpointer);
-    Networkhandlerpointer->init_parent_channel(TM);
-    TM->start();
-    TM->run();
 
+    NH->add_reference_to(GT);
+    GT->add_reference_to(NH);
+    GT->run(); // Main blocks at this call and becomes the ThreadManager instead of starting a seperate thread and then idling
      
 
     // create shared pointer for message to be sent (boost::shared_ptr)

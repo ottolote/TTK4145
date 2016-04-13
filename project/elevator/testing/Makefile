@@ -9,7 +9,7 @@ CPPFLAGS = -std=gnu++11 -g -Wall -Wextra
 LDFLAGS = -lm -lboost_system -lboost_thread -lpthread
 
 SRC = 
-SRCPP = networkhandler.cpp main.cpp Thread_handler.cpp
+SRCPP = networkhandler.cpp main.cpp generic_thread.cpp
 
 OBJ = $(SRCPP:.cpp=.o) $(SRC:.c=.o)
 
