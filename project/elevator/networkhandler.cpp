@@ -61,7 +61,8 @@ Network::Network()
 }
 
 
-void Network::run() {
+void Network::init_thread(boost::shared_mutex &cout_lock) {
+    this->_cout_lock = &cout_lock;
     io.run();
     std::cout << "networkthread reached end\n";
     return;
@@ -109,7 +110,7 @@ void Network::send(std::string host, shared_ptr<std::string> message) {
 void Network::send(std::string host, encoded_msg_t msg) {
 
     udp::resolver resolver(io);
-    udp::resolver::query query(udp::v4(), host, "30000");
+    udp::resolver::query query(udp::v4(), host, std::to_string(MYPORT));
     udp::resolver::iterator iter = resolver.resolve(query);
     target_endpoint_ = *iter;
 
@@ -217,7 +218,6 @@ void Network::timeout(const system::error_code &e) {
 
     // Handle the timeout
     std::cout << PROMPT "NetworkThread timed out, we should probably deal with this and tell main something is wrong\n";
-    _TM->post();
     return;
 }
 

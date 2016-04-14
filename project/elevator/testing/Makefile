@@ -4,12 +4,12 @@ CCPP = g++
 
 TARGET = test
 
-CFLAGS = -std=gnu11 -g -Wall -Wextra
-CPPFLAGS = -std=gnu++11 -g -Wall -Wextra
+CFLAGS = -std=gnu14 -g -Wall -Wextra
+CPPFLAGS = -std=gnu++14 -g -Wall -Wextra
 LDFLAGS = -lm -lboost_system -lboost_thread -lpthread
 
 SRC = 
-SRCPP = networkhandler.cpp main.cpp generic_thread.cpp
+SRCPP = Network.cpp generic_thread.cpp Communication.cpp main.cpp
 
 OBJ = $(SRCPP:.cpp=.o) $(SRC:.c=.o)
 

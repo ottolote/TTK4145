@@ -4,7 +4,7 @@
  *
  * */
 
-#include "networkhandler.hpp"
+#include "generic_thread.hpp"
 #include "terminalcolors.h"
 
 #include <iostream>
@@ -15,7 +15,7 @@
 
 #define TIMEOUT_TIMER_DURATION_MS 3000
 
-// using c++11 (lambdas instead of boost::bind)
+// using c++14 
 //
 // ASYNCRONOUS NETWORK HANDLER
 //
@@ -45,8 +45,11 @@ using namespace boost;
 #define PROMPT "[" TCOLOR_LIGHTGREEN "generic_thread" TCOLOR_NC "] : "
 
 
-generic_thread::generic_thread() 
-    : timeout_timer(io, posix_time::milliseconds(TIMEOUT_TIMER_DURATION_MS))
+generic_thread::generic_thread(int timeout_in_ms) 
+    : io(),
+      work(io),
+      timeout_timer(io, boost::posix_time::milliseconds(timeout_in_ms)),
+      _timer_duration_ms(timeout_in_ms)
 {
     timeout_timer.async_wait([&](const boost::system::error_code& e) {
             //this function will be run at the end of the timer
@@ -55,47 +58,17 @@ generic_thread::generic_thread()
 }
 
 
-void generic_thread::add_reference_to( const boost::shared_ptr<Network> network) {
-    this->_NM = network;
-}
 
 
 void generic_thread::run() {
     io.run();
-    std::cout << PROMPT "&&&&&&&& thread reached end\n";
+    //safe_cout << "&&&&&&&& thread reached end\n";
+    std::cout << "thread reached end\n";
     return;
 }
 
 
 
-
-
-void generic_thread::doStuff() {
-    std::cout << PROMPT "doing stuff\n";
-    _NM->post(25956);
-    refresh_timeout_timer();
-}
-
-
-void generic_thread::post() {
-    io.post([&] { doStuff(); });
-    return;
-}
-
-
-//void generic_thread::doStuff() {
-//    std::cout << "handler schmandler is doing stuff\n";
-//    refresh_timeout_timer();
-//    return;
-//}
-
-
-
-
-//void generic_thread::post() {
-//    io.post([&] { doStuff(); });
-//    return;
-//}
 
 
 
@@ -105,7 +78,7 @@ void generic_thread::timeout(const system::error_code &e) {
     if (e == asio::error::operation_aborted) {return;}
 
     // Handle the timeout
-    std::cout << PROMPT "generic_thread timed out, we should probably deal with this and tell main something is wrong\n";
+    std::cout << "generic_thread timed out, we should probably deal with this and tell main something is wrong\n";
     return;
 }
 
@@ -114,7 +87,7 @@ void generic_thread::timeout(const system::error_code &e) {
 
 void generic_thread::refresh_timeout_timer() {
     timeout_timer.cancel(); 
-    timeout_timer.expires_from_now(posix_time::milliseconds(TIMEOUT_TIMER_DURATION_MS));
+    timeout_timer.expires_from_now(posix_time::milliseconds(_timer_duration_ms));
     timeout_timer.async_wait([&](const boost::system::error_code& e){ 
             // function to be run at timeout
             timeout(e); });
