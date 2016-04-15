@@ -6,12 +6,12 @@
 
 /************Message format***************
 Order
-0b|x|xxx|x|
-   t  o  a
-   y  r  c
-   p  d  k
-   e  e
-      r
+0b|x|xxx|x|x|
+   t  o  a c
+   y  r  c l
+   p  d  k e
+   e  e    a
+      r    r
 
 Status
 0b|x|xxxxxx|xx|xx|

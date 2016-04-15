@@ -1,4 +1,6 @@
 #include "message_handler.hpp"
+#include <iostream>
+
 
 int extract_bits(encoded_msg_t message, int mask, int index);
 
@@ -83,8 +85,8 @@ int clear_bit(encoded_msg_t message, int bit_index) {
 }
 
 
-bool read_bit(encoded_msg_t message, int bit_index) {
-    return ( message & (1 << bit_index) );
+bool Message_handler::read_bit(encoded_msg_t message, int bit_index) {
+    return ( message >> bit_index) & 1;
 }
 
 
@@ -104,26 +106,39 @@ encoded_msg_t Message_handler::remove_ack_from_message(encoded_msg_t encoded_mes
 
 
 
-encoded_msg_t Message_handler::add_checksum(encoded_msg_t encoded_message) {
-    uint8_t checksum = 0;
-    for (int bitnum = 0; bitnum < STATUS_FIELD_WIDTH; bitnum++) {
-        checksum += read_bit(encoded_message, bitnum)*bitnum*7; //13 chosen arbitrarily
+unsigned int Message_handler::checksum(encoded_msg_t encoded_message) {
+    unsigned int checksum = 0;
+    for (unsigned int bitnum = 0; bitnum < STATUS_FIELD_WIDTH; bitnum++) {
+        checksum += read_bit(encoded_message, bitnum)*bitnum*5 + 156; //value chosen arbitrarily
     }
+    //std::cout << "checksum (checksum() ): " << checksum << std::endl;
     checksum = checksum %  32;
-    return encoded_message + (checksum << STATUS_FIELD_WIDTH);
+    //std::cout << "checksum % 32: " << checksum << std::endl;
+    return checksum;
 }
 
 
+encoded_msg_t Message_handler::add_checksum(encoded_msg_t encoded_message) {
 
-
-bool Message_handler::has_valid_checksum(encoded_msg_t encoded_message) {
-    uint8_t checksum = 0;
-    for (int bitnum = 0; bitnum < STATUS_FIELD_WIDTH; bitnum++) {
+    if(read_checksum(encoded_message)) {
+        std::cout << "Warning: add_checksum: message " << encoded_message 
+            << " already has a checksum\n";
+        // clear bits
+        encoded_message = (encoded_message << (16-STATUS_FIELD_WIDTH));
+        encoded_message = (encoded_message >> (16-STATUS_FIELD_WIDTH));
     }
-    checksum = checksum % 32;
-    if ( (encoded_message >> STATUS_FIELD_WIDTH) == checksum) {
-        return true;
-    } else { return false; };
+
+    return (encoded_message 
+            + (Message_handler::checksum(encoded_message) << (STATUS_FIELD_WIDTH)));
+}
+
+
+unsigned int Message_handler::read_checksum(encoded_msg_t encoded_message) {
+    //std::cout << encoded_message << std::endl;
+    unsigned int checksum = (encoded_message >> (STATUS_FIELD_WIDTH));
+    //std::cout << encoded_message << std::endl;
+    //std::cout << checksum << std::endl;
+    return checksum;
 }
 
 

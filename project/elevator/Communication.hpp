@@ -20,7 +20,7 @@
 class Communication : public Network {
     public:
         Communication();
-        void reliable_send(int test);
+        void reliable_send(encoded_msg_t encoded_message, std::string target_ip);
         void receive_routine(encoded_msg_t message, std::string message_ip);
 
     private:

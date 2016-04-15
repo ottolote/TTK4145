@@ -47,8 +47,11 @@ if (argc != 1) {
 
 
 
-    for (uint16_t i = 0; i<800; i++) {
-        comms->reliable_send(i);
+    for (uint16_t i = 1000; i<60000; i++) {
+        std::bitset<16> binary_i(i);
+        std::cout << binary_i << std::endl;
+
+        comms->reliable_send(i, "127.0.0.1");
         usleep(50000);
     }
 
