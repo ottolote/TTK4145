@@ -65,9 +65,21 @@ void Communication::reliable_send(int test) {
 
 
 
-void Communication::receive_routine(encoded_msg_t message, std::string message_ip ) {
-    std::cout << PROMPT << message_ip << " sendt some shit. Here it is: " 
-        << message << std::endl;
+void Communication::receive_routine(encoded_msg_t encoded_message, std::string message_ip ) {
+    std::cout << PROMPT << "message from " <<  message_ip << " containing '"
+        << encoded_message << "' is being handled" << std::endl;
+
+
+    
+    if (Message_handler::read_message_type(encoded_message) == STATUS_MESSAGE_TYPE) {
+        status_msg_t status_message = Message_handler::decode_status_message(encoded_message);
+        control->deliver_status(status_message);
+    } else {
+        order_msg_t order_message; Message_handler::decode_order_message(encoded_message);
+        control->deliver_order(order_message);
+    }
+
+    
 
 
 }

@@ -6,8 +6,11 @@
 
 #pragma once
 
-//#include "safeprint.hpp"
 #include <boost/asio.hpp>
+
+class Communication;
+class Control;
+class Hardware;
 
 
 class Generic_thread {
@@ -23,6 +26,10 @@ class Generic_thread {
         boost::asio::deadline_timer timeout_timer;
         virtual void timeout(const boost::system::error_code &e);
         void refresh_timeout_timer();
+
+        boost::shared_ptr<Communication> communication;
+        boost::shared_ptr<Control> control;
+        boost::shared_ptr<Hardware> hardware;
 
     private:
         int _timer_duration_ms;

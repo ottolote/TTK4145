@@ -18,7 +18,7 @@
 
 #define TIMEOUT_TIMER_DURATION_MS 1000
 
-// using c++11 (lambdas instead of boost::bind)
+// using c++<=11 (lambdas instead of boost::bind)
 //
 // ASYNCRONOUS NETWORK HANDLER
 //
@@ -161,8 +161,8 @@ void Network::handle_receive(const boost::system::error_code& e,
         << "' from " << ip 
         <<  " - " << bytes_transferred << " bytes\n";
 
+    //Start receive_routine() in io.run, can be overridden (is virtual)
     io.post([=] {receive_routine(encoded_message, ip);});
-
     start_receive();
 }
 

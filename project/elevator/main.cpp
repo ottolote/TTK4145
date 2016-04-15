@@ -40,42 +40,19 @@ if (argc != 1) {
     //    NH->init_thread(cout_lock);   // Thread function
     //});
 
-    thread comms_thread([&comms]  {
+    thread comms_thread([&]  {
         comms->run();   // Thread function
     });
 
 
 
 
-
-//    NH->add_reference_to(GT);
-//    GT->add_reference_to(NH);
-//    GT->run(); // Main blocks at this call and becomes the ThreadManager instead of starting a seperate thread and then idling
-     
-
-    // create shared pointer for message to be sent (boost::shared_ptr)
-    //shared_ptr<std::string> message(
-    //        new std::string("test")); 
-    
-//    for (uint16_t i = 0; i<255; i++) {
-//        unsigned char t = {(unsigned char)i};
-//        std::bitset<16> binary_i(i);
-//        std::bitset<16> binary_t(t);
-//        std::cout << (uint8_t)t << " - " << binary_t << " - "  
-//            << i << " - " << binary_i << std::endl;
-//        usleep(50000);
-//    }
-
-
     for (uint16_t i = 0; i<800; i++) {
-       // if (i > 4) { cout_lock.lock_shared(); }
-        comms->reliable_send((encoded_msg_t)(i));
-        std::cout << "Main: Sendt message - " << i << std::endl;
+        comms->reliable_send(i);
         usleep(50000);
     }
 
 
-    //message.reset();
 
 
     comms_thread.join();

@@ -8,8 +8,9 @@
 
 //#include "Generic_thread.hpp"
 #include "message_handler.hpp"
-#include "Generic_thread.hpp"
+//#include "Generic_thread.hpp"
 #include "Network.hpp"
+#include "Control.hpp"
 
 #include <boost/asio.hpp>
 

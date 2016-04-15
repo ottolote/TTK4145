@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "message_handler.h"
+#include "message_handler.hpp"
 #include "elevator_properties.h"
 
 //#include <boost/asio.hpp>
@@ -43,7 +43,6 @@ public:
 
 	int distance_from_order(int order);
 	void exchange_order_list(bool *order_list);
-        bool is_order_in_list(int order) {return _current_orders[order];}
 };
 
 class Internal_elevator : public Elevator{
@@ -52,5 +51,4 @@ private:
 
 public:
 	void set_order(int order){ _current_orders[order] = true; }
-        bool is_order_in_list(int order) {return _current_orders[order];}
 };

@@ -2,14 +2,14 @@
 CC = gcc
 CCPP = g++
 
-TARGET = test
+TARGET = elevator
 
 CFLAGS = -std=gnu14 -g -Wall -Wextra
 CPPFLAGS = -std=gnu++14 -g -Wall -Wextra
 LDFLAGS = -lm -lboost_system -lboost_thread -lpthread
 
 SRC = 
-SRCPP = Network.cpp Generic_thread.cpp Communication.cpp main.cpp
+SRCPP = Network.cpp Generic_thread.cpp Communication.cpp main.cpp Control.cpp Hardware.cpp
 
 OBJ = $(SRCPP:.cpp=.o) $(SRC:.c=.o)
 

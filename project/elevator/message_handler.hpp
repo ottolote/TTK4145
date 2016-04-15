@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _MESSAGE_DECODE_H
+#define _MESSAGE_DECODE_H
 
 #include "elevator_properties.h"
 #include "message_format.h"
@@ -30,18 +31,22 @@
 #define DIR_MASK 7
 #define FLOOR_MASK 9
 
+typedef bool type_id_t;
 
 class Message_handler{
-private:
-	
+    private:
 
-public:
-	//decoding
-	static order_msg_t decode_order_message(encoded_msg_t encoded_message);
-	static status_msg_t decode_status_message(encoded_msg_t encoded_message);
-	
-	//encoding
-	static encoded_msg_t encode_order_message(order_msg_t order_msg);
-	static encoded_msg_t encode_status_message(status_msg_t status_msg);
+    public:
+        //decoding
+        static order_msg_t decode_order_message(encoded_msg_t encoded_message);
+        static status_msg_t decode_status_message(encoded_msg_t encoded_message);
+        
+        //encoding
+        static encoded_msg_t encode_order_message(order_msg_t order_msg);
+        static encoded_msg_t encode_status_message(status_msg_t status_msg);
+
+        static type_id_t read_message_type(encoded_msg_t msg);
 
 };
+
+#endif
