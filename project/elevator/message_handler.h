@@ -1,5 +1,4 @@
-#ifndef _MESSAGE_DECODE_H
-#define _MESSAGE_DECODE_H
+#pragma once
 
 #include "elevator_properties.h"
 #include "message_format.h"
@@ -46,5 +45,3 @@ public:
 	static encoded_msg_t encode_status_message(status_msg_t status_msg);
 
 };
-
-#endif

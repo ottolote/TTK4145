@@ -1,10 +1,10 @@
 /*
  *
- * generic_thread.hpp
+ * Generic_thread.hpp
  *
  * */
 
-#include "generic_thread.hpp"
+#include "Generic_thread.hpp"
 #include "terminalcolors.h"
 
 #include <iostream>
@@ -42,10 +42,10 @@ using namespace boost;
 //
 //      cout << PROMPT "message to be written" 
 //
-#define PROMPT "[" TCOLOR_LIGHTGREEN "generic_thread" TCOLOR_NC "] : "
+#define PROMPT "[" TCOLOR_LIGHTGREEN "Generic_thread" TCOLOR_NC "] : "
 
 
-generic_thread::generic_thread(int timeout_in_ms) 
+Generic_thread::Generic_thread(int timeout_in_ms) 
     : io(),
       work(io),
       timeout_timer(io, boost::posix_time::milliseconds(timeout_in_ms)),
@@ -60,7 +60,7 @@ generic_thread::generic_thread(int timeout_in_ms)
 
 
 
-void generic_thread::run() {
+void Generic_thread::run() {
     io.run();
     //safe_cout << "&&&&&&&& thread reached end\n";
     std::cout << "thread reached end\n";
@@ -72,20 +72,20 @@ void generic_thread::run() {
 
 
 
-void generic_thread::timeout(const system::error_code &e) {
+void Generic_thread::timeout(const system::error_code &e) {
     // don't do anything if the timeout was pushed 
     //      (aborted and refreshed by refresh_timeout_timer() )
     if (e == asio::error::operation_aborted) {return;}
 
     // Handle the timeout
-    std::cout << "generic_thread timed out, we should probably deal with this and tell main something is wrong\n";
+    std::cout << "Generic_thread timed out, we should probably deal with this and tell main something is wrong\n";
     return;
 }
 
 
 
 
-void generic_thread::refresh_timeout_timer() {
+void Generic_thread::refresh_timeout_timer() {
     timeout_timer.cancel(); 
     timeout_timer.expires_from_now(posix_time::milliseconds(_timer_duration_ms));
     timeout_timer.async_wait([&](const boost::system::error_code& e){ 

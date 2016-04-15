@@ -6,9 +6,9 @@
 
 #pragma once
 
-//#include "generic_thread.hpp"
+//#include "Generic_thread.hpp"
 #include "message_handler.hpp"
-#include "generic_thread.hpp"
+#include "Generic_thread.hpp"
 
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -20,7 +20,7 @@
 //using boost::asio::ip::udp;
 
 
-class Network : public generic_thread {
+class Network : public Generic_thread {
     public:
         Network();
         void doStuff();
@@ -45,11 +45,8 @@ class Network : public generic_thread {
         // timeout(const boost::system::error_code &e);
         
     protected:
-        void send(std::string host, boost::shared_ptr<std::string> message);
+        virtual void receive_routine(encoded_msg_t message, std::string ip);
         void send(std::string host, encoded_msg_t msg);
-        void send(
-                boost::asio::ip::udp::endpoint target_endpoint_,
-                boost::shared_ptr<std::string> message);
 
 
 }; //end of class Network

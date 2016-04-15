@@ -1,6 +1,6 @@
 /*
  *
- * generic_thread.hpp
+ * Generic_thread.hpp
  *
  * */
 
@@ -10,9 +10,9 @@
 #include <boost/asio.hpp>
 
 
-class generic_thread {
+class Generic_thread {
     public:
-        generic_thread(int timer_duration_ms);
+        Generic_thread(int timer_duration_ms);
 //        static safeprint safe_cout;
         void post();
         void run();

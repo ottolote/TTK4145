@@ -25,16 +25,12 @@
 // FEATURES: 
 // - Receives continously but can send if asked to (and not busy)
 // - timeout() is run when timeout_timer expires
-// - send() and post() is thread safe
 // 
 // TODO:
-// - use remote_endpoint_ for something useful, like checking senders ip
 // - Actually handle timeouts
-// - Get rid of the remaining boost::binds by using lambdas (c++11 ftw)
+// - Get rid of the remaining boost::binds by using lambdas (c++>=11 ftw)
 // - Somehow improve readability
 //
-// Optional todo: 
-// - Handle message truncation
 //
 
 using namespace boost;
@@ -51,7 +47,7 @@ using boost::asio::ip::udp;
 
 
 Network::Network() 
-    : generic_thread(TIMEOUT_TIMER_DURATION_MS),
+    : Generic_thread(TIMEOUT_TIMER_DURATION_MS),
       socket_(io, udp::endpoint(udp::v4(), MYPORT))
       //timeout_timer(io, posix_time::milliseconds(TIMEOUT_TIMER_DURATION_MS))
 {
@@ -66,39 +62,22 @@ Network::Network()
 
 
 
-
-//void Network::add_reference_to( const boost::shared_ptr<generic_thread> &TM) {
-//    this->_TM = TM;
-//}
-
-
-
-
-
-
-//void Network::doStuff() {
-//    std::cout << "handler schmandler is doing stuff\n";
+//
+//void Network::send(std::string host, shared_ptr<std::string> message) {
+//
+//    udp::resolver resolver(io);
+//    udp::resolver::query query(udp::v4(), host, "30000");
+//    udp::resolver::iterator iter = resolver.resolve(query);
+//    target_endpoint_ = *iter;
+//
+//    socket_.async_send_to(asio::buffer(*message), target_endpoint_,
+//            boost::bind(&Network::handle_send, this, message,
+//                asio::placeholders::error,
+//                asio::placeholders::bytes_transferred));
+//
 //    refresh_timeout_timer();
-//    return;
 //}
-
-
-
-void Network::send(std::string host, shared_ptr<std::string> message) {
-
-    udp::resolver resolver(io);
-    udp::resolver::query query(udp::v4(), host, "30000");
-    udp::resolver::iterator iter = resolver.resolve(query);
-    target_endpoint_ = *iter;
-
-    socket_.async_send_to(asio::buffer(*message), target_endpoint_,
-            boost::bind(&Network::handle_send, this, message,
-                asio::placeholders::error,
-                asio::placeholders::bytes_transferred));
-
-    refresh_timeout_timer();
-}
-
+//
 
 
 
@@ -110,7 +89,8 @@ void Network::send(std::string host, encoded_msg_t msg) {
     target_endpoint_ = *iter;
 
     shared_ptr<std::string> message(
-            new std::string( { (char)(msg >> 8), (char)msg } ));
+            // Big endian
+            new std::string( { (char)(msg), (char)(msg >> 8) } ));
 
     socket_.async_send_to(asio::buffer(*message), target_endpoint_,
             boost::bind(&Network::handle_send, this, message,
@@ -123,18 +103,11 @@ void Network::send(std::string host, encoded_msg_t msg) {
 
 
 
-//void network::send(std::string host, int message) {
+
+//void Network::send(udp::endpoint target_endpoint_, shared_ptr<std::string> message) {
 //
-//    udp::resolver resolver(io);
-//    udp::resolver::query query(udp::v4(), host, "30000");
-//    udp::resolver::iterator iter = resolver.resolve(query);
-//    target_endpoint_ = *iter;
-//
-//    boost::shared_ptr<std::string> str(
-//            new std::string("a"));
-//
-//    socket_.async_send_to(asio::buffer(*str), target_endpoint_,
-//            boost::bind(&network::handle_send, this, message,
+//    socket_.async_send_to(asio::buffer(*message), target_endpoint_,
+//            boost::bind(&Network::handle_send, this, message,
 //                asio::placeholders::error,
 //                asio::placeholders::bytes_transferred));
 //
@@ -143,33 +116,6 @@ void Network::send(std::string host, encoded_msg_t msg) {
 
 
 
-
-void Network::send(udp::endpoint target_endpoint_, shared_ptr<std::string> message) {
-
-    socket_.async_send_to(asio::buffer(*message), target_endpoint_,
-            boost::bind(&Network::handle_send, this, message,
-                asio::placeholders::error,
-                asio::placeholders::bytes_transferred));
-
-    refresh_timeout_timer();
-}
-
-
-
-
-
-void Network::doStuff() {
-    std::cout << PROMPT "Network Wallaballa\n";
-    //_TM->post();
-}
-
-
-
-//void Network::post(encoded_msg_t msg) {
-//    io.post([=] { send("127.0.0.1", msg); });
-//    //io.post([&] { doStuff(); });
-//    return;
-//}
 
 
 
@@ -189,7 +135,9 @@ void Network::handle_send(shared_ptr<std::string> message,
         std::size_t bytes_transferred) {
     if(e == asio::error::host_not_found) { exit(1) ; }
 
-    std::cout << PROMPT "sent message: " << *message << " - " 
+    std::string messagestring = *message;
+    encoded_msg_t encoded_message = (unsigned int)messagestring[0]+((unsigned int)messagestring[1] << 8);
+    std::cout << PROMPT "sent message: " << encoded_message << " - " 
             << bytes_transferred << " bytes\n";
 }
 
@@ -199,11 +147,31 @@ void Network::handle_send(shared_ptr<std::string> message,
 void Network::handle_receive(const boost::system::error_code& e,
         std::size_t bytes_transferred) {
     if(e == asio::error::network_unreachable) { exit(1); }
-    std::cout << PROMPT "received message: '" << std::string(recv_buffer_.begin(), recv_buffer_.begin() + bytes_transferred) << "' - " << bytes_transferred << " bytes\n";
+
+    std::string ip = remote_endpoint_.address().to_v4().to_string();
+    std::string messagestring(recv_buffer_.begin(),
+            recv_buffer_.begin() + bytes_transferred);
+
+    //message string is Big Endian and always two bytes
+    encoded_msg_t encoded_message = (uint16_t)(unsigned char)messagestring[0]  
+        + (((uint16_t)(unsigned char)messagestring[1]) << 8);
+
+    std::cout 
+        << PROMPT "received message: '" << encoded_message 
+        << "' from " << ip 
+        <<  " - " << bytes_transferred << " bytes\n";
+
+    io.post([=] {receive_routine(encoded_message, ip);});
 
     start_receive();
 }
 
+
+
+void Network::receive_routine(encoded_msg_t message, std::string message_ip) {
+    std::cout << PROMPT "message is from " << message_ip 
+        << " and contains " << message << std::endl;
+}
 
 
 
