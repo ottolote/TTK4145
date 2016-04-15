@@ -1,4 +1,4 @@
-#include "control.h"
+#include "Control.hpp"
 #include <iterator>
 #include <map>
 
@@ -52,7 +52,7 @@ void Control::send_order_to_closest_elevator(int order){
 }
 
 void Control::set_elevator_direction(direction_t dir){
-    hardware_thread->set_motor_direction(dir);
+    hardware->set_motor_direction(dir);
     status.update_internal_elevator_direction(dir);
 
 }
