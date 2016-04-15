@@ -2,16 +2,22 @@
 #include <iterator>
 #include <map>
 
+/*********THINGS TO WATCH OUT FOR************/
+//Easy to get confused when working with both
+//floor orders and directed orders button_to_floor)
+
+/********************************************/
+
 //Helper functions
-int button_to_floor(int button){
-	return (button + 1) / 2;
-}
+//Implemented in elevator as well. Should fix this
+int button_to_floor(int button){ return (button + 1) / 2; }
+direction_t direction_of_order(int order);
+direction_t reverse_direction(direction_t dir);
 
 
-
-
+//Working but should probably clean this up
 std::string Control::find_closest_elevator(int order){
-    //Order from inside
+    //Order comes from inside
     if (order > N_OUTSIDE_BUTTONS){
         return "Internal elevator";
     }
@@ -44,12 +50,12 @@ void Control::send_order_to_closest_elevator(int order){
 
     //All elevators going in the wrong direction
     if (closest_elevator_ip.empty()){
-        //Try again later
+        //send to shared buffer list
+        //First to stop takes order?
     }
     
     //Internal elevator is closest or order came from inside
     else if (closest_elevator_ip == "Internal elevator"){
-        //Add order to internal elevator queue
         internal_elevator.set_order(order, true);
     }
 
@@ -59,40 +65,19 @@ void Control::send_order_to_closest_elevator(int order){
     }
 }
 
-//Might remove this function
-void Control::set_elevator_direction(direction_t dir){
-    //hardware_thread->set_motor_direction(dir);
-    internal_elevator.set_dir(dir);
-
-}
-
 //Change name from button to order?
-void Control::deliver_button(int button, bool value){
-    this->button_routine(button, value);
-
+void Control::deliver_button(int button, bool button_value){
+    this->button_routine(button, button_value);
 }
 
 //Only called when button value has changed
-void Control::button_routine(int button, bool value){
+void Control::button_routine(int button, bool button_value){
     if (button == STOP){
-        stop_button_routine(value);
+        this->stop_button_routine(button_value);
         return;
     }
     else{
-        if(value){ //a NOT stop button has been pressed
-            //previous_floor is equal to floor of button
-            if(internal_elevator.get_previous_floor() == button_to_floor(button)){
-                //open door, delete timer
-
-            }
-            //No orders for current floor
-            else{
-                this->send_order_to_closest_elevator(button); 
-            }
-        }
-        else{ // a NOT stop button has been released
-            //refresh timer
-        }
+        this->order_button_routine(button, button_value);
     }
 }
 
@@ -114,8 +99,8 @@ void Control::order_button_routine(int button, bool button_value){
 }
 
 //Correct behaviour
-void Control::stop_button_routine(bool value){
-    if (value){
+void Control::stop_button_routine(bool button_value){
+    if (button_value){
         this->set_elevator_direction(DIR_STOP); //Stop elevator
         internal_elevator.set_dir(STRANDED); //Unavailable for orders until timeout
         bool empty_order_list[N_FLOORS] = { 0 };
@@ -130,15 +115,57 @@ void Control::stop_button_routine(bool value){
 }
 
 void Control::floor_sensor_routine(floor_t floor){
-    internal_elevator.set_previous_floor(floor);
+    //Refresh stranded timer
+    if(floor != -1){
+    internal_elevator.set_previous_floor(floor);   
     //hardware_thread->set_floor_indicator(floor); //Might set this in hardware
+    }
 
     //Current floor is in order list
     if(internal_elevator.is_order_in_list(floor)){
-        //this->refresh_timeout_timer(); 
+        //this->refresh_timeout_timer(); doors_open_timer.
         //hardware_thread->set_motor_direction(STOP); 
         internal_elevator.set_order(floor, false); //Clear order from order list
+        if(internal_elevator.is_order_list_empty()){
+
+        }
+
         
     }
 }
 
+void Control::reverse_elevator_direction(){
+    if(internal_elevator.get_dir() == DIR_UP){
+        this->set_elevator_direction(DIR_DOWN);
+    }
+    else{
+        this->set_elevator_direction(DIR_UP);
+    }
+}
+
+//Might remove this function
+void Control::set_elevator_direction(direction_t dir){
+    //hardware_thread->set_motor_direction(dir);
+    internal_elevator.set_dir(dir);
+}
+
+void Control::pick_from_pending_orders(){
+    //iterate through pending list
+    //find order farthest away in opposite direction
+
+
+    for(int order = 0; order < N_OUTSIDE_BUTTONS; order++){
+        //Pick this order
+        if(direction_of_order(pending_orders[order]) != internal_elevator.get_dir()){
+            communication_thread->clear_pending_order(order); //Should be implemented sometime
+            internal_elevator.set_order(button_to_floor(order)); //Button to floor here seems stupid
+            this->reverse_elevator_direction();
+        }
+    }
+
+}
+
+//Every second order is in the same direction
+direction_t direction_of_order(int order){
+    return static_cast<direction_t>(order % 2);
+}

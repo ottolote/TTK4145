@@ -4,6 +4,7 @@
 //Buttons
 #define N_OUTSIDE_BUTTONS 6
 #define N_INSIDE_BUTTONS 4
+#define N_ORDER_BUTTONS 10
 #define N_OTHER_BUTTONS 2 //Stop and turbo
 #define N_BUTTONS 12
 

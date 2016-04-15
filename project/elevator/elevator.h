@@ -34,6 +34,8 @@ public:
 	void set_previous_floor(floor_t floor){ this->_previous_floor = floor; }
 
 	int distance_from_order(int order);
+	bool eligible_for_order(int order);
 	void exchange_order_list(bool *order_list);
-        bool is_order_in_list(int order){return _current_orders[order];} //Add acceptance test
+    bool is_order_in_list(int order){return _current_orders[order];} //Add acceptance test
+    bool is_order_list_empty();
 };
