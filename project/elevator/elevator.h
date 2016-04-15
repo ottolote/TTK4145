@@ -15,15 +15,12 @@ private:
 
 public:
 	//Constructors
-	Elevator(){ ; }
-	Elevator(std::string ip,
-		direction_t dir,
-		floor_t floor,
-		int seconds)
-		: _ip(ip), _dir(dir), _previous_floor(floor){ ; }
+	Elevator();
+	Elevator(std::string ip, direction_t dir, floor_t floor);
 
 	//Get functions
 	std::string get_ip(){ return this->_ip; }
+	bool* get_orders(){ return _current_orders; }
 	direction_t get_dir(){ return this->_dir; }
 	floor_t get_previous_floor(){ return this->_previous_floor; }
 

@@ -6,6 +6,20 @@ direction_t direction_of_order(int order);
 //Implemented in control as well. Fix this.
 int button_to_floor(int button);
 
+Elevator::Elevator(){
+	for(int i = 0; i < N_FLOORS; i++){
+		_current_orders[i] = false;
+	}
+	this->_dir = DIR_STOP;
+}
+
+Elevator::Elevator(std::string ip, direction_t dir, floor_t floor)
+		: _ip(ip), _dir(dir), _previous_floor(floor){ 
+	for(int i = 0; i < N_FLOORS; i++){
+		_current_orders[i] = false;
+	}
+}
+
 //Should also return -1 if order is under elevator
 int Elevator::distance_from_order(int order){
 	//elevator is stopped or headed in right direction

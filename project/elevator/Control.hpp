@@ -3,6 +3,7 @@
 #include "elevator.h"
 #include "message_format.h"
 #include "Generic_thread.hpp"
+#include "elevator_properties.h"
 #include <string>
 
 
@@ -13,6 +14,14 @@ private:
     bool pending_orders[N_OUTSIDE_BUTTONS];
         
 public:
+    //Constructors
+    //Might implement map_constructor in case 
+    //backup process has to take over.
+    //Also one that initializes internal_elevator
+    //with non-default constructor.
+    Control();
+
+
     //Interthread communication functions
     void deliver_button(int button, bool button_value); //Used by hardware thread
     void deliver_floor_sensor_signal(floor_t floor); //Used by hardware thread
@@ -23,7 +32,6 @@ public:
     std::string find_closest_elevator(int order); //uses external orders
     void send_order_to_closest_elevator(int order);
     
-    //might be removed
     void set_elevator_direction(direction_t dir); 
     void reverse_elevator_direction();
 
