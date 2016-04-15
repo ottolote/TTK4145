@@ -15,10 +15,12 @@
 //Index
 #define ORDER_INDEX 1
 #define ACK_INDEX 4
+#define CLEAR_INDEX 5
 
 //Masks
 #define ORDER_MASK 14
 #define ACK_MASK 16
+#define CLEAR_MASK 32
 
 //Status type message
 

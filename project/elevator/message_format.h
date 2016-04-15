@@ -6,12 +6,12 @@
 
 /************Message format***************
 Order
-0b|x|xxx|x|
-   t  o  a
-   y  r  c
-   p  d  k
-   e  e
-      r
+0b|x|xxx|x|x|
+   t  o  a c
+   y  r  c l
+   p  d  k e
+   e  e    a
+      r    r
 
 Status
 0b|x|xxxxxx|xx|xx|
@@ -33,7 +33,7 @@ Status
 typedef uint16_t encoded_msg_t;
 
 //Decoded message types
-struct order_msg_t { outside_buttons_t order; int ack; };
+struct order_msg_t { outside_buttons_t order; int ack; int clear_pending; };
 struct status_msg_t { outside_buttons_t order_list[N_OUTSIDE_BUTTONS]; direction_t dir; floor_t floor; };
 
 #endif
