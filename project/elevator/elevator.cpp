@@ -2,31 +2,8 @@
 #include <cmath>
 
 direction_t direction_of_order(int order);
+//Implemented in control as well. Fix this.
 int button_to_floor(int button);
-
-void Elevator::timeout(){ 
-	/*
-	this->_dir = STRANDED; 
-	// don't do anything if the timeout was pushed 
-	//      (aborted and refreshed by refresh_timeout_timer() )
-	if (e == asio::error::operation_aborted) { return; }
-
-	// Handle the timeout
-	std::cout << PROMPT "generic_thread timed out, we should probably deal with this and tell main something is wrong\n";
-	return;
-	*/
-}
-
-void Elevator::refresh_timer(){
-	/*
-	timeout_timer.cancel();
-	timeout_timer.expires_from_now(posix_time::milliseconds(TIMEOUT_TIMER_DURATION_MS));
-	timeout_timer.async_wait([&](const boost::system::error_code& e){
-		// function to be run at timeout
-		timeout(e); });
-	return;
-	*/
-}
 
 int Elevator::distance_from_order(int order){
 	//elevator is stopped or headed in right direction

@@ -9,12 +9,9 @@
 class Elevator{
 private:
 	std::string _ip;
-	bool _current_orders[N_OUTSIDE_BUTTONS + N_OTHER_BUTTONS];
-
-protected:
 	direction_t _dir;
 	floor_t _previous_floor;
-	//boost::asio::deadline_timer _timeout_timer;
+	bool _current_orders[N_FLOORS];
 
 public:
 	//Constructors
@@ -22,9 +19,8 @@ public:
 	Elevator(std::string ip,
 		direction_t dir,
 		floor_t floor,
-		//boost::asio::io_service & parent_channel,
 		int seconds)
-		: _ip(ip), _dir(dir), _previous_floor(floor){ ; } //timeout_timer(parent_channel, posix_time::seconds(seconds)){};
+		: _ip(ip), _dir(dir), _previous_floor(floor){ ; }
 
 	//Get functions
 	std::string get_ip(){ return this->_ip; }
@@ -33,22 +29,11 @@ public:
 
 	//Set functions
 	void set_ip(std::string ip){ this->_ip = ip; }
-	void set_order(int order){ this->_current_orders[order] = true; }
+	void set_order(int order, bool value){ this->_current_orders[order] = value; }
 	void set_dir(direction_t dir){ this->_dir = dir; }
 	void set_previous_floor(floor_t floor){ this->_previous_floor = floor; }
 
-	//Timer functions
-	void timeout();//Elevator stuck between floors. Do more stuff
-	void refresh_timer();
-
 	int distance_from_order(int order);
 	void exchange_order_list(bool *order_list);
-};
-
-class Internal_elevator : public Elevator{
-private:
-	bool _current_orders[N_BUTTONS];
-
-public:
-	void set_order(int order){ _current_orders[order] = true; }
+        bool is_order_in_list(int order){return _current_orders[order];} //Add acceptance test
 };

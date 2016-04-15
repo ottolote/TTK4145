@@ -6,6 +6,7 @@
 
 //#include "Generic_thread.hpp"
 #include "Communication.hpp"
+#include "Control.hpp"
 
 #include <iostream>
 #include <unistd.h>
@@ -33,7 +34,8 @@ if (argc != 1) {
 //    }
 
     //boost::shared_ptr<Network> NH( new Network );
-    boost::shared_ptr<Communication> comms( new Communication );;
+    boost::shared_ptr<Communication> comms( new Communication );
+    boost::shared_ptr<Control> control( new Control);
 
 
     //thread NetworkThread([&NH, &cout_lock]  {
@@ -45,7 +47,11 @@ if (argc != 1) {
     });
 
 
+    thread controlthread([&]  {
+        control->run();   // Thread function
+    });
 
+    
 
     for (uint16_t i = 0; i<800; i++) {
         comms->reliable_send(i);

@@ -1,7 +1,16 @@
-#include "hardware.h"
+#include "Hardware.hpp"
 #include "channels.h"
 #include "io.h"
 #include "status.h"
+
+
+
+int _button_channels[N_BUTTONS] = 
+    { BUTTON_UP1, 
+      BUTTON_DOWN2, BUTTON_UP2, 
+      BUTTON_DOWN3, BUTTON_UP3, 
+      BUTTON_DOWN4,
+      BUTTON_COMMAND1, BUTTON_COMMAND2, BUTTON_COMMAND3, BUTTON_COMMAND4}; 
 
 
 //Get functions
