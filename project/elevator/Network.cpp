@@ -136,7 +136,8 @@ void Network::handle_send(shared_ptr<std::string> message,
     if(e == asio::error::host_not_found) { exit(1) ; }
 
     std::string messagestring = *message;
-    encoded_msg_t encoded_message = (unsigned int)messagestring[0]+((unsigned int)messagestring[1] << 8);
+    encoded_msg_t encoded_message = (uint16_t)(unsigned char)messagestring[0]
+        +((uint16_t)(unsigned char)messagestring[1] << 8);
     std::cout << PROMPT "sent message: " << encoded_message << " - " 
             << bytes_transferred << " bytes\n";
 }
@@ -152,17 +153,24 @@ void Network::handle_receive(const boost::system::error_code& e,
     std::string messagestring(recv_buffer_.begin(),
             recv_buffer_.begin() + bytes_transferred);
 
-    //message string is Big Endian and always two bytes
+    // Message string is Big Endian and always two bytes
     encoded_msg_t encoded_message = (uint16_t)(unsigned char)messagestring[0]  
         + (((uint16_t)(unsigned char)messagestring[1]) << 8);
+
 
     std::cout 
         << PROMPT "received message: '" << encoded_message 
         << "' from " << ip 
         <<  " - " << bytes_transferred << " bytes\n";
 
-    //Start receive_routine() in io.run, can be overridden (is virtual)
-    io.post([=] {receive_routine(encoded_message, ip);});
+
+    // Start receive_routine() in io.run, filter out messages with length != 2B;
+    if (bytes_transferred == 2) {
+        io.post([=] {receive_routine(encoded_message, ip);});
+    }
+
+
+    // Reinitialize async_receive_from and return to io.run()
     start_receive();
 }
 

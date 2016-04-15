@@ -66,17 +66,34 @@ void Communication::reliable_send(int test) {
 
 
 void Communication::receive_routine(encoded_msg_t encoded_message, std::string message_ip ) {
-    std::cout << PROMPT << "message from " <<  message_ip << " containing '"
-        << encoded_message << "' is being handled" << std::endl;
+    std::cout << PROMPT << "message from " <<  message_ip << " : '"
+        << encoded_message << "'" << std::endl;
 
+    encoded_msg_t messagewithchecksum = Message_handler::add_checksum(encoded_message);
+    std::cout << PROMPT "with checksum: " << messagewithchecksum << std::endl;
+    if (Message_handler::has_valid_checksum(encoded_message)) {
+            std::cout << PROMPT " has valid checksum\n";
+        }
 
-    
-    if (Message_handler::read_message_type(encoded_message) == STATUS_MESSAGE_TYPE) {
-        status_msg_t status_message = Message_handler::decode_status_message(encoded_message);
-        control->deliver_status(status_message);
+    if (Message_handler::is_ack_message(encoded_message)) {
+        std::cout << PROMPT "is ack\n";
+        //stop resending
     } else {
-        order_msg_t order_message; Message_handler::decode_order_message(encoded_message);
-        control->deliver_order(order_message);
+
+        if (Message_handler::read_message_type(encoded_message) == STATUS_MESSAGE_TYPE) {
+            status_msg_t status_message = Message_handler::decode_status_message(encoded_message);
+            //control->deliver_status(status_message);
+            
+            //remove compilerwarning:
+            status_message.dir = DIR_STOP;
+
+        } else {
+            order_msg_t order_message; Message_handler::decode_order_message(encoded_message);
+            //control->deliver_order(order_message);
+            
+            //remove compilerwarning
+            order_message.order = FIRST_UP; 
+        }
     }
 
     
