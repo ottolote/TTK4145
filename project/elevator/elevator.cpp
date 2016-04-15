@@ -7,7 +7,7 @@ direction_t direction_of_order(int order);
 int button_to_floor(int button);
 
 Elevator::Elevator(){
-	for(int i = 0; i < N_FLOORS; i++){
+	for(int i = 0; i < N_ORDER_BUTTONS; i++){
 		_current_orders[i] = false;
 	}
 	this->_dir = DIR_STOP;
@@ -15,7 +15,7 @@ Elevator::Elevator(){
 
 Elevator::Elevator(std::string ip, direction_t dir, floor_t floor)
 		: _ip(ip), _dir(dir), _previous_floor(floor){ 
-	for(int i = 0; i < N_FLOORS; i++){
+	for(int i = 0; i < N_ORDER_BUTTONS; i++){
 		_current_orders[i] = false;
 	}
 }
@@ -49,7 +49,7 @@ bool Elevator::eligible_for_order(int order){
 }
 
 bool Elevator::is_order_list_empty(){
-	for(int i = 0; i < N_FLOORS; i++){
+	for(int i = 0; i < N_ORDER_BUTTONS; i++){
 		if(_current_orders[i]){
 			return false;
 		}

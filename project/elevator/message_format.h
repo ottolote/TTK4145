@@ -34,6 +34,6 @@ typedef uint16_t encoded_msg_t;
 
 //Decoded message types
 struct order_msg_t { outside_buttons_t order; int ack; int clear_pending; };
-struct status_msg_t { outside_buttons_t order_list[N_OUTSIDE_BUTTONS]; direction_t dir; floor_t floor; };
+struct status_msg_t { bool order_list[N_OUTSIDE_BUTTONS]; direction_t dir; floor_t floor; };
 
 #endif

@@ -5,6 +5,7 @@
 /*********THINGS TO WATCH OUT FOR************/
 //Easy to get confused when working with both
 //floor orders and directed orders button_to_floor)
+//Sooo button_to_floor may make everything harder to read
 
 //Several identical functions are implemented
 //in both elevator and control
@@ -19,7 +20,7 @@ direction_t direction_of_order(int order){return static_cast<direction_t>(order 
 
 //Constructors
 Control::Control(){
-    for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+    for(int i = 0; i < N_ORDER_BUTTONS; i++){
         pending_orders[i] = false;
     }
 }
@@ -41,7 +42,7 @@ void Control::order_button_routine(int button, bool button_value){
    if(button_value){ //a NOT stop button has been pressed
         //previous_floor is equal to floor of button
         if(internal_elevator.get_previous_floor() == button_to_floor(button)){
-            //open door, delete timer
+            //open door, cancel door_open_timer
 
         }
         //No orders for current floor
@@ -50,7 +51,7 @@ void Control::order_button_routine(int button, bool button_value){
         }
     }
     else{ // a NOT stop button has been released
-        //refresh timer
+        //refresh door_open_timer
     }
 }
 
@@ -63,15 +64,15 @@ void Control::stop_button_routine(bool button_value){
         internal_elevator.exchange_order_list(empty_order_list);
         //hardware_thread->set_door_open_lamp(1); //Clear on timeout
         //hardware_thread->set_stop_lamp(1); //Clear on timeout
-        //delete timer
+        //cancel door_open_timer
     }
     else{
-        //this->refresh_timeout_timer(); //start timer on button release
+        //this->refresh_timeout_timer(); //start door_open_timer on button release
     }
 }
 
 void Control::floor_sensor_routine(floor_t floor){
-    //Refresh stranded timer
+    //Refresh stranded_timer
     if(floor != -1){
     internal_elevator.set_previous_floor(floor);   
     //hardware_thread->set_floor_indicator(floor); //Might set this in hardware
@@ -79,7 +80,7 @@ void Control::floor_sensor_routine(floor_t floor){
 
     //Current floor is in order list
     if(internal_elevator.is_order_in_list(floor)){
-        this->refresh_timeout_timer(); //doors_open_timer.
+        //this->refresh_timeout_timer(); //doors_open_timer.
         hardware_thread->set_motor_direction(DIR_STOP); 
         internal_elevator.set_order(floor, false); //Clear order from order list
         if(internal_elevator.is_order_list_empty()){
@@ -142,6 +143,7 @@ void Control::send_order_to_closest_elevator(int order){
     }
 }
 
+//
 void Control::pick_from_pending_orders(){
     //iterate through pending list
     //find order farthest away in opposite direction
@@ -151,7 +153,7 @@ void Control::pick_from_pending_orders(){
         //Found pending order
         if(direction_of_order(pending_orders[order]) != internal_elevator.get_dir()){
             communication_thread->clear_pending_order(order); //Should be implemented sometime
-            internal_elevator.set_order(button_to_floor(order)); //Button to floor here seems stupid
+            internal_elevator.set_order(order); //Button to floor here seems stupid
             this->reverse_elevator_direction();
         }
 
@@ -184,11 +186,36 @@ void Control::deliver_button(int button, bool button_value){
     this->button_routine(button, button_value);
 }
 
-void deliver_floor_sensor_signal(floor_t floor){
+void Control::deliver_floor_sensor_signal(floor_t floor){
     this->floor_sensor_routine(floor);
 }
 
 //Communication thread    
-void deliver_status(status_msg_t message){}
+//Update status of elevator
+void Control::deliver_status(status_msg_t message, std::string ip){
+    bool new_order_list[N_ORDER_BUTTONS] = {0};
+    for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+        new_order_list[i] = message.order_list[i];
+    }
+    //In case of unknown ip:
+    //Not sure if a new elevator is made automatically here
+    //or if we need to use an Elevator object
+    external_elevators[ip].exchange_order_list(new_order_list);
+    external_elevators[ip].set_dir(message.dir);
+    external_elevators[ip].set_previous_floor(message.floor);
+}
 
-void deliver_order(order_msg_t message){}
+//Remove pending order or add order to current_orders
+void Control::deliver_order(order_msg_t message, std::string ip){
+    if(message.clear_pending){
+        pending_orders[message.order] = false; //may exchange this for set_order
+    }
+    else{
+        internal_elevator.set_order(message.order);
+    }
+}
+
+//Remove useless elevator
+void Control::report_useless_elevator(std::string ip){
+    external_elevators.erase(ip);
+}

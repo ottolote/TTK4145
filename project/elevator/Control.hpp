@@ -25,8 +25,10 @@ public:
     //Interthread communication functions
     void deliver_button(int button, bool button_value); //Used by hardware thread
     void deliver_floor_sensor_signal(floor_t floor); //Used by hardware thread
-    void deliver_status(status_msg_t message); //Used by communication thread
-    void deliver_order(order_msg_t message); //Used by communication thread
+    void deliver_status(status_msg_t message, std::string ip); //Used by communication thread
+    void deliver_order(order_msg_t message, std::string ip); //Used by communication thread
+    void report_useless_elevator(std::string ip);
+
 
     //Algorithm functions
     std::string find_closest_elevator(int order); //uses external orders

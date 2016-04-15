@@ -8,10 +8,10 @@
 
 class Elevator{
 private:
-	std::string _ip;
+	std::string _ip; //Not needed
 	direction_t _dir;
 	floor_t _previous_floor;
-	bool _current_orders[N_FLOORS];
+	bool _current_orders[N_ORDER_BUTTONS];
 
 public:
 	//Constructors
