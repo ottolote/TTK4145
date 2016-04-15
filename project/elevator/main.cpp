@@ -5,8 +5,8 @@
  * */
 
 //#include "Generic_thread.hpp"
-#include "Communication.hpp"
-#include "Control.hpp"
+//#include "Communication.hpp"
+//#include "Hardware.hpp"
 
 #include <iostream>
 #include <unistd.h>
@@ -14,8 +14,6 @@
 
 #include <bitset>
 
-using namespace boost;
-using boost::asio::ip::udp;
 
 int main(int argc, char* argv[]) {
 
@@ -34,37 +32,33 @@ if (argc != 1) {
 //    }
 
     //boost::shared_ptr<Network> NH( new Network );
-    boost::shared_ptr<Communication> comms( new Communication );
-    boost::shared_ptr<Control> control( new Control);
+//    boost::shared_ptr<Communication> comms( new Communication );;
+    //boost::shared_ptr<Hardware> hardware( new Hardware );;
 
 
     //thread NetworkThread([&NH, &cout_lock]  {
     //    NH->init_thread(cout_lock);   // Thread function
     //});
 
-    thread comms_thread([&]  {
-        comms->run();   // Thread function
-    });
-
-
-    thread controlthread([&]  {
-        control->run();   // Thread function
-    });
-
-    
-
-    for (uint16_t i = 1000; i<60000; i++) {
-        std::bitset<16> binary_i(i);
-        std::cout << binary_i << std::endl;
-
-        comms->reliable_send(i, "127.0.0.1");
-        usleep(50000);
-    }
+//    thread comms_thread([&]  {
+//        comms->run();   // Thread function
+//    });
 
 
 
 
-    comms_thread.join();
+//    for (uint16_t i = 1000; i<60000; i++) {
+//        std::bitset<16> binary_i(i);
+//        std::cout << binary_i << std::endl;
+//
+//        comms->reliable_send(i, "127.0.0.1");
+//        usleep(50000);
+//    }
+
+
+
+
+ //   comms_thread.join();
 
     return 0;
 }

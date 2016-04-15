@@ -10,8 +10,13 @@ int _button_channels[N_BUTTONS] =
       BUTTON_DOWN2, BUTTON_UP2, 
       BUTTON_DOWN3, BUTTON_UP3, 
       BUTTON_DOWN4,
-      BUTTON_COMMAND1, BUTTON_COMMAND2, BUTTON_COMMAND3, BUTTON_COMMAND4}; 
+      BUTTON_COMMAND1, BUTTON_COMMAND2, BUTTON_COMMAND3, BUTTON_COMMAND4, STOP, OBSTRUCTION}; 
 
+
+Hardware::Hardware() 
+    :  Generic_thread(500000){
+        io_init(ET_simulation);
+}
 
 //Get functions
 bool Hardware::get_button_signal(int button){
@@ -88,11 +93,19 @@ void Hardware::set_floor_indicator(floor_t floor){
 }
 
 void Hardware::set_door_open_lamp(bool val){
+    if (val) {
 	io_set_bit(LIGHT_DOOR_OPEN);
+    } else {
+        io_clear_bit(LIGHT_DOOR_OPEN);
+    }
 }
 
 void Hardware::set_stop_lamp(bool val){
+    if (val) {
 	io_set_bit(LIGHT_STOP);
+    } else {
+	io_clear_bit(LIGHT_STOP);
+    }
 }
 
 
@@ -107,7 +120,7 @@ void Hardware::poll_buttons(){
 		bool current_button_value = this->get_button_signal(button);
 		if (current_button_value != _previous_button_values[button]){
 			_previous_button_values[button] = current_button_value;
-			control_thread->deliver_button(button, current_button_value);
+			control->deliver_button(button, current_button_value);
 		}
 	}
 }
@@ -116,7 +129,7 @@ void Hardware::poll_floor_sensor_changes(){
 	floor_t current_floor = get_floor_sensor_signal();
 	if (current_floor != previous_floor_sensor_value){
 		previous_floor_sensor_value = current_floor;
-		control_thread->deliver_floor_sensor_signal(current_floor);
+		control->deliver_floor_sensor_signal(current_floor);
 	}
 }
 

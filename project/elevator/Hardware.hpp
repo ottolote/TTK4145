@@ -8,6 +8,7 @@
 
 #include "elevator_properties.h"
 #include "Generic_thread.hpp"
+//#include "Control.hpp"
 
 class Hardware: public Generic_thread{
 private:
@@ -16,6 +17,7 @@ private:
 
 public:
 	//Get functions
+        Hardware();
 	bool get_button_signal(int button);
 	floor_t get_floor_sensor_signal();
 	bool get_stop_signal();

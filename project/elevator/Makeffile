@@ -1,5 +1,5 @@
 # Which compiler to use
-CC = gcc
+CC = g++
 CCPP = g++
 
 TARGET = elevator
@@ -29,7 +29,7 @@ run: all
 	./$(TARGET)
 
 $(TARGET): $(OBJ) 
-	$(CCPP) -o $@ $(SIMTARGET)  $^ $(LDFLAGS) 
+	$(CCPP) -o $@ $(SIMTARGET) $^ $(LDFLAGS) 
 
 %.o : %.cpp
 	$(CCPP) $(CPPFLAGS) -c $< -o $@ 
