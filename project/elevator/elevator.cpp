@@ -104,3 +104,11 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 	}
 	return _current_orders[N_OUTSIDE_BUTTONS + floor] || is_in_list;
 }
+status_msg_t Elevator::get_status(){
+	status_msg_t msg;
+	*msg.order_list = *internal_elevator.get_outside_orders();
+	msg.dir = internal_elevator.get_dir();
+	msg.floor = internal_elevator.get_previous_floor();
+
+	return msg;
+}

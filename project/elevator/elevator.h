@@ -23,6 +23,7 @@ public:
 	bool* get_outside_orders();
 	direction_t get_dir(){ return this->_dir; }
 	floor_t get_previous_floor(){ return this->_previous_floor; }
+	status_msg_t get_status();
 
 	//Set functions
 	void set_order(int order, bool value){ this->_current_orders[order] = value; }
