@@ -1,6 +1,7 @@
 #include "Control.hpp"
+#include "Hardware.hpp"
+#include "Communication.hpp"
 #include <iterator>
-#include <map>
 
 /*********THINGS TO WATCH OUT FOR************/
 //Several identical functions are implemented
@@ -11,6 +12,10 @@
 //|= all orders to set button lights
 //remove light solution from deliver_status
 /********************************************/
+
+//Will be removed later.
+Hardware *hardware_thread;
+Communication *communication_thread;
 
 //Helper functions
 //Implemented in elevator as well. Should fix this
@@ -105,7 +110,7 @@ std::string Control::find_closest_elevator(int order){
     int least_distance = N_FLOORS, temp;
 
     //Check if internal elevator is valid
-    int internal_elevator_distance = internal_elevator.distance_from_order(order)
+	int internal_elevator_distance = internal_elevator.distance_from_order(order);
 
     if (internal_elevator_distance != -1){
         least_distance = internal_elevator_distance;
@@ -140,7 +145,7 @@ void Control::send_order_to_closest_elevator(int order){
 
     //An external elevator is closest
     else{
-        communication_thread->reliable_send(closest_elevator_ip, order);
+        communication_thread->send_order(order, closest_elevator_ip);
     }
 }
 
@@ -154,7 +159,7 @@ void Control::pick_from_pending_orders(){
         //Found pending order
         if(direction_of_order(pending_orders[order]) != internal_elevator.get_dir()){
             communication_thread->clear_pending_order(order); //Should be implemented sometime
-            internal_elevator.set_order(order);
+            internal_elevator.set_order(order, true);
             hardware_thread->set_button_lamp(order, true);
             this->reverse_elevator_direction();
         }
@@ -181,6 +186,24 @@ void Control::set_elevator_direction(direction_t dir){
     internal_elevator.set_dir(dir);
 }
 
+bool* Control::determine_button_lights_to_set(){
+	bool lights_to_set[N_OUTSIDE_BUTTONS] = { 0 };
+	int i = 0;
+	std::map<std::string, Elevator>::iterator it = external_elevators.begin();
+	for (it; it != external_elevators.end(); it++){
+		lights_to_set[i] |= it->second.get_order(i);
+		i++;
+	}
+	return lights_to_set;
+}
+
+void Control::set_order_button_lights(){
+	bool *lights_to_set = determine_button_lights_to_set();
+	for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+		hardware_thread->set_button_lamp(i, lights_to_set[i]);
+	}
+}
+
 
 //Interthread communication functions//
 //Hardware thread
@@ -198,9 +221,6 @@ void Control::deliver_status(status_msg_t message, std::string ip){
     bool new_order_list[N_ORDER_BUTTONS] = {0};
     for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
         new_order_list[i] = message.order_list[i];
-        if(message.order_list[i]){//Remove this probably
-            hardware_thread->set_button_lamp(i, true);
-        }
     }
     //In case of unknown ip:
     //Not sure if a new elevator is made automatically here
@@ -216,8 +236,8 @@ void Control::deliver_order(order_msg_t message, std::string ip){
         pending_orders[message.order] = false; //may exchange this for set_order
     }
     else{
-        internal_elevator.set_order(message.order);
-        hardware_thread->set_button_lamp(order, true);
+        internal_elevator.set_order(message.order, true);
+        hardware_thread->set_button_lamp(message.order, true);
     }
 }
 

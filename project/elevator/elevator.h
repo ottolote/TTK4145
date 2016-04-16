@@ -20,7 +20,7 @@ public:
 
 	//Get functions
 	std::string get_ip(){ return this->_ip; }
-	bool* get_orders(){ return _current_orders; }
+	bool get_order(int order){ return _current_orders[order]; }
 	direction_t get_dir(){ return this->_dir; }
 	floor_t get_previous_floor(){ return this->_previous_floor; }
 

@@ -23,7 +23,7 @@ Elevator::Elevator(std::string ip, direction_t dir, floor_t floor)
 //Should also return -1 if order is under elevator
 int Elevator::distance_from_order(int order){
 	//elevator is stopped or headed in right direction
-	if (this->eligable_for_order(order)){
+	if (this->eligible_for_order(order)){
 		return abs(this->_previous_floor - button_to_floor(order));
 	}
 

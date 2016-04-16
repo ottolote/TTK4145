@@ -4,6 +4,7 @@
 #include "message_format.h"
 #include "Generic_thread.hpp"
 #include "elevator_properties.h"
+#include <map>
 #include <string>
 
 
@@ -33,6 +34,8 @@ public:
     //Algorithm functions
     std::string find_closest_elevator(int order); //uses external orders
     void send_order_to_closest_elevator(int order);
+	void set_order_button_lights();
+	bool* determine_button_lights_to_set();
     
     void set_elevator_direction(direction_t dir); 
     void reverse_elevator_direction();
@@ -43,5 +46,7 @@ public:
     void floor_sensor_routine(floor_t floor); // Called by deliver_floor_sensor_signal
     void order_button_routine(int button, bool button_value);
     void pick_from_pending_orders();
+
+	//Timer functions
 
 };
