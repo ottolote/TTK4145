@@ -20,7 +20,6 @@ enum floor_t { NONE = -1, FIRST, SECOND, THIRD, FOURTH };
 
 //Button types
 enum outside_buttons_t { FIRST_UP, SECOND_DOWN, SECOND_UP, THIRD_DOWN, THIRD_UP, FOURTH_DOWN };
-enum other_buttons_t { STOP, OBSTRUCTION };
 typedef floor_t inside_buttons_t; //Same variable names
 
 struct Buttons_t {
