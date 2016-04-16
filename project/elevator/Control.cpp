@@ -3,12 +3,13 @@
 #include <map>
 
 /*********THINGS TO WATCH OUT FOR************/
-//Easy to get confused when working with both
-//floor orders and directed orders button_to_floor)
-//Sooo button_to_floor may make everything harder to read
-
 //Several identical functions are implemented
 //in both elevator and control
+
+
+//We have to iterate through external elevators and
+//|= all orders to set button lights
+//remove light solution from deliver_status
 /********************************************/
 
 //Helper functions
@@ -75,7 +76,7 @@ void Control::floor_sensor_routine(floor_t floor){
     //Refresh stranded_timer
     if(floor != -1){
     internal_elevator.set_previous_floor(floor);   
-    //hardware_thread->set_floor_indicator(floor); //Might set this in hardware
+    hardware_thread->set_floor_indicator(floor); //Might set this in hardware
     }
 
     //Current floor is in order list
@@ -153,7 +154,8 @@ void Control::pick_from_pending_orders(){
         //Found pending order
         if(direction_of_order(pending_orders[order]) != internal_elevator.get_dir()){
             communication_thread->clear_pending_order(order); //Should be implemented sometime
-            internal_elevator.set_order(order); //Button to floor here seems stupid
+            internal_elevator.set_order(order);
+            hardware_thread->set_button_lamp(order, true);
             this->reverse_elevator_direction();
         }
 
@@ -196,6 +198,9 @@ void Control::deliver_status(status_msg_t message, std::string ip){
     bool new_order_list[N_ORDER_BUTTONS] = {0};
     for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
         new_order_list[i] = message.order_list[i];
+        if(message.order_list[i]){//Remove this probably
+            hardware_thread->set_button_lamp(i, true);
+        }
     }
     //In case of unknown ip:
     //Not sure if a new elevator is made automatically here
@@ -212,6 +217,7 @@ void Control::deliver_order(order_msg_t message, std::string ip){
     }
     else{
         internal_elevator.set_order(message.order);
+        hardware_thread->set_button_lamp(order, true);
     }
 }
 

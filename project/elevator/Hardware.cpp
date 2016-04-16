@@ -88,16 +88,31 @@ void Hardware::set_floor_indicator(floor_t floor){
 }
 
 void Hardware::set_door_open_lamp(bool val){
-	io_set_bit(LIGHT_DOOR_OPEN);
+	if(val){
+		io_set_bit(LIGHT_DOOR_OPEN);
+	}
+	else{
+		io_clear_bit(LIGHT_DOOR_OPEN);
+	}
 }
 
 void Hardware::set_stop_lamp(bool val){
-	io_set_bit(LIGHT_STOP);
+	if(val){
+		io_set_bit(LIGHT_STOP);
+	}
+	else{
+		io_clear_bit(LIGHT_STOP);
+	}
 }
 
 
-void Hardware::set_button_lamp(int button){
-	io_set_bit(_button_channels[button]);
+void Hardware::set_button_lamp(int button, bool light_value){
+	if(light_value){
+		io_set_bit(_button_channels[button]);
+	}
+	else{
+		io_clear_bit(_button_channels[button]);
+	}
 
 }
 

@@ -23,7 +23,7 @@ public:
 
 	//Set functions
 	void set_motor_direction(direction_t dir);
-	void set_button_lamp(int button);
+	void set_button_lamp(int button, bool light_value);
 	void set_floor_indicator(floor_t floor);
 	void set_door_open_lamp(bool val);
 	void set_stop_lamp(bool val);
