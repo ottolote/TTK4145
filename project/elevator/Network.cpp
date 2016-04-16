@@ -16,8 +16,6 @@
 #define RECVBUFFER_LEN 40
 #define MYPORT 30000
 
-#define TIMEOUT_TIMER_DURATION_MS 1000
-
 // using c++<=11 (lambdas instead of boost::bind)
 //
 // ASYNCRONOUS NETWORK HANDLER
@@ -47,14 +45,9 @@ using boost::asio::ip::udp;
 
 
 Network::Network() 
-    : Generic_thread(TIMEOUT_TIMER_DURATION_MS),
+    : Generic_thread(),
       socket_(io, udp::endpoint(udp::v4(), MYPORT))
-      //timeout_timer(io, posix_time::milliseconds(TIMEOUT_TIMER_DURATION_MS))
 {
-    timeout_timer.async_wait([&](const boost::system::error_code& e) {
-            //this function will be run when the timer is triggered
-            timeout(e);
-    });
 
     start_receive();
 }
@@ -97,7 +90,6 @@ void Network::send(std::string host, encoded_msg_t msg) {
                 asio::placeholders::error,
                 asio::placeholders::bytes_transferred));
 
-    refresh_timeout_timer();
 }
 
 

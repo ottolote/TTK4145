@@ -57,8 +57,11 @@ class Message_handler{
         static encoded_msg_t remove_ack_from_message(encoded_msg_t encoded_message);
 
         //checksum
+        static unsigned int checksum(encoded_msg_t encoded_message);
         static encoded_msg_t add_checksum(encoded_msg_t encoded_message);
-        static bool has_valid_checksum(encoded_msg_t encoded_message);
+        static unsigned int read_checksum(encoded_msg_t encoded_message);
+
+        static bool read_bit(uint16_t, int);
 };
 
 #endif

@@ -8,8 +8,8 @@ CFLAGS =  -g -Wall -Wextra
 CPPFLAGS = -std=gnu++14 -g -Wall -Wextra
 LDFLAGS = -lm -lcomedi -lphobos2 -lboost_system -lboost_thread -lpthread
 
-SRC = 
-SRCPP =  main.cpp Communication.cpp Network.cpp Generic_thread.cpp message_handler.cpp
+SRC = io.c
+SRCPP =  main.cpp
 
 OBJ = $(SRCPP:.cpp=.o) $(SRC:.c=.o)
 
@@ -29,7 +29,7 @@ run: all
 	./$(TARGET)
 
 $(TARGET): $(OBJ) 
-	$(CCPP) -o $@ $(SIMTARGET)  $^ $(LDFLAGS) 
+	$(CCPP) -o $@ $(SIMTARGET) $^ $(LDFLAGS) 
 
 %.o : %.cpp
 	$(CCPP) $(CPPFLAGS) -c $< -o $@ 

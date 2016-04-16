@@ -1,0 +1,42 @@
+# Which compiler to use
+CC = g++
+
+TARGET = elevator
+
+CFLAGS = -std=gnu11 -g -Wall -Wextra
+LDFLAGS = -lcomedi -lm -lpthread -lphobos2 -lrt
+
+
+SRC = io.c 
+SRCPP =  main.cpp 
+ELEVOBJ = $(SRC:.c=.o) $(SRCPP:.cpp=.o)
+
+
+all: $(TARGET)
+
+
+sim: $(SIMTARGET)
+
+SIMTARGET = ../simulator/source/simelev.a
+SIMSRC = ../simulator/source/sim_backend.d ../simulator/source/timer_event.d 
+SIMLDFLAGS = -lib
+
+$(SIMTARGET): $(SIMSRC)
+	dmd $(SIMSRC) $(SIMLDFLAGS) -of$@
+
+
+
+$(TARGET): $(ELEVOBJ) $(SIMTARGET)
+	$(CC) $^ -o $@ $(SIMTARGET) $(LDFLAGS) 
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@ 
+
+
+
+clean:
+	rm -f $(TARGET) $(ELEVOBJ) $(SIMTARGET)
+
+rebuild:	clean all
+
+.PHONY: all rebuild clean sim
