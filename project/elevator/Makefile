@@ -1,5 +1,5 @@
 # Which compiler to use
-CC = gcc
+CC = g++
 CCPP = g++
 
 TARGET = elevator
@@ -8,8 +8,8 @@ CFLAGS =  -g -Wall -Wextra
 CPPFLAGS = -std=gnu++14 -g -Wall -Wextra
 LDFLAGS = -lm -lcomedi -lphobos2 -lboost_system -lboost_thread -lpthread
 
-SRC = io.c
-SRCPP =  main.cpp
+SRC = 
+SRCPP =  main.cpp Communication.cpp Network.cpp Generic_thread.cpp message_handler.cpp
 
 OBJ = $(SRCPP:.cpp=.o) $(SRC:.c=.o)
 

@@ -118,6 +118,10 @@ unsigned int Message_handler::checksum(encoded_msg_t encoded_message) {
 }
 
 
+
+
+
+
 encoded_msg_t Message_handler::add_checksum(encoded_msg_t encoded_message) {
 
     if(read_checksum(encoded_message)) {
@@ -131,6 +135,9 @@ encoded_msg_t Message_handler::add_checksum(encoded_msg_t encoded_message) {
     return (encoded_message 
             + (Message_handler::checksum(encoded_message) << (STATUS_FIELD_WIDTH)));
 }
+
+
+
 
 
 unsigned int Message_handler::read_checksum(encoded_msg_t encoded_message) {

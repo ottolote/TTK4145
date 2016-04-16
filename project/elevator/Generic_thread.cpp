@@ -45,16 +45,10 @@ using namespace boost;
 #define PROMPT "[" TCOLOR_LIGHTGREEN "Generic_thread" TCOLOR_NC "] : "
 
 
-Generic_thread::Generic_thread(int timeout_in_ms) 
+Generic_thread::Generic_thread() 
     : io(),
-      work(io),
-      timeout_timer(io, boost::posix_time::milliseconds(timeout_in_ms)),
-      _timer_duration_ms(timeout_in_ms)
+      work(io)
 {
-    timeout_timer.async_wait([&](const boost::system::error_code& e) {
-            //this function will be run at the end of the timer
-            timeout(e);
-    });
 }
 
 
@@ -72,25 +66,4 @@ void Generic_thread::run() {
 
 
 
-void Generic_thread::timeout(const system::error_code &e) {
-    // don't do anything if the timeout was pushed 
-    //      (aborted and refreshed by refresh_timeout_timer() )
-    if (e == asio::error::operation_aborted) {return;}
-
-    // Handle the timeout
-    std::cout << "Generic_thread timed out, we should probably deal with this and tell main something is wrong\n";
-    return;
-}
-
-
-
-
-void Generic_thread::refresh_timeout_timer() {
-    timeout_timer.cancel(); 
-    timeout_timer.expires_from_now(posix_time::milliseconds(_timer_duration_ms));
-    timeout_timer.async_wait([&](const boost::system::error_code& e){ 
-            // function to be run at timeout
-            timeout(e); });
-    return;
-}
 

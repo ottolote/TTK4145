@@ -16,7 +16,8 @@
 #define RECVBUFFER_LEN 40
 #define MYPORT 30000
 
-#define TIMEOUT_TIMER_DURATION_MS 1000
+#define NO_CONNECTION_TIMEOUT_MS 1000
+#define RESEND_TIMEOUT 500
 
 // using c++11 (lambdas instead of boost::bind)
 //
@@ -43,9 +44,10 @@ using boost::asio::ip::udp;
 
 
 Communication::Communication() 
-    : Network()
+    : Network(),
+      is_online_timer(io, boost::posix_time::milliseconds(NO_CONNECTION_TIMEOUT_MS))
 {
-    timeout_timer.async_wait([&](const boost::system::error_code& e) {
+    is_online_timer.async_wait([&](const boost::system::error_code& e) {
             //this function will be run when the timer is triggered
             timeout(e);
     });
@@ -55,10 +57,16 @@ Communication::Communication()
 
 
 
-
+// Pendig acks has to be map of class to call constructor of timers
+//
+// create timed_message_container class with constructor timed_message_container(boost::asio::io_service *io, encoded_msg_t msg) and call public (or friended) variable message_timer.async_wait([&](const boost::system::error_code& e) {
+//      some_timeout_func_from_Communication.
 void Communication::reliable_send(encoded_msg_t encoded_message, std::string target_ip) {
-    // try until successfully acked
     encoded_message = Message_handler::add_checksum( encoded_message );
+
+    //pending_acks[target_ip].message_timer.;
+    //pending_acks[target_ip].message = encoded_message;
+
     send(target_ip,encoded_message);
 }
 
@@ -80,8 +88,11 @@ void Communication::receive_routine(encoded_msg_t encoded_message, std::string m
     
     else {
 
+    refresh_is_online_timer();
+
         if (Message_handler::is_ack_message(encoded_message)) {
-    //        std::cout << PROMPT "is ack\n";
+            std::cout << PROMPT 
+                "received ack for message from " << message_ip << std::endl;
             //stop resending
         } else {
 
@@ -111,8 +122,8 @@ void Communication::receive_routine(encoded_msg_t encoded_message, std::string m
 
 
 void Communication::timeout(const system::error_code &e) {
-    // don't do anything if the timeout was pushed 
-    //      (aborted and refreshed by refresh_timeout_timer() )
+    // don't do anything if the timer was cancelled
+    //      (aborted and refreshed)
     if (e == asio::error::operation_aborted) {return;}
     // Handle the timeout
     std::cout << PROMPT "Communication thread timed out, we should probably deal with this and tell main something is wrong\n";
@@ -120,4 +131,13 @@ void Communication::timeout(const system::error_code &e) {
 }
 
 
+
+void Communication::refresh_is_online_timer() {
+    is_online_timer.cancel(); 
+    is_online_timer.expires_from_now(posix_time::milliseconds(NO_CONNECTION_TIMEOUT_MS));
+    is_online_timer.async_wait([&](const boost::system::error_code& e){ 
+            // function to be run at timeout
+            timeout(e); });
+    return;
+}
 
