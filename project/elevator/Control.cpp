@@ -50,12 +50,12 @@ void Control::test(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
 
     //door_close(e);
-    refresh_test();
+    refresh_dooortimer();
     std::cout << PROMPT "test timer working\n";
 }
 
 
-void Control::refresh_test() {
+void Control::refresh_dooortimer() {
     test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
     test_timer.async_wait([&](const boost::system::error_code &e) {
         test(e); });
@@ -81,7 +81,7 @@ void Control::button_routine(int button, bool button_value){
 
     //EPIC DEBUGGING
     if(button == 6) {
-        refresh_test();
+        refresh_dooortimer();
     } else if(button == 7) {
         test_timer.cancel();
     } else if(button == 8) {
