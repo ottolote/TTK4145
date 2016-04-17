@@ -103,7 +103,7 @@ void Control::floor_sensor_routine(floor_t floor){
     
     //Update status variables to this floor
     if (floor != NONE){
-        set_internal_elevator_floor(floor); //crashed here
+//        set_internal_elevator_floor(floor); //crashed here
 
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
