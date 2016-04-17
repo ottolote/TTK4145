@@ -11,7 +11,7 @@ class Elevator{
 private:
 	direction_t _dir;
 	floor_t _previous_floor;
-	bool _current_orders[N_ORDER_BUTTONS];
+        boost::shared_ptr<bool[N_ORDER_BUTTONS]> _current_orders;
 
 public:
 	//Constructors
