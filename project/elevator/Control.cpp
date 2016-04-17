@@ -30,10 +30,6 @@ Control::Control()
 {
     //dooor_timer.async_wait([&] (const boost::system::error_code &e) {
     //            test(e);});
-    //open_door_timer.async_wait([&](const boost::system::error_code& e) {
-    //        //this function will be run when the timer is triggered
-    //        door_close(e); });
-
     //stranded_timer.async_wait([&](const boost::system::error_code& e) {
     //        //this function will be run when the timer is triggered
     //        elevator_stranded(e); });
@@ -193,11 +189,6 @@ std::string Control::find_closest_elevator(int order){
 
 
 
-
-//void Control::open_door() {
-//    //refresh_open_door_timer();
-//    hardware->set_door_open_lamp(1);
-//}
 
 
 
@@ -403,18 +394,6 @@ void Control::report_useless_elevator(std::string ip){
 
 
 
-
-
-//Timer functions
-//this is ok
-//void Control::refresh_open_door_timer(){
-//    std::cout << PROMPT "starting door timer\n";
-//    //open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
-//    //std::cout << "timer: " << open_door_timer.expires_at().time_of_day().time_duration::total_milliseconds() << std::endl;
-//    open_door_timer.async_wait([=](const boost::system::error_code &e){
-//            door_close(e); });
-//}
-//
 
 
 
