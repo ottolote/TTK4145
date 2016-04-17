@@ -364,10 +364,10 @@ void Control::refresh_open_door_timer(){
     std::cout << PROMPT "starting door timer\n";
     open_door_timer.cancel();
     std::cout << 1 << std::endl;
-    open_door_timer.expires_from_now(boost::posix_time::seconds(DOOR_TIMEOUT));
+    open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT*1000));
     std::cout << 2 << std::endl;
-    //open_door_timer.async_wait([&](const boost::system::error_code &e){
-    //        door_close(e); });
+    open_door_timer.async_wait([&](const boost::system::error_code &e){
+            door_close(e); });
 }
 
 
