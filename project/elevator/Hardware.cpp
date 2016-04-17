@@ -178,6 +178,9 @@ void Hardware::poll_buttons(){
                         if(control == nullptr) {
                             std::cout << PROMPT " control is a nullpointer, here comes the segfault!\n";
                         }
+
+            std::cout << PROMPT " Delivering button to control: " << button 
+                << " value: " << value << std::endl;
             control->deliver_button(button, current_button_value);
         }
     }
