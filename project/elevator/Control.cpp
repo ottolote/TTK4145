@@ -365,7 +365,7 @@ void Control::refresh_open_door_timer(){
     open_door_timer.cancel();
     open_door_timer.expires_from_now(boost::posix_time::seconds(DOOR_TIMEOUT));
     open_door_timer.async_wait([&](const boost::system::error_code &e){
-        door_close(e); });
+            door_close(e); });
 }
 
 
@@ -393,19 +393,19 @@ void Control::door_close(const boost::system::error_code &e){
 
     if (e == boost::asio::error::operation_aborted) {return;}
 
-    refresh_stranded_timer();
-    //hardware->set_door_open_lamp(0);
-    std::cout << PROMPT "closing door\n";
-    //hardware->set_stop_lamp(0);
-
-    //Elevator stops if no more orders are waiting
-    //Will move on to orders from pending list
-    if (internal_elevator.is_order_list_empty()){
-            pick_from_pending_orders();
-    }
-    //Will either enter stop mode
-    //Or continue after pausing at floor
-    //hardware->set_motor_direction(internal_elevator.get_dir());
+//    refresh_stranded_timer();
+//    //hardware->set_door_open_lamp(0);
+//    std::cout << PROMPT "closing door\n";
+//    //hardware->set_stop_lamp(0);
+//
+//    //Elevator stops if no more orders are waiting
+//    //Will move on to orders from pending list
+//    if (internal_elevator.is_order_list_empty()){
+//            pick_from_pending_orders();
+//    }
+//    //Will either enter stop mode
+//    //Or continue after pausing at floor
+//    //hardware->set_motor_direction(internal_elevator.get_dir());
 }
 
 
