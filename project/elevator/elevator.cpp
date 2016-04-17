@@ -25,6 +25,18 @@ Elevator::Elevator(status_msg_t msg)
     }
 }
 
+
+
+void Elevator::print_current_orders() {
+    std::cout << PROMPT "current orders: ";
+    for (int i = 0; i<N_ORDER_BUTTONS; i++) {
+        std::cout << _current_orders[i] << "\t";
+    }
+    std::cout << std::endl;
+}
+
+
+
 //this is ok;;
 int Elevator::distance_from_order(int order){
     //elevator is stopped or headed in right direction
@@ -76,6 +88,7 @@ bool Elevator::is_order_list_empty(){
 //Will only be called when arriving at floor
 //Should be ok
 bool Elevator::is_current_floor_in_order_list(floor_t current_floor){
+    print_current_orders();
     bool is_in_list;
     if (current_floor == FOURTH || current_floor == FIRST){
         return true; // Always stop in fourth and first floor

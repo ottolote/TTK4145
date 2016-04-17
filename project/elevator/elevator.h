@@ -37,4 +37,7 @@ public:
     bool is_current_floor_in_order_list(floor_t floor);
     bool is_order_list_empty();
     bool eligible_for_order(int order);
+
+    // Print
+    void print_current_orders();
 };

@@ -87,6 +87,9 @@ pick_from_pending
 /********************************************/
 
 
+
+
+
 //Constructors
 //this is ok
 Control::Control()
@@ -104,6 +107,10 @@ Control::Control()
 
 
 
+
+
+
+
 void Control::door_timeout(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
     set_internal_elevator_direction(internal_elevator.get_dir());
@@ -112,12 +119,17 @@ void Control::door_timeout(const boost::system::error_code &e) {
 }
 
 
+
+
+
 void Control::open_door() {
     hardware->set_door_open_lamp(1);
     dooor_timer.expires_from_now(boost::posix_time::milliseconds(1000));
     dooor_timer.async_wait([&](const boost::system::error_code &e) {
         door_timeout(e); });
 }
+
+
 
 
 
