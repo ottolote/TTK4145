@@ -428,11 +428,12 @@ void Control::door_close(const boost::system::error_code &e){
 //this is ok
 void Control::elevator_stranded(const boost::system::error_code &e){
 
-    std::cout << PROMPT "elevator_stranded entered\n";
 
     if (e == boost::asio::error::operation_aborted) {return;}
 
     set_internal_elevator_direction(STRANDED);
+
+    std::cout << PROMPT << ERROR "elevator is now STRANDED and cannot move\n";
 
     //Send all orders from outside to external elevators
 //    for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
