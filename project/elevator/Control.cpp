@@ -72,6 +72,7 @@ void Control::button_routine(int button, bool button_value){
         << button << " is " << button_value << std::endl;
 
 
+
     //EPIC DEBUGGING
     if(button == 6) {
         open_door();
