@@ -180,7 +180,7 @@ void Hardware::poll_buttons(){
                         }
 
             std::cout << PROMPT " Delivering button to control: " << button 
-                << " value: " << value << std::endl;
+                << " value: " << current_button_value << std::endl;
             control->deliver_button(button, current_button_value);
         }
     }
