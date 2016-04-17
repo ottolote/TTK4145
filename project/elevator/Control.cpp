@@ -49,7 +49,7 @@ Control::Control()
 void Control::test(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
 
-    //door_close(e);
+    door_close(e);
     refresh_dooortimer();
     std::cout << PROMPT "test timer working\n";
 }
@@ -442,7 +442,7 @@ void Control::door_close(const boost::system::error_code &e){
     if (e == boost::asio::error::operation_aborted) {return;}
 
 //    refresh_stranded_timer();
-//    hardware->set_door_open_lamp(0);
+      hardware->set_door_open_lamp(0);
 //    std::cout << PROMPT "closing door\n";
 //    //hardware->set_stop_lamp(0);
 //
