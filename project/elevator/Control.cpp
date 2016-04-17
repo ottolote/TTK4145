@@ -357,7 +357,10 @@ void Control::set_internal_elevator_direction(direction_t dir){
 void Control::set_internal_elevator_order(int order, bool value){
 
 	internal_elevator.set_order(order, value);
-    head_to_order(order);
+
+    if(internal_elevator.is_order_list_empty(){
+        head_to_order(order);
+    }
 	
 	hardware->set_button_lamp(order, value);
 	if(is_outside_order(order)){
@@ -393,7 +396,7 @@ void Control::clear_orders_at_floor(floor_t floor){
 
 void Control::head_to_order(int order){
     //order to the same floor
-    if(internal_elevator.get_previous_floor() - button_to_floor(order) == 0 && is_order_list_empty()){ //This case might result in slightly weird behaviour
+    if(internal_elevator.get_previous_floor() - button_to_floor(order) == 0){ //This case might result in slightly weird behaviour
         set_internal_elevator_direction(DIR_STOP);
         internal_elevator.set_order(order, false);
     }
