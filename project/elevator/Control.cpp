@@ -489,15 +489,15 @@ void Control::elevator_stranded(const boost::system::error_code &e){
 
 //this is ok
 void Control::set_internal_elevator_direction(direction_t dir){
-    //internal_elevator.set_dir(dir);
+    internal_elevator.set_dir(dir);
 
-//    if (dir == DIR_STOP || dir == STRANDED){
-//        //stranded_timer.cancel();
-//    }
+    if (dir == DIR_STOP || dir == STRANDED){
+        //stranded_timer.cancel();
+    }
 
     //Send updated data to other threads
-    //hardware->set_motor_direction(dir);
-    //communication->update_internal_status(internal_elevator.get_status()); //Should be implemented sometime
+    hardware->set_motor_direction(dir);
+    communication->update_internal_status(internal_elevator.get_status()); //Should be implemented sometime
 }
 
 
