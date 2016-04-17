@@ -192,7 +192,6 @@ void Hardware::poll_floor_sensor_changes(){
     if (current_floor != previous_floor_sensor_value){
             std::cout << PROMPT "new floor sensor update: " << current_floor << std::endl;
         previous_floor_sensor_value = current_floor;
-        std::cout << PROMPT " Delivering button to control: " << current_floor << std::endl;
         control->deliver_floor_sensor_signal(current_floor);
     }
 }
