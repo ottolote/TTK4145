@@ -318,6 +318,8 @@ void Control::send_order_to_closest_elevator(int order){
         }else {
             std::cout << PROMPT "---------------No elevators could handle order\n";
             pending_orders[order] = true;
+            print_pending_orders();
+
             communication->send_pending_order(order, true); 
         }
     }
@@ -365,7 +367,7 @@ void Control::pick_from_pending_orders(){
             std::cout << PROMPT "Found pending orders\n";
             pending_orders_empty = false;
             pending_orders[order] = false; //Clear order from pending list
-            communication->send_pending_order(order, false); //Should be implemented sometime
+            communication->send_pending_order(order, false); 
             set_internal_elevator_order(order, true);
             reverse_elevator_direction();
         }
@@ -659,4 +661,18 @@ void Control::head_to_order(int order){
     else{
         set_internal_elevator_direction(DIR_UP);
     }
+}
+
+
+
+
+
+
+void Control::print_pending_orders() {
+    std::cout << PROMPT "pending orders: ";
+    for (int i = 0; i<N_ORDER_BUTTONS; i++) {
+        std::cout << pending_orders[i] << "\t";
+    }
+    std::cout << std::endl;
+
 }

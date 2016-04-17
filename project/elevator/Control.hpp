@@ -74,4 +74,7 @@ public:
 
     bool order_in_path(int order);
 
+    //Print
+    void print_pending_orders();
+
 };
