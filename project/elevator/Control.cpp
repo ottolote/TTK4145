@@ -99,14 +99,14 @@ void Control::floor_sensor_routine(floor_t floor){
     
     //Update status variables to this floor
     if (floor != -1){
-        set_internal_elevator_floor(floor);
+//        set_internal_elevator_floor(floor); //crashed here
 
         //Current floor is in order list
-//        if (internal_elevator.is_current_floor_in_order_list(floor)){
-//            refresh_open_door_timer(); //Stay at this floor
-//            //hardware->set_motor_direction(DIR_STOP); //don't change current_dir
-//            clear_orders_at_floor(floor);
-//        }
+        if (internal_elevator.is_current_floor_in_order_list(floor)){
+            refresh_open_door_timer(); //Stay at this floor
+            //hardware->set_motor_direction(DIR_STOP); //don't change current_dir
+            clear_orders_at_floor(floor);
+        }
     }
 }
 
