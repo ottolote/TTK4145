@@ -7,7 +7,7 @@
 Elevator::Elevator()
     : _current_orders( new bool[N_ORDER_BUTTONS])
 {
-        for(int i = 0; i < N_ORDER_BUTTONS; i++){
+    for(int i = 0; i < N_ORDER_BUTTONS; i++){
         _current_orders[i] = false;
     }
     this->_dir = DIR_STOP;
@@ -93,7 +93,9 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 //return struct with pointer to new status message
 status_msg_t Elevator::get_status(){
     status_msg_t msg;
-//    msg.order_list;
+    for (int i = 0; i<N_ORDER_BUTTONS; i++) {
+        msg.order_list[i] = _current_orders[i];
+    }
     msg.dir = get_dir();
     msg.floor = get_previous_floor();
 //
