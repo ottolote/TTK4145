@@ -175,7 +175,7 @@ void Hardware::poll_buttons(){
 		//Status of button changed
 		if (current_button_value != _previous_button_values[button]){
 			_previous_button_values[button] = current_button_value;
-			control->deliver_button(button, current_button_value);
+			//control->deliver_button(button, current_button_value);
 		}
 	}
 }
