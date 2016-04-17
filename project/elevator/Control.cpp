@@ -106,6 +106,7 @@ void Control::floor_sensor_routine(floor_t floor){
         set_internal_elevator_floor(floor); //crashed here
 
         //Current floor is in order list
+        (internal_elevator.is_current_floor_in_order_list(floor));
  //       if (internal_elevator.is_current_floor_in_order_list(floor)){
  //           refresh_open_door_timer(); //Stay at this floor
  //           //hardware->set_motor_direction(DIR_STOP); //don't change current_dir
