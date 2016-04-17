@@ -8,7 +8,7 @@
 #define N_OTHER_BUTTONS 2 //Stop and turbo
 #define N_BUTTONS 12
 
-#define STOP_BUTTON 11
+#define STOP_BUTTON 10   // STOP BUTTON IS 10!!!!!!
 
 #define N_ELEVATORS 4 //Probably not used
 #define N_FLOORS 4
