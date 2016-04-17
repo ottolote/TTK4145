@@ -170,14 +170,11 @@ void Hardware::set_button_lamp(int button, bool light_value){
 //this is ok
 void Hardware::poll_buttons(){
     bool current_button_value;
-    for (int button = 0; button < N_BUTTONS; button++){
+    for (int button = 0; button < N_BUTTONS-1; button++){
         current_button_value = this->get_button_signal(button);
         //Status of button changed
         if (current_button_value != _previous_button_values[button]){
             _previous_button_values[button] = current_button_value;
-                        if(control == nullptr) {
-                            std::cout << PROMPT " control is a nullpointer, here comes the segfault!\n";
-                        }
 
             std::cout << PROMPT " Delivering button to control: " << button 
                 << " value: " << current_button_value << std::endl;
