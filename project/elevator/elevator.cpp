@@ -93,8 +93,8 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 //return struct with pointer to new status message
 status_msg_t Elevator::get_status(){
     status_msg_t msg;
-//    msg.order_list[1];
-//    msg.dir = get_dir();
+//    msg.order_list;
+    msg.dir = get_dir();
 //    msg.floor = get_previous_floor();
 //
     return msg;

@@ -15,11 +15,11 @@
 
 class Control: public Generic_thread{
 private:
-	Elevator internal_elevator;
-	std::map<std::string, boost::shared_ptr<Elevator>> external_elevators;
+    Elevator internal_elevator;
+    std::map<std::string, boost::shared_ptr<Elevator>> external_elevators;
     bool pending_orders[N_OUTSIDE_BUTTONS];
-	boost::asio::deadline_timer open_door_timer;
-	boost::asio::deadline_timer stranded_timer;
+    boost::asio::deadline_timer open_door_timer;
+    boost::asio::deadline_timer stranded_timer;
         
 public:
     //Constructors
@@ -28,7 +28,7 @@ public:
     //Also one that initializes internal_elevator
     //with non-default constructor.
     Control();
-	void add_new_external_elevator(status_msg_t msg, std::string ip);
+    void add_new_external_elevator(status_msg_t msg, std::string ip);
 
 
     //Interthread communication functions
@@ -43,18 +43,18 @@ public:
     std::string find_closest_elevator(int order); //uses external orders
     void send_order_to_closest_elevator(int order);
 
-	//Lights
-	void set_order_button_lights(bool *lights_to_set);
-	void determine_button_lights_to_set();
+    //Lights
+    void set_order_button_lights(bool *lights_to_set);
+    void determine_button_lights_to_set();
     
     void reverse_elevator_direction();
     void head_to_order(int order);
 
-	//Internal elevator
-	void clear_orders_at_floor(floor_t floor);
-	void set_internal_elevator_direction(direction_t dir);
-	void set_internal_elevator_order(int order, bool value);
-	void set_internal_elevator_floor(floor_t floor);
+    //Internal elevator
+    void clear_orders_at_floor(floor_t floor);
+    void set_internal_elevator_direction(direction_t dir);
+    void set_internal_elevator_order(int order, bool value);
+    void set_internal_elevator_floor(floor_t floor);
 
     //Routines
     void button_routine(int button, bool button_value); //Called by deliver_button
@@ -64,12 +64,12 @@ public:
     void pick_from_pending_orders();
     void external_status_update_routine(status_msg_t message, std::string ip);
 
-	//Timer functions
-	void refresh_open_door_timer();
-	void refresh_stranded_timer();
+    //Timer functions
+    void refresh_open_door_timer();
+    void refresh_stranded_timer();
 
-	//Timeout
-	void door_close(const boost::system::error_code &e);
-	void elevator_stranded(const boost::system::error_code &e);
+    //Timeout
+    void door_close(const boost::system::error_code &e);
+    void elevator_stranded(const boost::system::error_code &e);
 
 };
