@@ -11,14 +11,13 @@
 Elevator::Elevator()
     : _current_orders( new bool[N_ORDER_BUTTONS]())
 {
-    for(int i = 0; i < N_ORDER_BUTTONS; i++){
-        _current_orders[i] = false;
-    }
     this->_dir = DIR_STOP;
 }
 
 //construct timers
-Elevator::Elevator(status_msg_t msg){
+Elevator::Elevator(status_msg_t msg)
+    : _current_orders( new bool[N_ORDER_BUTTONS]() )
+{
     this->_dir = msg.dir;
     this->_previous_floor = msg.floor;
     for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
@@ -26,7 +25,7 @@ Elevator::Elevator(status_msg_t msg){
     }
 }
 
-//this is ok
+//this is ok;;
 int Elevator::distance_from_order(int order){
     //elevator is stopped or headed in right direction
     if (this->eligible_for_order(order)){
