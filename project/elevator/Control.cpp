@@ -26,8 +26,8 @@
 //this is ok
 Control::Control()
     : open_door_timer(io, boost::posix_time::milliseconds(DOOR_TIMEOUT)),
-      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
-      test_timer(io, boost::posix_time::milliseconds(1000))
+      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT))
+//      test_timer(io, boost::posix_time::milliseconds(1000))
 {
     //test_timer.async_wait([&] (const boost::system::error_code &e) {
     //            test(e);});
@@ -46,20 +46,20 @@ Control::Control()
 
 
 
-void Control::test(const boost::system::error_code &e) {
-    if (e == boost::asio::error::operation_aborted) {return;}
+//void Control::test(const boost::system::error_code &e) {
+//    if (e == boost::asio::error::operation_aborted) {return;}
+//
+//    door_close(e);
+//    refresh_test();
+//    std::cout << PROMPT "test timer working\n";
+//}
 
-    door_close(e);
-    refresh_test();
-    std::cout << PROMPT "test timer working\n";
-}
 
-
-void Control::refresh_test() {
-    test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
-    test_timer.async_wait([&](const boost::system::error_code &e) {
-        test(e); });
-}
+//void Control::refresh_test() {
+//    test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
+//    test_timer.async_wait([&](const boost::system::error_code &e) {
+//        test(e); });
+//}
 
 
 
@@ -396,8 +396,8 @@ void Control::refresh_open_door_timer(){
     std::cout << 1 << std::endl;
     open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
     std::cout << 2 << std::endl;
-    //open_door_timer.async_wait([=](const boost::system::error_code &e){
-    //        door_close(e); });
+    open_door_timer.async_wait([=](const boost::system::error_code &e){
+            door_close(e); });
 }
 
 
@@ -411,8 +411,8 @@ void Control::refresh_stranded_timer(){
     stranded_timer.cancel();
     stranded_timer.expires_from_now(boost::posix_time::milliseconds(STRANDED_TIMEOUT));
     std::cout << PROMPT "starting stranded timer\n";
-//    stranded_timer.async_wait([&](const boost::system::error_code &e){
-//        elevator_stranded(e); });
+    stranded_timer.async_wait([&](const boost::system::error_code &e){
+        elevator_stranded(e); });
 }
 
 
