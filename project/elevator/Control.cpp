@@ -102,7 +102,7 @@ void Control::order_button_routine(int button, bool button_value){
         }
         //button is released
         else{
-            start_open_door_timer(); //Timer starts when the button is released
+            //start_open_door_timer();;
         }
     }
     //Order wasn't to current floor and should be sent to closest elevator
@@ -131,7 +131,7 @@ void Control::stop_button_routine(bool button_value){
 //this is ok
 void Control::floor_sensor_routine(floor_t floor){
     stranded_timer.cancel();
-    start_stranded_timer(); //Motor still working if floor sensor changes
+    //start_stranded_timer(); //Motor still working if floor sensor changes
     
     //Update status variables to this floor
     if (floor != NONE){
@@ -139,8 +139,8 @@ void Control::floor_sensor_routine(floor_t floor){
 
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
-            start_open_door_timer(); //Stay at this floor
             hardware->set_motor_direction(DIR_STOP); //don't change current_dir
+            open_door();
 //            clear_orders_at_floor(floor);
         }
     }
