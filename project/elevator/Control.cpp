@@ -218,18 +218,18 @@ void Control::set_order_button_lights(bool *lights_to_set){
 //Hardware thread
 //this is ok
 void Control::deliver_button(int button, bool button_value){
-    button_routine(button, button_value);
+    io.post( [=] { button_routine(button, button_value); });
 }
 
 //this is ok
 void Control::deliver_floor_sensor_signal(floor_t floor){
-    floor_sensor_routine(floor);
+    io.post( [=] { floor_sensor_routine(floor); });
 }
 
-//Communication thread    
-//Update status of elevator
-//this is ok
-void Control::deliver_status(status_msg_t message, std::string ip){
+
+
+
+void Control::external_status_update_routine(status_msg_t message, std::string ip) {
     bool new_order_list[N_ORDER_BUTTONS] = {0};
     for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
         new_order_list[i] = message.order_list[i];
@@ -246,6 +246,17 @@ void Control::deliver_status(status_msg_t message, std::string ip){
 	}
 
 }
+
+
+
+
+//Communication thread    
+//Update status of elevator
+//this is ok
+void Control::deliver_status(status_msg_t message, std::string ip){
+    io.post( [=] { external_status_update_routine(message, ip); });
+}
+
 
 //Remove pending order or add order to current_orders
 //this is ok

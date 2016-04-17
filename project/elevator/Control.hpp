@@ -62,6 +62,7 @@ public:
     void floor_sensor_routine(floor_t floor); // Called by deliver_floor_sensor_signal
     void order_button_routine(int button, bool button_value);
     void pick_from_pending_orders();
+    void external_status_update_routine(status_msg_t message, std::string ip);
 
 	//Timer functions
 	void refresh_open_door_timer();
