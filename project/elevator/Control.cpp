@@ -675,6 +675,6 @@ void Control::print_pending_orders() {
     for (int i = 0; i<N_ORDER_BUTTONS; i++) {
         std::cout << pending_orders[i] << "\t";
     }
-    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\tF1\tF2\tF3\tF4\n-------------------------------------------------------------------------\n" << std::endl;
+    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\tF1\tF2\tF3\tF4\n----------------------------------------------------------------------------\n" << std::endl;
 
 }
