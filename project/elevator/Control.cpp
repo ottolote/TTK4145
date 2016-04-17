@@ -212,7 +212,6 @@ void Control::determine_button_lights_to_set(){
 
 //this is ok
 void Control::set_order_button_lights(bool *lights_to_set){
-	bool *lights_to_set = determine_button_lights_to_set();
 	for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
 		hardware_thread->set_button_lamp(i, lights_to_set[i]);
 	}
