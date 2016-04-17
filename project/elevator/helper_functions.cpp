@@ -1,0 +1,27 @@
+#include "elevator_properties.h"
+#include "helper_functions.h"
+
+//this is ok
+int button_to_floor(int button){
+	//Button is on the outside
+	if (button < N_OUTSIDE_BUTTONS){
+		return (button + 1) / 2;
+	}
+	//Button is on the inside
+	else{
+		return button - N_OUTSIDE_BUTTONS;
+	}
+}
+
+//Orders going up are odd numbers while downward orders are even.
+//Orders at the end exception. 
+//Treated as being in the opposite direction
+//this is ok
+direction_t direction_of_order(int order){
+	if ((order == FIRST_UP || order % 2) && order != FOURTH_DOWN){
+		return DIR_DOWN;
+	}
+	else{
+		return DIR_UP;
+	}
+}

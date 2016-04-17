@@ -1,10 +1,6 @@
 #include "elevator.h"
+#include "helper_functions.h"
 #include <cmath>
-
-//Implemented in control as well. Fix this.
-direction_t direction_of_order(int order);
-//Implemented in control as well. Fix this.
-int button_to_floor(int button);
 
 Elevator::Elevator(){
 	for(int i = 0; i < N_ORDER_BUTTONS; i++){
@@ -55,28 +51,6 @@ bool Elevator::is_order_list_empty(){
 		}
 	}
 	return true;
-}
-
-int button_to_floor(int button){
-	//Button is on the outside
-	if (button < N_OUTSIDE_BUTTONS){
-		return (button + 1) / 2;
-	}
-	//Button is on the inside
-	else{
-		return button - N_OUTSIDE_BUTTONS;
-	}
-}
-
-//Orders going up are odd numbers while downward orders are even.
-//Orders at the end are treated as being in the opposite direction
-direction_t direction_of_order(int order){
-	if ((order == FIRST_UP || order % 2) && order != FOURTH_DOWN){
-		return DIR_DOWN;
-	}
-	else{
-		return DIR_UP;
-	}
 }
 
 bool* Elevator::get_outside_orders() { 

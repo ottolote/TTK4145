@@ -1,6 +1,7 @@
 #include "Control.hpp"
 #include "Hardware.hpp"
 #include "Communication.hpp"
+#include "helper_functions.h"
 #include <iterator>
 
 /*********THINGS TO WATCH OUT FOR************/
@@ -11,37 +12,6 @@
 //Will be removed later.
 Hardware *hardware_thread;
 Communication *communication_thread;
-
-//Helper functions
-//Implemented in elevator as well. Should fix this
-int button_to_floor(int button);
-//Every second order is in the same direction
-direction_t direction_of_order(int order);
-
-//this is ok
-int button_to_floor(int button){
-	//Button is on the outside
-	if (button < N_OUTSIDE_BUTTONS){
-		return (button + 1) / 2;
-	}
-	//Button is on the inside
-	else{
-		return button - N_OUTSIDE_BUTTONS;
-	}
-}
-
-//Orders going up are odd numbers while downward orders are even.
-//Orders at the end exception. 
-//Treated as being in the opposite direction
-//this is ok
-direction_t direction_of_order(int order){
-	if ((order == FIRST_UP || order % 2) && order != FOURTH_DOWN){
-		return DIR_DOWN;
-	}
-	else{
-		return DIR_UP;
-	}
-}
 
 //Constructors
 //this is ok
@@ -362,13 +332,11 @@ void Control::set_internal_elevator_direction(direction_t dir){
 
 //this is ok
 void Control::set_internal_elevator_order(int order, bool value){
-	bool is_outside_order = order < N_OUTSIDE_BUTTONS; //turn into helper function
-	status_msg_t msg;
 	internal_elevator.set_order(order, value);
 	
 	hardware_thread->set_button_lamp(order, value);
 
-	if(is_outside_order){
+	if(is_outside_order(order)){
 		communication_thread->update_status(internal_elevator.get_status());
 	}	
 }
