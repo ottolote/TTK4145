@@ -46,10 +46,10 @@ public:
     std::string find_closest_elevator(int order); //uses external orders
     void send_order_to_closest_elevator(int order);
 
-    //Lights
+    //Hardware controls
     void set_order_button_lights(bool *lights_to_set);
     void determine_button_lights_to_set();
-    
+    void open_door();
     void reverse_elevator_direction();
     void head_to_order(int order);
 
@@ -68,8 +68,8 @@ public:
     void external_status_update_routine(status_msg_t message, std::string ip);
 
     //Timer functions
-    void refresh_open_door_timer();
-    void refresh_stranded_timer();
+    void start_open_door_timer();
+    void start_stranded_timer();
 
     //Timeout
     void door_close(const boost::system::error_code &e);

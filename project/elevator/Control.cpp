@@ -102,7 +102,7 @@ void Control::order_button_routine(int button, bool button_value){
         }
         //button is released
         else{
-            refresh_open_door_timer(); //Timer starts when the button is released
+            start_open_door_timer(); //Timer starts when the button is released
         }
     }
     //Order wasn't to current floor and should be sent to closest elevator
@@ -120,18 +120,18 @@ void Control::stop_button_routine(bool button_value){
         set_internal_elevator_direction(STRANDED); //Unavailable for orders until timeout
         bool empty_order_list[N_ORDER_BUTTONS] = { 0 };
         internal_elevator.exchange_order_list(empty_order_list);
-        hardware->set_door_open_lamp(1);
         hardware->set_stop_lamp(1);
         open_door_timer.cancel();
     }
     else{
-        refresh_open_door_timer(); //start door_open_timer on button release
+         //stop button release
     }
 }
 
 //this is ok
 void Control::floor_sensor_routine(floor_t floor){
-    refresh_stranded_timer(); //Motor still working if floor sensor changes
+    stranded_timer.cancel();
+    start_stranded_timer(); //Motor still working if floor sensor changes
     
     //Update status variables to this floor
     if (floor != NONE){
@@ -139,7 +139,7 @@ void Control::floor_sensor_routine(floor_t floor){
 
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
-            refresh_open_door_timer(); //Stay at this floor
+            start_open_door_timer(); //Stay at this floor
             hardware->set_motor_direction(DIR_STOP); //don't change current_dir
 //            clear_orders_at_floor(floor);
         }
@@ -179,6 +179,14 @@ std::string Control::find_closest_elevator(int order){
     return closest_elevator_ip;
 }
 
+
+
+
+
+void Control::open_door() {
+    start_open_door_timer();
+    hardware->set_door_open_lamp(1);
+}
 
 
 
@@ -388,14 +396,9 @@ void Control::report_useless_elevator(std::string ip){
 
 //Timer functions
 //this is ok
-void Control::refresh_open_door_timer(){
-    stranded_timer.cancel();
-    hardware->set_door_open_lamp(1);
+void Control::start_open_door_timer(){
     std::cout << PROMPT "starting door timer\n";
-    open_door_timer.cancel();
-    std::cout << 1 << std::endl;
     open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
-    std::cout << 2 << std::endl;
     open_door_timer.async_wait([=](const boost::system::error_code &e){
             door_close(e); });
 }
@@ -407,8 +410,7 @@ void Control::refresh_open_door_timer(){
 
 
 //this is ok
-void Control::refresh_stranded_timer(){
-    stranded_timer.cancel();
+void Control::start_stranded_timer(){
     stranded_timer.expires_from_now(boost::posix_time::milliseconds(STRANDED_TIMEOUT));
     std::cout << PROMPT "starting stranded timer\n";
     stranded_timer.async_wait([&](const boost::system::error_code &e){
@@ -427,7 +429,7 @@ void Control::door_close(const boost::system::error_code &e){
     if (e == boost::asio::error::operation_aborted) {return;}
 
 //    refresh_stranded_timer();
-//    //hardware->set_door_open_lamp(0);
+      hardware->set_door_open_lamp(0);
 //    std::cout << PROMPT "closing door\n";
 //    //hardware->set_stop_lamp(0);
 //
