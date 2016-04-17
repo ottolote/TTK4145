@@ -48,6 +48,7 @@ public:
 	void determine_button_lights_to_set();
     
     void reverse_elevator_direction();
+    void head_to_order(int order);
 
 	//Internal elevator
 	void clear_orders_at_floor(floor_t floor);
