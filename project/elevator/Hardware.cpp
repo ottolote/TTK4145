@@ -9,7 +9,7 @@
 #include <iostream>
 
 
-#define POLL_TICK_DURATION_MS 500
+#define POLL_TICK_DURATION_MS 10
 
 #define PROMPT "[" TCOLOR_LIGHTGREEN "Hardware" TCOLOR_NC "] : "
 
