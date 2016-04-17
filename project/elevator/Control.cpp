@@ -49,7 +49,7 @@ void Control::button_routine(int button, bool button_value){
         << button << " is " << button_value << std::endl;
 
     if (button == STOP_BUTTON){
-        //stop_button_routine(button_value);
+        stop_button_routine(button_value);
     }
     else{
         order_button_routine(button, button_value);
@@ -59,6 +59,7 @@ void Control::button_routine(int button, bool button_value){
 //Elevator will hold if a button at floor is continously pressed
 //this is ok
 void Control::order_button_routine(int button, bool button_value){
+    std::cout << PROMPT "entering order-routine\n";
     bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button) 
                                       && direction_of_order(button) == internal_elevator.get_dir();
 
@@ -83,6 +84,7 @@ void Control::order_button_routine(int button, bool button_value){
 
 //this is ok
 void Control::stop_button_routine(bool button_value){
+        std::cout << PROMPT "entering stop-routine\n";
     //Stop button triggered
     if (button_value){
         set_internal_elevator_direction(STRANDED); //Unavailable for orders until timeout
@@ -240,20 +242,15 @@ void Control::determine_button_lights_to_set(){
             lights_to_set[i] |= it->second->get_order(i);
         }        
     }
-    set_order_button_lights(lights_to_set);
-}
-
-
-
-
-
-
-//this is ok
-void Control::set_order_button_lights(bool *lights_to_set){
     for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
         hardware->set_button_lamp(i, lights_to_set[i]);
     }
 }
+
+
+
+
+
 
 
 
