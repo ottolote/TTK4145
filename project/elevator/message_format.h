@@ -4,6 +4,15 @@
 #include <cstdint>
 #include "elevator_properties.h"
 
+/*
+ *
+ * TODO
+ *
+ * - Add bit for clear/set pending
+ *
+ *
+ */
+
 /************Message format***************
 Order
 0b|x|xxx|x|x|x|

@@ -96,6 +96,7 @@ bool Message_handler::is_ack_message(encoded_msg_t msg) {
 }
 
 encoded_msg_t Message_handler::add_ack_to_message(encoded_msg_t encoded_message) {
+    //std::cout << (set_bit(encoded_message, ACK_INDEX)) << std::endl;
     return (set_bit(encoded_message, ACK_INDEX));
 }
 
@@ -147,7 +148,6 @@ unsigned int Message_handler::read_checksum(encoded_msg_t encoded_message) {
     //std::cout << checksum << std::endl;
     return checksum;
 }
-
 
 
 
