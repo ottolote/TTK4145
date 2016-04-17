@@ -73,7 +73,7 @@ void Control::order_button_routine(int button, bool button_value){
     }
     //Order wasn't to current floor and should be sent to closest elevator
     else{
-        //this->send_order_to_closest_elevator(button);
+        this->send_order_to_closest_elevator(button);
     }
 }
 
@@ -155,18 +155,18 @@ void Control::send_order_to_closest_elevator(int order){
 
     std::string closest_elevator_ip = find_closest_elevator(order);
 
-    //All elevators going in the wrong direction
-    //send to pending list
-    if (closest_elevator_ip.empty()){
-        pending_orders[order] = true;
-        communication->send_pending_order(order, true); //Should be implemented sometime
-    }
-    
-    //Internal elevator is closest or order came from inside
-    else if (closest_elevator_ip == "Internal elevator"){
-        std::cout << PROMPT "closest elevator is self, setting internal order\n";
-        set_internal_elevator_order(order, true);
-    }
+//    //All elevators going in the wrong direction
+//    //send to pending list
+//    if (closest_elevator_ip.empty()){
+//        pending_orders[order] = true;
+//        communication->send_pending_order(order, true); //Should be implemented sometime
+//    }
+//    
+//    //Internal elevator is closest or order came from inside
+//    else if (closest_elevator_ip == "Internal elevator"){
+//        std::cout << PROMPT "closest elevator is self, setting internal order\n";
+//        set_internal_elevator_order(order, true);
+//    }
 //
 //    //An external elevator is closest
 //    else{
