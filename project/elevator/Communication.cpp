@@ -471,6 +471,8 @@ void Communication::send_pending_order(int order, bool clear_or_set) {
 }
 
 void Communication::send_order(int order_message, std::string target_ip) {
+    std::cout << PROMPT "adsked to send order: " << order_message 
+        << " to " << target_ip << std::endl;
     return;
 }
 
