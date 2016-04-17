@@ -6,7 +6,7 @@ TARGET = elevator
 
 CFLAGS =  -g -Wall -Wextra
 CPPFLAGS = -std=gnu++14 -g -Wall -Wextra
-LDFLAGS = -lm -lcomedi -lphobos2 -static-lboost_system -static-lboost_thread -lpthread -static-lstdc++
+LDFLAGS = -lm -lcomedi -lphobos2 -lboost_system -lboost_thread -lpthread -lstdc++
 
 SRC = 
 SRCPP =  main.cpp Communication.cpp Network.cpp Generic_thread.cpp message_handler.cpp Control.cpp
