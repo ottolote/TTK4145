@@ -373,6 +373,8 @@ void Control::pick_from_pending_orders(){
         }
 
     }
+    print_pending_orders();
+    internal_elevator.print_current_orders();
     //No more orders in pending list
     if(pending_orders_empty && internal_elevator.is_order_list_empty()){
         std::cout << PROMPT "No more orders what so ever\n";
@@ -669,10 +671,10 @@ void Control::head_to_order(int order){
 
 
 void Control::print_pending_orders() {
-    std::cout << PROMPT "pending orders: ";
+    std::cout << PROMPT "-------pending orders----------\n";
     for (int i = 0; i<N_ORDER_BUTTONS; i++) {
         std::cout << pending_orders[i] << "\t";
     }
-    std::cout << std::endl;
+    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\n--------------------\n" << std::endl;
 
 }
