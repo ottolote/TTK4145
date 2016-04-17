@@ -26,8 +26,11 @@
 //this is ok
 Control::Control()
     : open_door_timer(io, boost::posix_time::milliseconds(DOOR_TIMEOUT)),
-      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT))
+      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
+      test_timer(io, boost::posix_time::milliseconds(1000))
 {
+    test_timer.async_wait([&] (const boost::system::error_code &e) {
+                test(e);});
     open_door_timer.async_wait([&](const boost::system::error_code& e) {
             //this function will be run when the timer is triggered
             door_close(e); });
@@ -40,6 +43,24 @@ Control::Control()
         pending_orders[i] = false;
     }
 }
+
+
+
+void Control::test(const boost::system::error_code &e) {
+    if (e == boost::asio::error::operation_aborted) {return;}
+
+    refresh_test();
+    std::cout << PROMPT "test timer working\n";
+}
+
+
+void Control::refresh_test() {
+    test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
+    test_timer.async_wait([&](const boost::system::error_code &e) {
+        test(e); });
+}
+
+
 
 //this is ok
 void Control::add_new_external_elevator(status_msg_t msg, std::string ip){
