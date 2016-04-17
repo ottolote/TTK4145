@@ -4,8 +4,10 @@
 
 
 //Construct timers
-Elevator::Elevator(){
-	for(int i = 0; i < N_ORDER_BUTTONS; i++){
+Elevator::Elevator()
+    : _current_orders( new bool[N_ORDER_BUTTONS])
+{
+        for(int i = 0; i < N_ORDER_BUTTONS; i++){
 		_current_orders[i] = false;
 	}
 	this->_dir = DIR_STOP;
@@ -58,15 +60,15 @@ bool Elevator::is_order_list_empty(){
 	return true;
 }
 
-//this is ok
-bool* Elevator::get_outside_orders() { 
-	bool outside_orders[N_OUTSIDE_BUTTONS];
-	for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
-		outside_orders[i] = _current_orders[i];
-	}
-
-	return outside_orders;
-}
+////this is ok
+//bool* Elevator::get_outside_orders() { 
+//	bool outside_orders[N_OUTSIDE_BUTTONS];
+//	for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+//		outside_orders[i] = _current_orders[i];
+//	}
+//
+//	return outside_orders;
+//}
 
 //Will only be called when arriving at floor
 //Should be ok
@@ -87,13 +89,15 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 }
 
 //this is ok
+//
+//return struct with pointer to new status message
 status_msg_t Elevator::get_status(){
 	bool outside_orders[N_OUTSIDE_BUTTONS];
 	for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
 		*msg.order_list[i] = outside_orders[i];
 	}
 	status_msg_t msg;
-	*msg.order_list = *get_outside_orders();
+	msg.order_list[1];
 	msg.dir = get_dir();
 	msg.floor = get_previous_floor();
 

@@ -60,7 +60,6 @@ class Communication : public Network {
         Communication();
         void send_order(int order_msg, std::string target_ip);
         void send_pending_order(int order, bool clear_or_set);
-        void receive_routine(encoded_msg_t message, std::string message_ip);
         void update_internal_status(status_msg_t status_message);
 
         // for pure testing
@@ -86,6 +85,7 @@ class Communication : public Network {
                 std::string ip);
 
 
+        void receive_routine(encoded_msg_t message, std::string message_ip);
         void update_previous_status(encoded_msg_t message, std::string target_ip);
         void remove_previous_status(encoded_msg_t message, std::string target_ip);
         void print_pending_acks();
