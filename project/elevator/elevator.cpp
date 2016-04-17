@@ -88,6 +88,10 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 
 //this is ok
 status_msg_t Elevator::get_status(){
+	bool outside_orders[N_OUTSIDE_BUTTONS];
+	for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+		*msg.order_list[i] = outside_orders[i];
+	}
 	status_msg_t msg;
 	*msg.order_list = *get_outside_orders();
 	msg.dir = get_dir();
