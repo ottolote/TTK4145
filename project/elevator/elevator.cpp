@@ -97,7 +97,7 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 //return struct with pointer to new status message
 status_msg_t Elevator::get_status(){
     status_msg_t msg;
-    if (msg.order_list == nullptr) {
+    if (_current_orders == nullptr) {
         std::cout << PROMPT "order_list is nullptr\n";
     for (int i = 0; i<N_ORDER_BUTTONS; i++) {
         msg.order_list[i] = _current_orders[i];
