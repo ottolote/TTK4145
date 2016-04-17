@@ -28,8 +28,6 @@ Control::Control()
     : stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
       dooor_timer(io, boost::posix_time::milliseconds(1000))
 {
-    //dooor_timer.async_wait([&] (const boost::system::error_code &e) {
-    //            test(e);});
     //stranded_timer.async_wait([&](const boost::system::error_code& e) {
     //        //this function will be run when the timer is triggered
     //        elevator_stranded(e); });
@@ -41,13 +39,11 @@ Control::Control()
 
 
 
-void Control::test(const boost::system::error_code &e) {
+void Control::door_timeout(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
 
-    door_close(e);
-    //open_door();
     hardware->set_door_open_lamp(0);
-    std::cout << PROMPT "test timer working\n";
+    std::cout << PROMPT "door closed\n";
 }
 
 
@@ -55,7 +51,7 @@ void Control::open_door() {
     hardware->set_door_open_lamp(1);
     dooor_timer.expires_from_now(boost::posix_time::milliseconds(1000));
     dooor_timer.async_wait([&](const boost::system::error_code &e) {
-        test(e); });
+        door_timeout(e); });
 }
 
 
@@ -412,25 +408,6 @@ void Control::refresh_stranded_timer(){
 
 
 
-//this is ok
-void Control::door_close(const boost::system::error_code &e){
-
-    if (e == boost::asio::error::operation_aborted) {return;}
-
-//    refresh_stranded_timer();
-      hardware->set_door_open_lamp(0);
-//    std::cout << PROMPT "closing door\n";
-//    //hardware->set_stop_lamp(0);
-//
-//    //Elevator stops if no more orders are waiting
-//    //Will move on to orders from pending list
-//    if (internal_elevator.is_order_list_empty()){
-//            pick_from_pending_orders();
-//    }
-//    //Will either enter stop mode
-//    //Or continue after pausing at floor
-//    //hardware->set_motor_direction(internal_elevator.get_dir());
-}
 
 
 

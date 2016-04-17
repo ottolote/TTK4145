@@ -20,7 +20,7 @@ private:
     bool pending_orders[N_OUTSIDE_BUTTONS];
     boost::asio::deadline_timer stranded_timer;
     boost::asio::deadline_timer dooor_timer;
-    void test(const boost::system::error_code &e);
+    void door_timeout(const boost::system::error_code &e);
         
 public:
     //Constructors
@@ -70,7 +70,6 @@ public:
     void refresh_stranded_timer();
 
     //Timeout
-    void door_close(const boost::system::error_code &e);
     void elevator_stranded(const boost::system::error_code &e);
 
 };
