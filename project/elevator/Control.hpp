@@ -20,9 +20,9 @@ private:
     bool pending_orders[N_OUTSIDE_BUTTONS];
     boost::asio::deadline_timer open_door_timer;
     boost::asio::deadline_timer stranded_timer;
-    //boost::asio::deadline_timer test_timer;
-    //void test(const boost::system::error_code &e);
-    //void refresh_test();
+    boost::asio::deadline_timer test_timer;
+    void test(const boost::system::error_code &e);
+    void refresh_test();
         
 public:
     //Constructors

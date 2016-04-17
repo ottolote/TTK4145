@@ -26,8 +26,8 @@
 //this is ok
 Control::Control()
     : open_door_timer(io, boost::posix_time::milliseconds(DOOR_TIMEOUT)),
-      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT))
-//      test_timer(io, boost::posix_time::milliseconds(1000))
+      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
+      test_timer(io, boost::posix_time::milliseconds(1000))
 {
     //test_timer.async_wait([&] (const boost::system::error_code &e) {
     //            test(e);});
@@ -46,20 +46,20 @@ Control::Control()
 
 
 
-//void Control::test(const boost::system::error_code &e) {
-//    if (e == boost::asio::error::operation_aborted) {return;}
-//
-//    door_close(e);
-//    refresh_test();
-//    std::cout << PROMPT "test timer working\n";
-//}
+void Control::test(const boost::system::error_code &e) {
+    if (e == boost::asio::error::operation_aborted) {return;}
+
+    //door_close(e);
+    refresh_test();
+    std::cout << PROMPT "test timer working\n";
+}
 
 
-//void Control::refresh_test() {
-//    test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
-//    test_timer.async_wait([&](const boost::system::error_code &e) {
-//        test(e); });
-//}
+void Control::refresh_test() {
+    test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
+    test_timer.async_wait([&](const boost::system::error_code &e) {
+        test(e); });
+}
 
 
 
@@ -77,6 +77,12 @@ void Control::button_routine(int button, bool button_value){
 
     std::cout<< PROMPT "entering button_routine, button: " 
         << button << " is " << button_value << std::endl;
+
+    if(button == 6) {
+        refresh_test();
+    } else if(button == 7) {
+        test_timer.cancel();
+    }
 
     if (button == STOP_BUTTON){
        //stop_button_routine(button_value);
