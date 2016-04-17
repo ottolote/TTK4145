@@ -19,15 +19,19 @@ class Generic_thread {
 //        static safeprint safe_cout;
         void post();
         void run();
+        void add_pointers_to_all_other_threads(
+                boost::shared_ptr<Control> control,
+                boost::shared_ptr<Hardware> hardware,
+                boost::shared_ptr<Communication> communication);
 
     protected:
         boost::asio::io_service io;
         boost::asio::io_service::work work;
 //        boost::asio::deadline_timer timeout_timer;
 
-        static boost::shared_ptr<Communication> communication;
-        static boost::shared_ptr<Control> control;
-        static boost::shared_ptr<Hardware> hardware;
+        boost::shared_ptr<Control> control;
+        boost::shared_ptr<Communication> communication;
+        boost::shared_ptr<Hardware> hardware;
 
 
 

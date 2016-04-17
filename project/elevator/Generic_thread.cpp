@@ -49,6 +49,9 @@ Generic_thread::Generic_thread()
     : io(),
       work(io)
 {
+    shared_ptr<Communication> communication;
+    shared_ptr<Control> control;
+    shared_ptr<Hardware> hardware;
 }
 
 
@@ -62,6 +65,17 @@ void Generic_thread::run() {
 }
 
 
+
+
+
+void Generic_thread::add_pointers_to_all_other_threads(
+        boost::shared_ptr<Control> control_ptr,
+        boost::shared_ptr<Hardware> hardware_ptr,
+        boost::shared_ptr<Communication> communication_ptr) {
+    this->control = control_ptr;
+    this->communication = communication_ptr;
+    this->hardware = hardware_ptr;
+}
 
 
 

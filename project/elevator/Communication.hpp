@@ -69,6 +69,7 @@ class Communication : public Network {
         // public because testing, move to private
         void reliable_send(encoded_msg_t encoded_message, std::string target_ip);
 
+
     private:
         std::map<std::string, boost::shared_ptr<timed_msg_container>> pending_acks;
         std::map<std::string, boost::shared_ptr<timed_status_message>> previous_status;

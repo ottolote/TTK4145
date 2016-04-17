@@ -43,14 +43,19 @@ if (argc > 1) {
 //        std::cout << "verbose level set to " << verboselevel << std::endl;
 //    }
 
-    //boost::shared_ptr<Network> NH( new Network );
     boost::shared_ptr<Communication> comms( new Communication );;
     boost::shared_ptr<Hardware> hardware( new Hardware );;
+    boost::shared_ptr<Control> control( new Control );
 
 
-    //thread NetworkThread([&NH, &cout_lock]  {
-    //    NH->init_thread(cout_lock);   // Thread function
-    //});
+    comms->add_pointers_to_all_other_threads( control, hardware, comms );
+    hardware->add_pointers_to_all_other_threads( control, hardware, comms );
+    control->add_pointers_to_all_other_threads( control, hardware, comms );
+
+
+    boost::thread control_thread([&]  {
+        control->run();   // Thread function
+    });
 
     boost::thread comms_thread([&]  {
         comms->run();   // Thread function
@@ -87,8 +92,9 @@ if (argc > 1) {
 
 
     comms_thread.join();
-   
+    control_thread.join();
     hardware_thread.join();
+
 
     return 0;
 }

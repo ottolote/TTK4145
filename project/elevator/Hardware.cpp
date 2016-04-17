@@ -27,7 +27,6 @@ int light_channels[N_BUTTONS] =
 	  LIGHT_DOWN4,
 	  LIGHT_COMMAND1, LIGHT_COMMAND2, LIGHT_COMMAND3, LIGHT_COMMAND4, LIGHT_STOP, LIGHT_DOOR_OPEN };
 
-Control *control_thread;
 
 Hardware::Hardware() 
     :  Generic_thread(),
@@ -176,7 +175,7 @@ void Hardware::poll_buttons(){
 		//Status of button changed
 		if (current_button_value != _previous_button_values[button]){
 			_previous_button_values[button] = current_button_value;
-			control_thread->deliver_button(button, current_button_value);
+			control->deliver_button(button, current_button_value);
 		}
 	}
 }
@@ -186,7 +185,7 @@ void Hardware::poll_floor_sensor_changes(){
 	floor_t current_floor = get_floor_sensor_signal();
 	if (current_floor != previous_floor_sensor_value){
 		previous_floor_sensor_value = current_floor;
-		//control_thread->deliver_floor_sensor_signal(current_floor);
+		//control->deliver_floor_sensor_signal(current_floor);
 	}
 }
 
