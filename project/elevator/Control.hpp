@@ -9,8 +9,8 @@
 
 
 // Both are in seconds
-#define DOOR_TIMEOUT 3 
-#define STRANDED_TIMEOUT 5
+#define DOOR_TIMEOUT 3000
+#define STRANDED_TIMEOUT 5000
 
 
 class Control: public Generic_thread{

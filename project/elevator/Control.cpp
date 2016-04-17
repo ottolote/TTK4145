@@ -25,8 +25,8 @@
 //Constructors
 //this is ok
 Control::Control()
-    : open_door_timer(io, boost::posix_time::seconds(DOOR_TIMEOUT)),
-      stranded_timer(io, boost::posix_time::seconds(STRANDED_TIMEOUT))
+    : open_door_timer(io, boost::posix_time::milliseconds(DOOR_TIMEOUT)),
+      stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT))
 {
     for(int i = 0; i < N_ORDER_BUTTONS; i++){
         pending_orders[i] = false;
@@ -364,10 +364,10 @@ void Control::refresh_open_door_timer(){
     std::cout << PROMPT "starting door timer\n";
     open_door_timer.cancel();
     std::cout << 1 << std::endl;
-    open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT*1000));
+    open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
     std::cout << 2 << std::endl;
-    open_door_timer.async_wait([&](const boost::system::error_code &e){
-            door_close(e); });
+    //open_door_timer.async_wait([&](const boost::system::error_code &e){
+    //        door_close(e); });
 }
 
 
@@ -379,7 +379,7 @@ void Control::refresh_open_door_timer(){
 //this is ok
 void Control::refresh_stranded_timer(){
     stranded_timer.cancel();
-    stranded_timer.expires_from_now(boost::posix_time::seconds(STRANDED_TIMEOUT));
+    stranded_timer.expires_from_now(boost::posix_time::milliseconds(STRANDED_TIMEOUT));
     stranded_timer.async_wait([&](const boost::system::error_code &e){
         elevator_stranded(e); });
 }
