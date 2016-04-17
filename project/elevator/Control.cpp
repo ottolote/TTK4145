@@ -470,7 +470,7 @@ void Control::set_internal_elevator_floor(floor_t floor){
     internal_elevator.set_previous_floor(floor);
 
     //hardware->set_floor_indicator(floor); //Might set this in hardware
-    //communication->update_internal_status(internal_elevator.get_status());
+    communication->update_internal_status(internal_elevator.get_status());
 }
 
 
