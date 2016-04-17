@@ -90,8 +90,8 @@ void Control::stop_button_routine(bool button_value){
         set_internal_elevator_direction(STRANDED); //Unavailable for orders until timeout
         bool empty_order_list[N_ORDER_BUTTONS] = { 0 };
         internal_elevator.exchange_order_list(empty_order_list);
-        //hardware->set_door_open_lamp(1);
-        //hardware->set_stop_lamp(1);
+        hardware->set_door_open_lamp(1);
+        hardware->set_stop_lamp(1);
         open_door_timer.cancel();
     }
     else{
@@ -110,7 +110,7 @@ void Control::floor_sensor_routine(floor_t floor){
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
             refresh_open_door_timer(); //Stay at this floor
-            //hardware->set_motor_direction(DIR_STOP); //don't change current_dir
+            hardware->set_motor_direction(DIR_STOP); //don't change current_dir
 //            clear_orders_at_floor(floor);
         }
     }
