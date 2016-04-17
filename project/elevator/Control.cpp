@@ -56,6 +56,7 @@ void Control::test(const boost::system::error_code &e) {
 
 
 void Control::refresh_dooortimer() {
+    hardware->set_door_open_lamp(1);
     dooor_timer.expires_from_now(boost::posix_time::milliseconds(1000));
     dooor_timer.async_wait([&](const boost::system::error_code &e) {
         test(e); });
