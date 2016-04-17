@@ -35,6 +35,7 @@ public:
     void poll_buttons();
     void poll_floor_sensor_changes();
     void restart_poll_timer();
+    void clear_button_lights();
     void poll(const boost::system::error_code &e);
 
     
