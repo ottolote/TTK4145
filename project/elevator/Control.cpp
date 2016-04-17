@@ -175,7 +175,11 @@ void Control::send_order_to_closest_elevator(int order){
 //
 //    //An external elevator is closest
     else{
-        communication->send_order(order, closest_elevator_ip);
+        if (order == STOP_BUTTON) {
+            std::cout << PROMPT << ERROR "Attempted to send STOP to closest elevator\n";
+        }else {
+            communication->send_order(order, closest_elevator_ip);
+        }
     }
 }
 
