@@ -102,7 +102,8 @@ void Control::order_button_routine(int button, bool button_value){
         }
         //button is released
         else{
-            start_open_door_timer();;
+            std::cout<< PROMPT "if it crashed after this you know where to look\n";
+            refresh_open_door_timer();;
         }
     }
     //Order wasn't to current floor and should be sent to closest elevator
@@ -184,7 +185,7 @@ std::string Control::find_closest_elevator(int order){
 
 
 void Control::open_door() {
-    start_open_door_timer();
+    refresh_open_door_timer();
     hardware->set_door_open_lamp(1);
 }
 
@@ -396,10 +397,10 @@ void Control::report_useless_elevator(std::string ip){
 
 //Timer functions
 //this is ok
-void Control::start_open_door_timer(){
+void Control::refresh_open_door_timer(){
     std::cout << PROMPT "starting door timer\n";
     open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
-    std::cout << "timer: " << open_door_timer.expires_at().time_of_day().time_duration::total_milliseconds() << std::endl;
+    //std::cout << "timer: " << open_door_timer.expires_at().time_of_day().time_duration::total_milliseconds() << std::endl;
     open_door_timer.async_wait([=](const boost::system::error_code &e){
             door_close(e); });
 }
@@ -411,7 +412,7 @@ void Control::start_open_door_timer(){
 
 
 //this is ok
-void Control::start_stranded_timer(){
+void Control::refresh_stranded_timer(){
     stranded_timer.expires_from_now(boost::posix_time::milliseconds(STRANDED_TIMEOUT));
     std::cout << PROMPT "starting stranded timer\n";
     stranded_timer.async_wait([&](const boost::system::error_code &e){

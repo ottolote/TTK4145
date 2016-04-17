@@ -68,8 +68,8 @@ public:
     void external_status_update_routine(status_msg_t message, std::string ip);
 
     //Timer functions
-    void start_open_door_timer();
-    void start_stranded_timer();
+    void refresh_open_door_timer();
+    void refresh_stranded_timer();
 
     //Timeout
     void door_close(const boost::system::error_code &e);
