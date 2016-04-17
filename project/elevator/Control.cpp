@@ -211,7 +211,7 @@ void Control::floor_sensor_routine(floor_t floor){
         if (
                 internal_elevator.is_current_floor_in_order_list(floor) 
                 || (get_furthest_order_in_direction(
-                        floor, internal_elevator.get_dir()) != floor_to_order(
+                        floor, internal_elevator.get_dir()) == floor_to_order(
                             floor, internal_elevator.get_dir())
                 )){
             std::cout << PROMPT "Found order in order list\n";
