@@ -28,11 +28,11 @@ Elevator::Elevator(status_msg_t msg)
 
 
 void Elevator::print_current_orders() {
-    std::cout << PROMPT "-----------------current orders:-----------------\n";
+    std::cout << PROMPT "--------------------------current orders:-----------------\n";
     for (int i = 0; i<N_ORDER_BUTTONS; i++) {
         std::cout << _current_orders[i] << "\t";
     }
-    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\n--------------------\n" << std::endl;
+    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\tF1\tF2\tF3\tF4\n-------------------------------------------------\n" << std::endl;
 }
 
 
