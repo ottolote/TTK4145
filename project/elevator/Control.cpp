@@ -49,7 +49,7 @@ void Control::button_routine(int button, bool button_value){
         << button << " is " << button_value << std::endl;
 
     if (button == STOP_BUTTON){
-        //stop_button_routine(button_value);
+       /stop_button_routine(button_value);
     }
     else{
         order_button_routine(button, button_value);
