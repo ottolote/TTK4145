@@ -101,6 +101,7 @@ status_msg_t Elevator::get_status(){
         std::cout << PROMPT "current_orders is nullptr\n";
     }
     for (int i = 0; i<N_ORDER_BUTTONS; i++) {
+        std::cout << PROMPT "looping: " << i << std::endl;
         msg.order_list[i] = _current_orders[i];
     }
     msg.dir = get_dir();
