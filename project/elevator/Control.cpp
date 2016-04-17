@@ -102,11 +102,11 @@ void Control::floor_sensor_routine(floor_t floor){
         set_internal_elevator_floor(floor); //crashed here
 
         //Current floor is in order list
-//        if (internal_elevator.is_current_floor_in_order_list(floor)){
-//            refresh_open_door_timer(); //Stay at this floor
-//            //hardware->set_motor_direction(DIR_STOP); //don't change current_dir
-//            clear_orders_at_floor(floor);
-//        }
+        if (internal_elevator.is_current_floor_in_order_list(floor)){
+            refresh_open_door_timer(); //Stay at this floor
+            //hardware->set_motor_direction(DIR_STOP); //don't change current_dir
+            clear_orders_at_floor(floor);
+        }
     }
 }
 
@@ -382,6 +382,7 @@ void Control::door_close(const boost::system::error_code &e){
 
     refresh_stranded_timer();
     //hardware->set_door_open_lamp(0);
+    std::cout << PROMPT "openinng door\n";
     //hardware->set_stop_lamp(0);
 
     //Elevator stops if no more orders are waiting
