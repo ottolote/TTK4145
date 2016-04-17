@@ -162,15 +162,23 @@ void Control::send_order_to_closest_elevator(int order){
     //All elevators going in the wrong direction
     //send to pending list
     if (closest_elevator_ip.empty()){
-        pending_orders[order] = true;
-        communication->send_pending_order(order, true); //Should be implemented sometime
+        if (order == STOP_BUTTON) {
+            std::cout << PROMPT << ERROR "Attempted to send STOP to closest elevator\n";
+        }else {
+            pending_orders[order] = true;
+            communication->send_pending_order(order, true); 
+        }
     }
     
     //Internal elevator is closest or order came from inside
     else if (closest_elevator_ip == "Internal elevator"){
-        std::cout << PROMPT "closest elevator is self, setting internal order: "
-            << order << std::endl;
-        set_internal_elevator_order(order, true);
+        if (order == STOP_BUTTON) {
+            std::cout << PROMPT << ERROR "Attempted to send STOP to closest elevator\n";
+        }else {
+            std::cout << PROMPT "closest elevator is self, setting internal order: "
+                << order << std::endl;
+            set_internal_elevator_order(order, true);
+        }
     }
 //
 //    //An external elevator is closest
