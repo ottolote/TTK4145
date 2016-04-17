@@ -211,7 +211,7 @@ void Control::floor_sensor_routine(floor_t floor){
         std::cout << PROMPT "is_order_in_d: " << is_order_in_direction(floor, internal_elevator.get_dir()) << " - direction: " << internal_elevator.get_dir() << std::endl;
         if (
                 internal_elevator.is_current_floor_in_order_list(floor) 
-                || is_order_in_direction(floor, internal_elevator.get_dir()  )){
+                || !is_order_in_direction(floor, internal_elevator.get_dir()  )){
             std::cout << PROMPT "Found order in order list\n";
             hardware->set_motor_direction(DIR_STOP);
             open_door();
@@ -717,7 +717,7 @@ bool Control::is_order_in_direction(floor_t current_floor, direction_t dir) {
         stop_looking = current_floor - 1;
     } else {
         std::cout << PROMPT 
-            << ERROR "wrong arguments passed to get_furthest_order_in_direction\n";
+            << ERROR "wrong arguments passed to is_order_in_direction\n";
         return -1;
     }
 
