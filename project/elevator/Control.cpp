@@ -2,7 +2,12 @@
 #include "Hardware.hpp"
 #include "Communication.hpp"
 #include "helper_functions.h"
+#include "terminalcolors.h"
 #include <iterator>
+
+#define PROMPT "[" TCOLOR_LIGHTPURPLE "Control" TCOLOR_NC "] : "
+
+
 
 /*********THINGS TO WATCH OUT FOR************/
 //Several identical functions are implemented
@@ -54,6 +59,8 @@ void Control::order_button_routine(int button, bool button_value){
                                       && direction_of_order(button) == internal_elevator.get_dir();
 
     if(order_is_for_current_floor){
+
+        std::cout << PROMPT "order is for current floor\n";
         //button is pressed
         if(button_value){
             open_door_timer.cancel(); //elevator stays while the button is held
@@ -64,10 +71,10 @@ void Control::order_button_routine(int button, bool button_value){
             refresh_open_door_timer(); //Timer starts when the button is released
         }
     }
-//    //Order wasn't to current floor and should be sent to closest elevator
-//    else{
-//        this->send_order_to_closest_elevator(button);
-//    }
+    //Order wasn't to current floor and should be sent to closest elevator
+    else{
+        this->send_order_to_closest_elevator(button);
+    }
 }
 
 //this is ok
@@ -142,6 +149,9 @@ std::string Control::find_closest_elevator(int order){
 
 //this is ok
 void Control::send_order_to_closest_elevator(int order){
+
+    std::cout << PROMPT "sending order to closest elevator\n";
+
     std::string closest_elevator_ip = find_closest_elevator(order);
 
     //All elevators going in the wrong direction
