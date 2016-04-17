@@ -7,6 +7,13 @@
 /*********THINGS TO WATCH OUT FOR************/
 //Several identical functions are implemented
 //in both elevator and control
+
+
+/*********Implement in communication*********/
+//send_pending_order(int order); all elevators --------- update pending list with this order
+//send_order(int order, std::string closest_elevator_ip) ------ send this order to specified elevator
+//clear_pending_order(int order); ------- clear this order from pending list
+//update_status(status_msg_t msg) ------- send new status data to communication
 /********************************************/
 
 //Will be removed later.
@@ -141,7 +148,7 @@ void Control::send_order_to_closest_elevator(int order){
     //send to pending list
     if (closest_elevator_ip.empty()){
     	pending_orders[order] = true;
-    	communication_thread->send_pending_order(order); //Should be implemented sometime
+    	communication_thread->send_pending_order(order, true); //Should be implemented sometime
     }
     
     //Internal elevator is closest or order came from inside
@@ -167,7 +174,7 @@ void Control::pick_from_pending_orders(){
         //Take all pending orders headed in opposite direction
         if(pending_orders[order] && direction_of_order(order) != internal_elevator.get_dir()){
         	pending_orders_empty = false;
-            communication_thread->clear_pending_order(order); //Should be implemented sometime
+            communication_thread->send_pending_order(order, false); //Should be implemented sometime
             set_internal_elevator_order(order, true);
             reverse_elevator_direction();
         }
@@ -192,7 +199,7 @@ void Control::reverse_elevator_direction(){
 
 //should be renamed
 //this is ok
-bool* Control::determine_button_lights_to_set(){
+void Control::determine_button_lights_to_set(){
 	bool lights_to_set[N_OUTSIDE_BUTTONS] = { 0 };
 	std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators.begin();
 	for (it; it != external_elevators.end(); it++){
@@ -200,11 +207,11 @@ bool* Control::determine_button_lights_to_set(){
 			lights_to_set[i] |= it->second->get_order(i);
 		}		
 	}
-	return lights_to_set;
+	set_order_button_lights(lights_to_set);
 }
 
 //this is ok
-void Control::set_order_button_lights(){
+void Control::set_order_button_lights(bool *lights_to_set){
 	bool *lights_to_set = determine_button_lights_to_set();
 	for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
 		hardware_thread->set_button_lamp(i, lights_to_set[i]);
@@ -347,7 +354,7 @@ void Control::set_internal_elevator_direction(direction_t dir){
 
 	//Send updated data to other threads
 	hardware_thread->set_motor_direction(dir);
-	communication_thread->update_status(internal_elevator.get_status()); //Should be implemented sometime
+	communication_thread->update__internal_status(internal_elevator.get_status()); //Should be implemented sometime
 }
 
 //this is ok
@@ -355,9 +362,8 @@ void Control::set_internal_elevator_order(int order, bool value){
 	internal_elevator.set_order(order, value);
 	
 	hardware_thread->set_button_lamp(order, value);
-
 	if(is_outside_order(order)){
-		communication_thread->update_status(internal_elevator.get_status());
+		communication_thread->update_internal_status(internal_elevator.get_status());
 	}	
 }
 
@@ -367,7 +373,7 @@ void Control::set_internal_elevator_floor(floor_t floor){
 	internal_elevator.set_previous_floor(floor);
 
 	hardware_thread->set_floor_indicator(floor); //Might set this in hardware
-	communication_thread->update_status(internal_elevator.get_status());
+	communication_thread->update_internal_status(internal_elevator.get_status());
 }
 
 //this is ok but in a painful way
