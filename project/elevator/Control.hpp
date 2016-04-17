@@ -8,6 +8,11 @@
 #include <string>
 
 
+// Both are in seconds
+#define DOOR_TIMEOUT 3 
+#define STRANDED_TIMEOUT 5
+
+
 class Control: public Generic_thread{
 private:
 	Elevator internal_elevator;
@@ -62,7 +67,7 @@ public:
 	void refresh_stranded_timer();
 
 	//Timeout
-	void door_close();
-	void elevator_stranded();
+	void door_close(const boost::system::error_code &e);
+	void elevator_stranded(const boost::system::error_code &e);
 
 };

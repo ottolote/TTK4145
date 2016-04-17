@@ -457,3 +457,15 @@ void Communication::refresh_is_online_timer() {
     return;
 }
 
+
+
+
+void Communication::update_internal_status(status_msg_t status_message) {
+    std::cout << PROMPT " asked by control to update status, not implemented" 
+        << status_message.dir << std::endl;
+            
+}
+
+void Communication::send_pending_order(int order, bool clear_or_set) {
+    std::cout << PROMPT "asked to send pending order to broadcast pending orders, not implemented " << order << clear_or_set << std::endl;
+}

@@ -15,7 +15,10 @@ Communication *communication_thread;
 
 //Constructors
 //this is ok
-Control::Control(){
+Control::Control()
+    : open_door_timer(io, boost::posix_time::seconds(DOOR_TIMEOUT)),
+      stranded_timer(io, boost::posix_time::seconds(STRANDED_TIMEOUT))
+{
     for(int i = 0; i < N_ORDER_BUTTONS; i++){
         pending_orders[i] = false;
     }
@@ -119,8 +122,8 @@ std::string Control::find_closest_elevator(int order){
     }
 
     //Check if external elevators are valid
-    std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators->begin();
-    for(it; it != external_elevators->end(); it++){
+    std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators.begin();
+    for(it; it != external_elevators.end(); it++){
         temp = it->second->distance_from_order(order);
         if (temp != -1 && temp < least_distance){
             closest_elevator_ip = it->first;
@@ -163,7 +166,7 @@ void Control::pick_from_pending_orders(){
     for(int order = 0; order < N_OUTSIDE_BUTTONS; order++){
         //Take all pending orders headed in opposite direction
         if(pending_orders[order] && direction_of_order(order) != internal_elevator.get_dir()){
-        	pending_orders_empty = false
+        	pending_orders_empty = false;
             communication_thread->clear_pending_order(order); //Should be implemented sometime
             set_internal_elevator_order(order, true);
             reverse_elevator_direction();
@@ -191,8 +194,8 @@ void Control::reverse_elevator_direction(){
 //this is ok
 bool* Control::determine_button_lights_to_set(){
 	bool lights_to_set[N_OUTSIDE_BUTTONS] = { 0 };
-	std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators->begin();
-	for (it; it != external_elevators->end(); it++){
+	std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators.begin();
+	for (it; it != external_elevators.end(); it++){
 		for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
 			lights_to_set[i] |= it->second->get_order(i);
 		}		
@@ -262,7 +265,7 @@ void Control::deliver_order(order_msg_t message, std::string ip){
 //Remove useless elevator
 //this is fantastic
 void Control::report_useless_elevator(std::string ip){
-    external_elevators->erase(ip);
+    external_elevators.erase(ip);
 }
 
 //Timer functions
@@ -273,34 +276,51 @@ void Control::refresh_open_door_timer(){
 	open_door_timer.cancel();
 	open_door_timer.expires_from_now(boost::posix_time::seconds(DOOR_TIMEOUT));
 	open_door_timer.async_wait([&](const boost::system::error_code &e){
-		door_close(); });
+		door_close(e); });
 }
+
+
+
+
 
 //this is ok
 void Control::refresh_stranded_timer(){
 	stranded_timer.cancel();
 	stranded_timer.expires_from_now(boost::posix_time::seconds(STRANDED_TIMEOUT));
 	stranded_timer.async_wait([&](const boost::system::error_code &e){
-		elevator_stranded(); });
+		elevator_stranded(e); });
 }
 
-//this is ok
-void Control::door_close(){
-	refresh_stranded_timer();
-	hardware_thread->set_door_open_lamp(0);
 
-	//Elevator stops if no more orders are waiting
-	//Will move on to orders from pending list
-	if (internal_elevator.is_order_list_empty()){
-		pick_from_pending_orders();
-	}
-	//Will either enter stop mode
-	//Or continue after pausing at floor
-	hardware_thread->set_motor_direction(internal_elevator.get_dir());
+
+
+
+//this is ok
+void Control::door_close(const boost::system::error_code &e){
+
+    if (e == boost::asio::error::operation_aborted) {return;}
+
+    refresh_stranded_timer();
+    hardware_thread->set_door_open_lamp(0);
+
+    //Elevator stops if no more orders are waiting
+    //Will move on to orders from pending list
+    if (internal_elevator.is_order_list_empty()){
+            pick_from_pending_orders();
+    }
+    //Will either enter stop mode
+    //Or continue after pausing at floor
+    hardware_thread->set_motor_direction(internal_elevator.get_dir());
 }
 
+
+
+
 //this is ok
-void Control::elevator_stranded(){
+void Control::elevator_stranded(const boost::system::error_code &e){
+
+    if (e == boost::asio::error::operation_aborted) {return;}
+
 	set_internal_elevator_direction(STRANDED);
 
 	//Send all orders from outside to external elevators

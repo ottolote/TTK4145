@@ -59,11 +59,15 @@ class Communication : public Network {
     public:
         Communication();
         void send_order(int order_msg, std::string target_ip);
+        void send_pending_order(int order, bool clear_or_set);
         void receive_routine(encoded_msg_t message, std::string message_ip);
-        void reliable_send(encoded_msg_t encoded_message, std::string target_ip);
+        void update_internal_status(status_msg_t status_message);
 
-        // for testing
+        // for pure testing
         void send_status(encoded_msg_t message, std::string target_ip);
+
+        // public because testing, move to private
+        void reliable_send(encoded_msg_t encoded_message, std::string target_ip);
 
     private:
         std::map<std::string, boost::shared_ptr<timed_msg_container>> pending_acks;
