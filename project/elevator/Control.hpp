@@ -17,7 +17,7 @@ class Control: public Generic_thread{
 private:
     Elevator internal_elevator;
     std::map<std::string, boost::shared_ptr<Elevator>> external_elevators;
-    boost::shared_ptr<bool[N_ORDER_BUTTONS]> pending_orders;
+    bool pending_orders[N_ORDER_BUTTONS];
     boost::asio::deadline_timer stranded_timer;
     boost::asio::deadline_timer dooor_timer;
     void door_timeout(const boost::system::error_code &e);
@@ -56,7 +56,6 @@ public:
     void set_internal_elevator_direction(direction_t dir);
     void set_internal_elevator_order(int order, bool value);
     void set_internal_elevator_floor(floor_t floor);
-    bool is_order_in_direction(floor_t current_floor, direction_t dir);
 
     //Routines
     void button_routine(int button, bool button_value); //Called by deliver_button
@@ -74,8 +73,5 @@ public:
     void elevator_stranded(const boost::system::error_code &e);
 
     bool order_in_path(int order);
-
-    //Print
-    void print_pending_orders();
 
 };

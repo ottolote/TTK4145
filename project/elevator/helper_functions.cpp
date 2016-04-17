@@ -25,16 +25,4 @@ direction_t direction_of_order(int order){
 		return DIR_UP;
 	}
 }
-
 bool is_outside_order(int order){return order < N_OUTSIDE_BUTTONS;}
-
-
-int floor_to_order(floor_t floor, direction_t dir) {
-    if (dir == DIR_UP) {
-        return floor*2;
-    } else {
-        return floor*2-1;
-    }
-}
-
-

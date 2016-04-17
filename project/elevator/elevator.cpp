@@ -21,28 +21,9 @@ Elevator::Elevator(status_msg_t msg)
     this->_dir = msg.dir;
     this->_previous_floor = msg.floor;
     for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
-        set_order(i, msg.order_list[i]);
+        this->_current_orders[i] = msg.order_list[i];
     }
 }
-
-
-
-void Elevator::set_order(int order, bool value) { 
-    this->_current_orders[order] = value; 
-    print_current_orders();
-}
-
-
-
-void Elevator::print_current_orders() {
-    std::cout << PROMPT "-----------------current orders:--------------------------\n";
-    for (int i = 0; i<N_ORDER_BUTTONS; i++) {
-        std::cout << this->get_order(i) << "\t";
-    }
-    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\tF1\tF2\tF3\tF4\n--------------------------------------------------------------------------\n" << std::endl;
-}
-
-
 
 //this is ok;;
 int Elevator::distance_from_order(int order){
@@ -75,7 +56,7 @@ bool Elevator::eligible_for_order(int order){
 //this is ok
 bool Elevator::is_order_list_empty(){
     for(int i = 0; i < N_ORDER_BUTTONS; i++){
-        if(get_order(i)){
+        if(_current_orders[i]){
             return false;
         }
     }
