@@ -166,12 +166,12 @@ void Control::send_order_to_closest_elevator(int order){
         communication->send_pending_order(order, true); //Should be implemented sometime
     }
     
-//    //Internal elevator is closest or order came from inside
-//    else if (closest_elevator_ip == "Internal elevator"){
-//        std::cout << PROMPT "closest elevator is self, setting internal order: "
-//            << order << std::endl;
-//        set_internal_elevator_order(order, true);
-//    }
+    //Internal elevator is closest or order came from inside
+    else if (closest_elevator_ip == "Internal elevator"){
+        std::cout << PROMPT "closest elevator is self, setting internal order: "
+            << order << std::endl;
+        set_internal_elevator_order(order, true);
+    }
 //
 //    //An external elevator is closest
 //    else{
