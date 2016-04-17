@@ -358,7 +358,7 @@ void Control::set_internal_elevator_order(int order, bool value){
 
 	internal_elevator.set_order(order, value);
 
-    if(internal_elevator.is_order_list_empty(){
+    if(internal_elevator.is_order_list_empty()){
         head_to_order(order);
     }
 	
