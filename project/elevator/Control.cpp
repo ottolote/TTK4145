@@ -64,8 +64,7 @@ pick_from_pending
 
 
 
-// Help function prototypes
-int floor_to_order(floor_t floor, direction_t dir);
+
 
 
 
@@ -88,9 +87,6 @@ int floor_to_order(floor_t floor, direction_t dir);
 /********************************************/
 
 
-
-
-
 //Constructors
 //this is ok
 Control::Control()
@@ -108,10 +104,6 @@ Control::Control()
 
 
 
-
-
-
-
 void Control::door_timeout(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
     set_internal_elevator_direction(internal_elevator.get_dir());
@@ -120,17 +112,12 @@ void Control::door_timeout(const boost::system::error_code &e) {
 }
 
 
-
-
-
 void Control::open_door() {
     hardware->set_door_open_lamp(1);
     dooor_timer.expires_from_now(boost::posix_time::milliseconds(1000));
     dooor_timer.async_wait([&](const boost::system::error_code &e) {
         door_timeout(e); });
 }
-
-
 
 
 
@@ -208,11 +195,7 @@ void Control::floor_sensor_routine(floor_t floor){
         set_internal_elevator_floor(floor);
 
         //Current floor is in order list
-        std::cout << PROMPT "is_order_in_l: " << internal_elevator.is_current_floor_in_order_list(floor) <<" floor: " << std::endl;
-        std::cout << PROMPT "is_order_in_d: " << is_order_in_direction(floor, internal_elevator.get_dir()) << " - direction: " << internal_elevator.get_dir() << std::endl;
-        if (
-                internal_elevator.is_current_floor_in_order_list(floor) ) {
-                //|| !is_order_in_direction(floor, internal_elevator.get_dir()  )){
+        if (internal_elevator.is_current_floor_in_order_list(floor)){
             std::cout << PROMPT "Found order in order list\n";
             hardware->set_motor_direction(DIR_STOP);
             open_door();
@@ -323,8 +306,6 @@ void Control::send_order_to_closest_elevator(int order){
         }else {
             std::cout << PROMPT "---------------No elevators could handle order\n";
             pending_orders[order] = true;
-            print_pending_orders();
-
             communication->send_pending_order(order, true); 
         }
     }
@@ -336,11 +317,7 @@ void Control::send_order_to_closest_elevator(int order){
         }else {
             std::cout << PROMPT "closest elevator is self, setting internal order: "
                 << order << std::endl;
-
-
             set_internal_elevator_order(order, true);
-
-            internal_elevator.print_current_orders();
         }
     }
 //
@@ -373,14 +350,12 @@ void Control::pick_from_pending_orders(){
             std::cout << PROMPT "Found pending orders\n";
             pending_orders_empty = false;
             pending_orders[order] = false; //Clear order from pending list
-            communication->send_pending_order(order, false); 
+            communication->send_pending_order(order, false); //Should be implemented sometime
             set_internal_elevator_order(order, true);
             reverse_elevator_direction();
         }
 
     }
-    print_pending_orders();
-    internal_elevator.print_current_orders();
     //No more orders in pending list
     if(pending_orders_empty && internal_elevator.is_order_list_empty()){
         std::cout << PROMPT "No more orders what so ever\n";
@@ -395,12 +370,11 @@ void Control::pick_from_pending_orders(){
 //Direction functions
 //this is ok
 void Control::reverse_elevator_direction(){
-    std::cout << PROMPT "reversing direction\n";
     if(internal_elevator.get_dir() == DIR_UP){
-        this->internal_elevator.set_dir(DIR_DOWN);
+        this->set_internal_elevator_direction(DIR_DOWN);
     }
     else{
-        this->internal_elevator.set_dir(DIR_UP);
+        this->set_internal_elevator_direction(DIR_UP);
     }
 }
 
@@ -671,73 +645,3 @@ void Control::head_to_order(int order){
         set_internal_elevator_direction(DIR_UP);
     }
 }
-
-
-
-
-
-
-void Control::print_pending_orders() {
-    std::cout << PROMPT "------------------------pending orders---------------------------\n";
-    for (int i = 0; i<N_ORDER_BUTTONS; i++) {
-        std::cout << pending_orders[i] << "\t";
-    }
-    std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\tF1\tF2\tF3\tF4\n----------------------------------------------------------------------------\n" << std::endl;
-
-}
-
-
-
-
-
-
-//returns -1 if no orders in direction
-bool Control::is_order_in_direction(floor_t current_floor, direction_t dir) {
-
-
-    int iterator_change;
-    int start_looking;
-    int stop_looking;
-
-    if (dir == DIR_UP) {
-        if (internal_elevator.get_order(FOURTH_DOWN)) {
-            return true;
-        }
-
-        iterator_change = -1;
-        start_looking = FOURTH;
-        stop_looking = current_floor + 1;
-
-    } else if (dir == DIR_DOWN) {
-        if (internal_elevator.get_order(FIRST_UP)) {
-            return true;
-        }
-
-        iterator_change = 1;
-        start_looking = FIRST;
-        stop_looking = current_floor - 1;
-    } else {
-        std::cout << PROMPT 
-            << ERROR "wrong arguments passed to is_order_in_direction\n";
-        return -1;
-    }
-
-
-    for (int i = start_looking; i<stop_looking; i+= iterator_change) {
-//        if (internal_elevator.) {
-//            return true;
-//        }
-    }
-    return false;
-}
-
-
-
-int floor_to_order(floor_t floor, direction_t dir) {
-    if (dir == DIR_UP) {
-        return floor*2;
-    } else {
-        return floor*2-1;
-    }
-}
-
