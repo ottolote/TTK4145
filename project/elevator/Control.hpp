@@ -18,7 +18,7 @@ private:
     Elevator internal_elevator;
     std::map<std::string, boost::shared_ptr<Elevator>> external_elevators;
     bool pending_orders[N_OUTSIDE_BUTTONS];
-    boost::asio::deadline_timer open_door_timer;
+    //boost::asio::deadline_timer open_door_timer;
     boost::asio::deadline_timer stranded_timer;
     boost::asio::deadline_timer dooor_timer;
     void test(const boost::system::error_code &e);
