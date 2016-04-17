@@ -18,6 +18,7 @@ public:
     void deliver_floor_sensor_signal(floor_t floor); //Used by hardware thread
     void deliver_status(status_msg_t message); //Used by communication thread
     void deliver_order(order_msg_t message); //Used by communication thread
+    void report_useless_elevator(std::string ip);
 
     //Algorithm functions
     std::string find_closest_elevator(int order); //uses external orders

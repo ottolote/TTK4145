@@ -25,9 +25,9 @@ class Generic_thread {
         boost::asio::io_service::work work;
 //        boost::asio::deadline_timer timeout_timer;
 
-        boost::shared_ptr<Communication> communication;
-        boost::shared_ptr<Control> control;
-        boost::shared_ptr<Hardware> hardware;
+        static boost::shared_ptr<Communication> communication;
+        static boost::shared_ptr<Control> control;
+        static boost::shared_ptr<Hardware> hardware;
 
 
 

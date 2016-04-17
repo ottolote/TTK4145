@@ -22,3 +22,5 @@
 #define TCOLOR_LIGHTPURPLE  "\033[1;35m"
 #define TCOLOR_LIGHTYAN     "\033[1;36m"
 #define TCOLOR_WHITE        "\033[1;37m"
+
+#define ERROR "[" TCOLOR_RED "ERROR" TCOLOR_NC "] : "
