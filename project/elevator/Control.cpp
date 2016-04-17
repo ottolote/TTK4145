@@ -78,11 +78,16 @@ void Control::button_routine(int button, bool button_value){
     std::cout<< PROMPT "entering button_routine, button: " 
         << button << " is " << button_value << std::endl;
 
+
+    //EPIC DEBUGGING
     if(button == 6) {
         refresh_test();
     } else if(button == 7) {
         test_timer.cancel();
+    } else if(button == 8) {
+        
     }
+
 
     if (button == STOP_BUTTON){
        //stop_button_routine(button_value);
@@ -103,13 +108,13 @@ void Control::order_button_routine(int button, bool button_value){
         std::cout << PROMPT "order is for current floor\n";
         //button is pressed
         if(button_value){
-            open_door_timer.cancel(); //elevator stays while the button is held
+            //open_door_timer.cancel(); //elevator stays while the button is held
 
         }
         //button is released
         else{
             std::cout<< PROMPT "if it crashed after this you know where to look\n";
-            refresh_open_door_timer();;
+            //refresh_open_door_timer();;
         }
     }
     //Order wasn't to current floor and should be sent to closest elevator
@@ -128,7 +133,7 @@ void Control::stop_button_routine(bool button_value){
         bool empty_order_list[N_ORDER_BUTTONS] = { 0 };
         internal_elevator.exchange_order_list(empty_order_list);
         hardware->set_stop_lamp(1);
-        open_door_timer.cancel();
+        //open_door_timer.cancel();
     }
     else{
          //stop button release
@@ -147,7 +152,7 @@ void Control::floor_sensor_routine(floor_t floor){
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
             hardware->set_motor_direction(DIR_STOP); //don't change current_dir
-            open_door();
+            //open_door();
 //            clear_orders_at_floor(floor);
         }
     }
@@ -191,7 +196,7 @@ std::string Control::find_closest_elevator(int order){
 
 
 void Control::open_door() {
-    refresh_open_door_timer();
+    //refresh_open_door_timer();
     hardware->set_door_open_lamp(1);
 }
 
@@ -405,7 +410,7 @@ void Control::report_useless_elevator(std::string ip){
 //this is ok
 void Control::refresh_open_door_timer(){
     std::cout << PROMPT "starting door timer\n";
-    open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
+    //open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
     //std::cout << "timer: " << open_door_timer.expires_at().time_of_day().time_duration::total_milliseconds() << std::endl;
     open_door_timer.async_wait([=](const boost::system::error_code &e){
             door_close(e); });
