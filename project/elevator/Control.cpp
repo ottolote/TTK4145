@@ -45,13 +45,13 @@ void Control::test(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
 
     door_close(e);
-    //refresh_dooortimer();
+    //open_door();
     hardware->set_door_open_lamp(0);
     std::cout << PROMPT "test timer working\n";
 }
 
 
-void Control::refresh_dooortimer() {
+void Control::open_door() {
     hardware->set_door_open_lamp(1);
     dooor_timer.expires_from_now(boost::posix_time::milliseconds(1000));
     dooor_timer.async_wait([&](const boost::system::error_code &e) {
@@ -78,7 +78,7 @@ void Control::button_routine(int button, bool button_value){
 
     //EPIC DEBUGGING
     if(button == 6) {
-        refresh_dooortimer();
+        open_door();
     } else if(button == 7) {
         dooor_timer.cancel();
     } else if(button == 8) {
@@ -128,7 +128,6 @@ void Control::stop_button_routine(bool button_value){
         bool empty_order_list[N_ORDER_BUTTONS] = { 0 };
         internal_elevator.exchange_order_list(empty_order_list);
         hardware->set_stop_lamp(1);
-        //open_door_timer.cancel();
     }
     else{
          //stop button release
@@ -147,7 +146,6 @@ void Control::floor_sensor_routine(floor_t floor){
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
             hardware->set_motor_direction(DIR_STOP); //don't change current_dir
-            //open_door();
 //            clear_orders_at_floor(floor);
         }
     }
