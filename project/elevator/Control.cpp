@@ -60,26 +60,26 @@ void Control::button_routine(int button, bool button_value){
 //this is ok
 void Control::order_button_routine(int button, bool button_value){
     std::cout << PROMPT "entering order-routine\n";
-    bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button) 
-                                      && direction_of_order(button) == internal_elevator.get_dir();
-
-    if(order_is_for_current_floor){
-
-        std::cout << PROMPT "order is for current floor\n";
-        //button is pressed
-        if(button_value){
-            open_door_timer.cancel(); //elevator stays while the button is held
-
-        }
-        //button is released
-        else{
-            refresh_open_door_timer(); //Timer starts when the button is released
-        }
-    }
-    //Order wasn't to current floor and should be sent to closest elevator
-    else{
-        this->send_order_to_closest_elevator(button);
-    }
+//    bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button) 
+//                                      && direction_of_order(button) == internal_elevator.get_dir();
+//
+//    if(order_is_for_current_floor){
+//
+//        std::cout << PROMPT "order is for current floor\n";
+//        //button is pressed
+//        if(button_value){
+//            open_door_timer.cancel(); //elevator stays while the button is held
+//
+//        }
+//        //button is released
+//        else{
+//            refresh_open_door_timer(); //Timer starts when the button is released
+//        }
+//    }
+//    //Order wasn't to current floor and should be sent to closest elevator
+//    else{
+//        this->send_order_to_closest_elevator(button);
+//    }
 }
 
 //this is ok
