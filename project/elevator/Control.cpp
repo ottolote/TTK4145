@@ -28,6 +28,14 @@ Control::Control()
     : open_door_timer(io, boost::posix_time::milliseconds(DOOR_TIMEOUT)),
       stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT))
 {
+    open_door_timer.async_wait([&](const boost::system::error_code& e) {
+            //this function will be run when the timer is triggered
+            door_close(e); });
+
+    stranded_timer.async_wait([&](const boost::system::error_code& e) {
+            //this function will be run when the timer is triggered
+            elevator_stranded(e); });
+
     for(int i = 0; i < N_ORDER_BUTTONS; i++){
         pending_orders[i] = false;
     }
