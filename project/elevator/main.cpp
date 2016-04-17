@@ -15,33 +15,47 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <stdlib.h>
+
+#include <csignal>
+#include <boost/asio.hpp>
 
 
 #include <bitset>
 
 
-int main(int argc, char* argv[]) {
-
-std::string ip;
+bool is_backup;
 
 
-if (argc > 1) {
-    ip = argv[1];
-} else {
-    ip = "127.0.0.1";
+void signalhandler(int signal) {
+    is_backup = true;
+    
 }
 
 
-//    int verboselevel = 0;
-//    for (int i = 1; i<argc; i++) {
-//        if (argv[i] == "-v") {
-//            verboselevel++;
-//        }
-//    }
-//
-//    if (verboselevel > 4) {
-//        std::cout << "verbose level set to " << verboselevel << std::endl;
-//    }
+int main(int argc, char* argv[]) {
+
+    std::signal(SIGUSR1, signalhandler);
+
+    do { 
+        is_backup = false; sleep(3) ;
+    } while ( is_backup );
+        
+
+    std::cout << " NO LONGER BACKUP \n ";
+
+    system("gnome-terminal -x ./elevator");
+
+    std::string ip;
+
+
+    if (argc > 1) {
+        ip = argv[1];
+    } else {
+        ip = "127.0.0.1";
+    }
+
+
 
     boost::shared_ptr<Communication> comms( new Communication );;
     boost::shared_ptr<Hardware> hardware( new Hardware );;
@@ -65,29 +79,16 @@ if (argc > 1) {
             hardware->run(); });
           
 
-    //comms->init_thread_pointers(comms, control, hardware);
-    
-//    while(true) {
-//        hardware->set_stop_lamp(true);
-//        sleep(1);
-//        hardware->set_stop_lamp(false);
-//        sleep(1);
-//    }
+    std::bitset<16> binary_i(519);
+    std::cout << binary_i << std::endl;
 
-//
-//    boost::shared_ptr<std::string> test(
-//            new std::string(ip));
-//
-//
-//    for (uint16_t i = 519; i<520; i++) {
-//        std::bitset<16> binary_i(i);
-//        std::cout << binary_i << std::endl;
-//
-//        comms->reliable_send(i, *test);
-//        usleep(500000);
-//    }
-//    sleep(1000000);
-//
+    comms->reliable_send(519, ip);
+    comms->send_status(144, ip);
+
+    while(true) {
+        system("pkill --signal USR1 elevator");
+        sleep(1);
+    }
 
 
 

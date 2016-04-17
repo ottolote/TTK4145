@@ -16,34 +16,19 @@
 //#include <map>
 
 
-//struct Message {
-//    std::string target_ip;
-//    encoded_msg_t encoded_data;
-//
-//    bool operator==(const Message &m) const {
-//        return target_ip == m.target_ip && encoded_data == m.encoded_data;
-//    }
-//
-////    bool operator==(const Message &m) const {
-////        return target_ip == m.target_ip && encoded_data == m.encoded_data;
-////    }
-//
-//    bool operator<(const Message &m) const {
-//        return target_ip < m.target_ip || 
-//            (target_ip == m.target_ip && encoded_data < m.encoded_data);
-//    }
-//};
+
 
 
 class timed_msg_container {
     public:
-        //timed_msg_container();
         ~timed_msg_container();
         std::map<encoded_msg_t, boost::shared_ptr<boost::asio::deadline_timer>> messages;
         void new_message(boost::asio::io_service &io, encoded_msg_t msg);
         int count;
-        //void operator=(const timed_msg_container&);
 };
+
+
+
 
 class timed_status_message {
     public:

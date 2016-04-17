@@ -178,10 +178,6 @@ void Communication::print_pending_acks() {
 
 
 
-// Pendig acks has to be map of class to call constructor of timers
-//
-// create timed_message_container class with constructor timed_message_container(boost::asio::io_service *io, encoded_msg_t msg) and call public (or friended) variable message_timer.async_wait([&](const boost::system::error_code& e) {
-//      some_timeout_func_from_Communication.
 void Communication::reliable_send(encoded_msg_t message, std::string target_ip) {
 
     if (Message_handler::is_ack_message(message)) {
@@ -258,14 +254,6 @@ void Communication::receive_routine(encoded_msg_t encoded_message, std::string m
     std::cout<< PROMPT "checksum should be: " << Message_handler::read_checksum(encoded_message) << std::endl;
 
 
-    // filter out invalid checksums
-//    if (Message_handler::checksum(encoded_message) != Message_handler::read_checksum(encoded_message)) {
-//            std::cout << PROMPT "message has invalid checksum\n";
-//            return;
-//    } 
-    
-    
-//    else {
 
     refresh_is_online_timer();
 
