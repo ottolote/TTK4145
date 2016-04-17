@@ -208,6 +208,7 @@ void Control::floor_sensor_routine(floor_t floor){
         set_internal_elevator_floor(floor);
 
         //Current floor is in order list
+        std::cout << PROMPT "is_order_in_d: " << is_order_in_direction(floor, internal_elevator.get_dir()) << " - direction: " << internal_elevator.get_dir() << std::endl;
         if (
                 internal_elevator.is_current_floor_in_order_list(floor) 
                 || is_order_in_direction(floor, internal_elevator.get_dir()  )){
