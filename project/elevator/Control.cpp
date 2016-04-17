@@ -174,9 +174,9 @@ void Control::send_order_to_closest_elevator(int order){
     }
 //
 //    //An external elevator is closest
-//    else{
-//        communication->send_order(order, closest_elevator_ip);
-//    }
+    else{
+        communication->send_order(order, closest_elevator_ip);
+    }
 }
 
 
