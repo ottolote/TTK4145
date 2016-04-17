@@ -389,8 +389,8 @@ void Control::refresh_stranded_timer(){
     stranded_timer.cancel();
     stranded_timer.expires_from_now(boost::posix_time::milliseconds(STRANDED_TIMEOUT));
     std::cout << PROMPT "starting stranded timer\n";
-//    stranded_timer.async_wait([&](const boost::system::error_code &e){
-//        elevator_stranded(e); });
+    stranded_timer.async_wait([&](const boost::system::error_code &e){
+        elevator_stranded(e); });
 }
 
 
