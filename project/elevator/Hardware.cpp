@@ -40,6 +40,14 @@ Hardware::Hardware()
         for(int i = 0; i < N_BUTTONS; i++){
             _previous_button_values[i] = 0;
         }
+        clear_button_lights();
+}
+
+void Hardware::clear_button_lights(){
+    for(int i = 0; i < N_ORDER_BUTTONS; i++){
+        set_button_lamp(i, false);
+    }
+    set_floor_indicator(get_floor_sensor_signal());
 }
 
 //Get functions
@@ -125,6 +133,10 @@ void Hardware::set_motor_direction(direction_t dir){
 
 void Hardware::set_floor_indicator(floor_t floor){
     // Binary encoding. One light must always be on.
+    if(floor == NONE){ 
+        return; 
+    }
+
     if (floor & 0x02) {
         io_set_bit(LIGHT_FLOOR_IND1);
     }

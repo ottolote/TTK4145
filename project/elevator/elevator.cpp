@@ -89,8 +89,8 @@ bool Elevator::is_current_floor_in_order_list(floor_t current_floor){
         }
     }
     return _current_orders[N_OUTSIDE_BUTTONS + current_floor] || is_in_list;
-}
 
+}
 //this is ok
 //
 //return struct with pointer to new status message
