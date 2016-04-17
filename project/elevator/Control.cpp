@@ -427,7 +427,7 @@ void Control::elevator_stranded(const boost::system::error_code &e){
 
 //this is ok
 void Control::set_internal_elevator_direction(direction_t dir){
-    internal_elevator.set_dir(dir);
+    //internal_elevator.set_dir(dir);
 
     if (dir == DIR_STOP || dir == STRANDED){
         stranded_timer.cancel();
