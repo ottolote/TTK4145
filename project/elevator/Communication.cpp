@@ -469,3 +469,7 @@ void Communication::update_internal_status(status_msg_t status_message) {
 void Communication::send_pending_order(int order, bool clear_or_set) {
     std::cout << PROMPT "asked to send pending order to broadcast pending orders, not implemented " << order << clear_or_set << std::endl;
 }
+
+void Communication::send_order(int order_message, std::string target_ip) {
+    return;
+}

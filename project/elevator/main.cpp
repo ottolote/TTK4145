@@ -43,7 +43,7 @@ if (argc > 1) {
 //    }
 
     //boost::shared_ptr<Network> NH( new Network );
-    boost::shared_ptr<Communication> comms( new Communication );;
+//    boost::shared_ptr<Communication> comms( new Communication );;
     //boost::shared_ptr<Hardware> hardware( new Hardware );;
 
 
@@ -51,9 +51,9 @@ if (argc > 1) {
     //    NH->init_thread(cout_lock);   // Thread function
     //});
 
-    boost::thread comms_thread([&]  {
-        comms->run();   // Thread function
-    });
+//    boost::thread comms_thread([&]  {
+//        comms->run();   // Thread function
+//    });
 
     //comms->init_thread_pointers(comms, control, hardware);
     
@@ -75,7 +75,7 @@ if (argc > 1) {
 
 
 
-    comms_thread.join();
+//    comms_thread.join();
 
     return 0;
 }

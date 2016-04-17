@@ -80,9 +80,15 @@ bool Elevator::is_current_floor_in_order_list(floor_t floor){
 }
 status_msg_t Elevator::get_status(){
 	status_msg_t msg;
-	*msg.order_list = *internal_elevator.get_outside_orders();
-	msg.dir = internal_elevator.get_dir();
-	msg.floor = internal_elevator.get_previous_floor();
+	*msg.order_list = *get_outside_orders();
+	msg.dir = get_dir();
+	msg.floor = get_previous_floor();
 
 	return msg;
 }
+
+
+void Elevator::exchange_order_list( bool *list) {
+    return;
+}
+

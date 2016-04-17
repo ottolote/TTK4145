@@ -1,15 +1,15 @@
 # Which compiler to use
-CC = g++
+CC = gcc
 CCPP = g++
 
 TARGET = elevator
 
 CFLAGS =  -g -Wall -Wextra
 CPPFLAGS = -std=gnu++14 -g -Wall -Wextra
-LDFLAGS = -lm -lcomedi -lphobos2 -lboost_system -lboost_thread -lpthread -lstdc++
+LDFLAGS = -lm -lcomedi -lphobos2 -lboost_system -lboost_thread -lpthread 
 
 SRC = 
-SRCPP =  main.cpp Communication.cpp Network.cpp Generic_thread.cpp message_handler.cpp Control.cpp
+SRCPP =  main.cpp Hardware.cpp io_old.cpp Generic_thread.cpp Control.cpp elevator.cpp Communication.cpp Network.cpp message_handler.cpp helper_functions.cpp
 
 OBJ = $(SRCPP:.cpp=.o) $(SRC:.c=.o)
 
@@ -29,13 +29,12 @@ run: all
 	./$(TARGET)
 
 $(TARGET): $(OBJ) 
-	$(CCPP) -o $@ $(SIMTARGET)  $^ $(LDFLAGS) 
+	$(CCPP) -o $@   $^ simelev.a $(LDFLAGS) 
 
 %.o : %.cpp
 	$(CCPP) $(CPPFLAGS) -c $< -o $@ 
 
-
-%.o : %.c
+%.o : %.c 
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:

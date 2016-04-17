@@ -1,3 +1,6 @@
+#pragma once
+
+#include "elevator_properties.h"
 int button_to_floor(int button);
 //Every second order is in the same direction
 direction_t direction_of_order(int order);

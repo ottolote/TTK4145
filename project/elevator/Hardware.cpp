@@ -1,6 +1,6 @@
 #include "Hardware.hpp"
 #include "channels.h"
-#include "io.h"
+#include "io_old.h"
 #include "status.h"
 #include "Control.hpp"
 
@@ -16,8 +16,9 @@ int _button_channels[N_BUTTONS] =
 Control *control_thread;
 
 Hardware::Hardware() 
-    :  Generic_thread(){
-        io_init(ET_simulation);
+   /* :  Generic_thread()*/ 
+{
+        io_init();
 }
 
 //Get functions
@@ -128,7 +129,7 @@ void Hardware::poll_buttons(){
 		bool current_button_value = this->get_button_signal(button);
 		if (current_button_value != _previous_button_values[button]){
 			_previous_button_values[button] = current_button_value;
-			control_thread->deliver_button(button, current_button_value);
+			//control_thread->deliver_button(button, current_button_value);
 		}
 	}
 }
@@ -137,7 +138,7 @@ void Hardware::poll_floor_sensor_changes(){
 	floor_t current_floor = get_floor_sensor_signal();
 	if (current_floor != previous_floor_sensor_value){
 		previous_floor_sensor_value = current_floor;
-		control_thread->deliver_floor_sensor_signal(current_floor);
+		//control_thread->deliver_floor_sensor_signal(current_floor);
 	}
 }
 
