@@ -50,7 +50,8 @@ void Control::test(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
 
     door_close(e);
-    refresh_dooortimer();
+    //refresh_dooortimer();
+    hardware->set_door_open_lamp(0);
     std::cout << PROMPT "test timer working\n";
 }
 
