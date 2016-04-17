@@ -348,7 +348,7 @@ void Control::refresh_open_door_timer(){
     stranded_timer.cancel();
     //hardware->set_door_open_lamp(1);
     open_door_timer.cancel();
-    //open_door_timer.expires_from_now(boost::posix_time::seconds(DOOR_TIMEOUT));
+    open_door_timer.expires_from_now(boost::posix_time::seconds(DOOR_TIMEOUT));
     //open_door_timer.async_wait([&](const boost::system::error_code &e){
 //        door_close(e); });
 }
