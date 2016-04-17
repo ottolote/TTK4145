@@ -67,12 +67,12 @@ if (argc > 1) {
 
     //comms->init_thread_pointers(comms, control, hardware);
     
-    while(true) {
-        hardware->set_stop_lamp(true);
-        sleep(1);
-        hardware->set_stop_lamp(false);
-        sleep(1);
-    }
+//    while(true) {
+//        hardware->set_stop_lamp(true);
+//        sleep(1);
+//        hardware->set_stop_lamp(false);
+//        sleep(1);
+//    }
 
 //
 //    boost::shared_ptr<std::string> test(
