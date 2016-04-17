@@ -50,9 +50,9 @@ void Control::button_routine(int button, bool button_value){
 //Elevator will hold if a button at floor is continously pressed
 //this is ok
 void Control::order_button_routine(int button, bool button_value){
-//    bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button) 
-//                                      && direction_of_order(button) == internal_elevator.get_dir();
-//
+    bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button) 
+                                      && direction_of_order(button) == internal_elevator.get_dir();
+
 //    if(order_is_for_current_floor){
 //        //button is pressed
 //        if(button_value){
