@@ -29,8 +29,8 @@ Control::Control()
       stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
       test_timer(io, boost::posix_time::milliseconds(1000))
 {
-    test_timer.async_wait([&] (const boost::system::error_code &e) {
-                test(e);});
+    //test_timer.async_wait([&] (const boost::system::error_code &e) {
+    //            test(e);});
     open_door_timer.async_wait([&](const boost::system::error_code& e) {
             //this function will be run when the timer is triggered
             door_close(e); });
