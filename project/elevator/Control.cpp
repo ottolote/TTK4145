@@ -6,105 +6,14 @@
 #include <iterator>
 
 #define PROMPT "[" TCOLOR_PURPLE "Control" TCOLOR_NC "] : "
-/*THIS IS HOW IT SHOULD WORK
-button_routine()
-    determine_best_elevator(order)
-    if(best elevator found)
-        send_order_to_best_elevator(order)
-    else
-        add to pending list
-
-floor_routine()
-    check_floor in order_list
-        if floor found
-            stop at floor and start timer
-            clear order from order_list
-
-            if order_list is empty
-                pick_from_pending
-
-pick_from_pending
-    if order in opposite direction is found or internal is found
-        reverse direction
-        clear from pending list
-
-    if pending is empty
-        set elevator in stop mode
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-
-
-// Help function prototypes
-int floor_to_order(floor_t floor, direction_t dir);
-
-
-
-
-
-
-
-
-
-
-/*******************TODO*********************/
-//Handle internal orders in opposite direction of current_dir
-//Handle order buttons
-
-/*********Implement in communication*********/
-//send_pending_order(int order); all elevators --------- update pending list with this order
-//send_order(int order, std::string closest_elevator_ip) ------ send this order to specified elevator
-//clear_pending_order(int order); ------- clear this order from pending list
-//update_status(status_msg_t msg) ------- send new status data to communication
-/********************************************/
-
-
 
 
 
 //Constructors
-//this is ok
 Control::Control()
     : stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
-      dooor_timer(io, boost::posix_time::milliseconds(1000))
-{
-    //stranded_timer.async_wait([&](const boost::system::error_code& e) {
-    //        //this function will be run when the timer is triggered
-    //        elevator_stranded(e); });
-
-    for(int i = 0; i < N_ORDER_BUTTONS; i++){
-        pending_orders[i] = false;
-    }
-}
+      dooor_timer(io, boost::posix_time::milliseconds(1000)),
+      pending_orders(new bool[N_ORDER_BUTTONS]()){}
 
 
 
@@ -732,12 +641,4 @@ bool Control::is_order_in_direction(floor_t current_floor, direction_t dir) {
 }
 
 
-
-int floor_to_order(floor_t floor, direction_t dir) {
-    if (dir == DIR_UP) {
-        return floor*2;
-    } else {
-        return floor*2-1;
-    }
-}
 

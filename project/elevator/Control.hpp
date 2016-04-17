@@ -17,7 +17,7 @@ class Control: public Generic_thread{
 private:
     Elevator internal_elevator;
     std::map<std::string, boost::shared_ptr<Elevator>> external_elevators;
-    bool pending_orders[N_ORDER_BUTTONS];
+    boost::shared_ptr<bool[N_ORDER_BUTTONS]> pending_orders;
     boost::asio::deadline_timer stranded_timer;
     boost::asio::deadline_timer dooor_timer;
     void door_timeout(const boost::system::error_code &e);
