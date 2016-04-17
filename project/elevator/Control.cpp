@@ -353,7 +353,7 @@ void Control::set_internal_elevator_direction(direction_t dir){
 
 	//Send updated data to other threads
 	hardware_thread->set_motor_direction(dir);
-	communication_thread->update__internal_status(internal_elevator.get_status()); //Should be implemented sometime
+	communication_thread->update_internal_status(internal_elevator.get_status()); //Should be implemented sometime
 }
 
 //this is ok
