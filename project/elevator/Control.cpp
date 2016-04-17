@@ -27,9 +27,9 @@
 Control::Control()
     : open_door_timer(io, boost::posix_time::milliseconds(DOOR_TIMEOUT)),
       stranded_timer(io, boost::posix_time::milliseconds(STRANDED_TIMEOUT)),
-      test_timer(io, boost::posix_time::milliseconds(1000))
+      dooor_timer(io, boost::posix_time::milliseconds(1000))
 {
-    //test_timer.async_wait([&] (const boost::system::error_code &e) {
+    //dooor_timer.async_wait([&] (const boost::system::error_code &e) {
     //            test(e);});
     //open_door_timer.async_wait([&](const boost::system::error_code& e) {
     //        //this function will be run when the timer is triggered
@@ -56,8 +56,8 @@ void Control::test(const boost::system::error_code &e) {
 
 
 void Control::refresh_dooortimer() {
-    test_timer.expires_from_now(boost::posix_time::milliseconds(1000));
-    test_timer.async_wait([&](const boost::system::error_code &e) {
+    dooor_timer.expires_from_now(boost::posix_time::milliseconds(1000));
+    dooor_timer.async_wait([&](const boost::system::error_code &e) {
         test(e); });
 }
 
@@ -83,7 +83,7 @@ void Control::button_routine(int button, bool button_value){
     if(button == 6) {
         refresh_dooortimer();
     } else if(button == 7) {
-        test_timer.cancel();
+        dooor_timer.cancel();
     } else if(button == 8) {
         
     }
