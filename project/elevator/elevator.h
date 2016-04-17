@@ -20,7 +20,7 @@ public:
 
     //Get functions
     bool get_order(int order){ return _current_orders[order]; }
-    bool* get_outside_orders();
+    boost::shared_ptr<bool[N_OUTSIDE_BUTTONS]>  get_outside_orders();
     direction_t get_dir(){ return this->_dir; }
     floor_t get_previous_floor(){ return this->_previous_floor; }
     status_msg_t get_status();

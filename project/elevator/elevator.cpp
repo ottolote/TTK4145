@@ -75,20 +75,20 @@ bool Elevator::is_order_list_empty(){
 
 //Will only be called when arriving at floor
 //Should be ok
-bool Elevator::is_current_floor_in_order_list(floor_t floor){
+bool Elevator::is_current_floor_in_order_list(floor_t current_floor){
     bool is_in_list;
-    if (floor == FOURTH || floor == FIRST){
-        return true;
+    if (current_floor == FOURTH || current_floor == FIRST){
+        return true; // Always stop in fourth and first floor
     }
     else{
         if (_dir == DIR_UP){
-            is_in_list = _current_orders[floor * 2];
+            is_in_list = _current_orders[current_floor * 2];
         }
         else{
-            is_in_list = _current_orders[floor * 2 - 1];
+            is_in_list = _current_orders[current_floor * 2 - 1];
         }
     }
-    return _current_orders[N_OUTSIDE_BUTTONS + floor] || is_in_list;
+    return _current_orders[N_OUTSIDE_BUTTONS + current_floor] || is_in_list;
 }
 
 //this is ok

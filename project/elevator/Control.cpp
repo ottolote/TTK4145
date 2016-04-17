@@ -405,13 +405,13 @@ void Control::elevator_stranded(const boost::system::error_code &e){
     if (e == boost::asio::error::operation_aborted) {return;}
 
     set_internal_elevator_direction(STRANDED);
-//
-//    //Send all orders from outside to external elevators
-//    for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
-//        if (internal_elevator.get_order(i)){
+
+    //Send all orders from outside to external elevators
+    for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+        if (internal_elevator.get_order(i)){
 //            send_order_to_closest_elevator(i);
-//        }
-//    }
+        }
+    }
 }
 
 
