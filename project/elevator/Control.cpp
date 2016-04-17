@@ -361,6 +361,7 @@ void Control::report_useless_elevator(std::string ip){
 void Control::refresh_open_door_timer(){
     stranded_timer.cancel();
     hardware->set_door_open_lamp(1);
+    std::cout << PROMPT "starting door timer\n";
     open_door_timer.cancel();
     open_door_timer.expires_from_now(boost::posix_time::seconds(DOOR_TIMEOUT));
     open_door_timer.async_wait([&](const boost::system::error_code &e){
@@ -394,7 +395,7 @@ void Control::door_close(const boost::system::error_code &e){
 
     refresh_stranded_timer();
     //hardware->set_door_open_lamp(0);
-    std::cout << PROMPT "openinng door\n";
+    std::cout << PROMPT "closing door\n";
     //hardware->set_stop_lamp(0);
 
     //Elevator stops if no more orders are waiting
