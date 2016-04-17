@@ -39,8 +39,8 @@ public:
     void send_order_to_closest_elevator(int order);
 
 	//Lights
-	void set_order_button_lights();
-	bool* determine_button_lights_to_set();
+	void set_order_button_lights(bool *lights_to_set);
+	void determine_button_lights_to_set();
     
     void reverse_elevator_direction();
 

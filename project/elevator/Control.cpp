@@ -189,19 +189,19 @@ void Control::reverse_elevator_direction(){
 
 //should be renamed
 //this is ok
-bool* Control::determine_button_lights_to_set(){
+void Control::determine_button_lights_to_set(){
 	bool lights_to_set[N_OUTSIDE_BUTTONS] = { 0 };
-	std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators->begin();
-	for (it; it != external_elevators->end(); it++){
+	std::map<std::string, boost::shared_ptr<Elevator>>::iterator it = external_elevators.begin();
+	for (it; it != external_elevators.end(); it++){
 		for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
 			lights_to_set[i] |= it->second->get_order(i);
 		}		
 	}
-	return lights_to_set;
+	set_order_button_lights(lights_to_set);
 }
 
 //this is ok
-void Control::set_order_button_lights(){
+void Control::set_order_button_lights(bool *lights_to_set){
 	bool *lights_to_set = determine_button_lights_to_set();
 	for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
 		hardware_thread->set_button_lamp(i, lights_to_set[i]);
