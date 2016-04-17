@@ -13,12 +13,22 @@ int _button_channels[N_BUTTONS] =
       BUTTON_DOWN4,
       BUTTON_COMMAND1, BUTTON_COMMAND2, BUTTON_COMMAND3, BUTTON_COMMAND4, STOP, OBSTRUCTION}; 
 
+int light_channels[N_BUTTONS] = 
+	{ LIGHT_UP1,
+	  LIGHT_DOWN2, LIGHT_UP2,
+	  LIGHT_DOWN3, LIGHT_UP3,
+	  LIGHT_DOWN4,
+	  LIGHT_COMMAND1, LIGHT_COMMAND2, LIGHT_COMMAND3, LIGHT_COMMAND4, LIGHT_STOP, LIGHT_DOOR_OPEN };
+
 Control *control_thread;
 
 Hardware::Hardware() 
-   /* :  Generic_thread()*/ 
-{
+    :  Generic_thread(){
         io_init();
+    	previous_floor_sensor_value = NONE;
+        for(int i = 0; i < N_BUTTONS; i++){
+        	_previous_button_values[i] = 0;
+        }
 }
 
 //Get functions
@@ -115,24 +125,27 @@ void Hardware::set_stop_lamp(bool val){
 
 void Hardware::set_button_lamp(int button, bool light_value){
 	if(light_value){
-		io_set_bit(_button_channels[button]);
+		io_set_bit(light_channels[button]);
 	}
 	else{
-		io_clear_bit(_button_channels[button]);
+		io_clear_bit(light_channels[button]);
 	}
 
 }
 
+//this is ok
 void Hardware::poll_buttons(){
+	bool current_button_value;
 	for (int button = 0; button < N_BUTTONS; button++){
+		current_button_value = this->get_button_signal(button);
 		//Status of button changed
-		bool current_button_value = this->get_button_signal(button);
 		if (current_button_value != _previous_button_values[button]){
 			_previous_button_values[button] = current_button_value;
 			//control_thread->deliver_button(button, current_button_value);
 		}
 	}
 }
+
 
 void Hardware::poll_floor_sensor_changes(){
 	floor_t current_floor = get_floor_sensor_signal();
