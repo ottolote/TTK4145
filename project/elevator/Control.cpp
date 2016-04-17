@@ -211,8 +211,8 @@ void Control::floor_sensor_routine(floor_t floor){
         std::cout << PROMPT "is_order_in_l: " << internal_elevator.is_current_floor_in_order_list(floor) <<" floor: " << std::endl;
         std::cout << PROMPT "is_order_in_d: " << is_order_in_direction(floor, internal_elevator.get_dir()) << " - direction: " << internal_elevator.get_dir() << std::endl;
         if (
-                internal_elevator.is_current_floor_in_order_list(floor) 
-                || !is_order_in_direction(floor, internal_elevator.get_dir()  )){
+                internal_elevator.is_current_floor_in_order_list(floor) ) {
+                //|| !is_order_in_direction(floor, internal_elevator.get_dir()  )){
             std::cout << PROMPT "Found order in order list\n";
             hardware->set_motor_direction(DIR_STOP);
             open_door();
@@ -724,9 +724,9 @@ bool Control::is_order_in_direction(floor_t current_floor, direction_t dir) {
 
 
     for (int i = start_looking; i<stop_looking; i+= iterator_change) {
-        if (internal_elevator.get_order(i)) {
-            return true;
-        }
+//        if (internal_elevator.) {
+//            return true;
+//        }
     }
     return false;
 }
