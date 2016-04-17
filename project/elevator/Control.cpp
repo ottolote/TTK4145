@@ -399,6 +399,7 @@ void Control::report_useless_elevator(std::string ip){
 void Control::start_open_door_timer(){
     std::cout << PROMPT "starting door timer\n";
     open_door_timer.expires_from_now(boost::posix_time::milliseconds(DOOR_TIMEOUT));
+    std::cout << "timer: " << open_door_timer.expires_at().time_of_day().time_duration::total_milliseconds() << std::endl;
     open_door_timer.async_wait([=](const boost::system::error_code &e){
             door_close(e); });
 }
@@ -518,7 +519,6 @@ void Control::set_internal_elevator_order(int order, bool value){
 
 //this is ok
 void Control::set_internal_elevator_floor(floor_t floor){
-    status_msg_t msg;
     internal_elevator.set_previous_floor(floor);
 
     //hardware->set_floor_indicator(floor); //Might set this in hardware
