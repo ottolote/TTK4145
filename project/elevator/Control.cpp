@@ -77,7 +77,9 @@ void Control::order_button_routine(int button, bool button_value){
     }
     //Order wasn't to current floor and should be sent to closest elevator
     else{
-        this->send_order_to_closest_elevator(button);
+        if(button_value) {
+            this->send_order_to_closest_elevator(button);
+        }
     }
 }
 
