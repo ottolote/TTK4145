@@ -167,6 +167,7 @@ void Control::send_order_to_closest_elevator(int order){
         std::cout << PROMPT "closest elevator is self, setting internal order\n";
         set_internal_elevator_order(order, true);
     }
+    sleep(3);
 //
 //    //An external elevator is closest
 //    else{
