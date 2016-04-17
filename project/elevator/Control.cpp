@@ -44,8 +44,12 @@ void Control::add_new_external_elevator(status_msg_t msg, std::string ip){
 //Only called when button value has changed
 //this is ok
 void Control::button_routine(int button, bool button_value){
+
+    std::cout<< PROMPT "entering button_routine, button: " 
+        << button << " is " << button_value << std::endl;
+
     if (button == STOP_BUTTON){
-        stop_button_routine(button_value);
+        //stop_button_routine(button_value);
     }
     else{
         order_button_routine(button, button_value);
