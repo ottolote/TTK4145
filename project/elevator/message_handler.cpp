@@ -31,7 +31,7 @@ status_msg_t Message_handler::decode_status_message(encoded_msg_t encoded_messag
 
 order_msg_t Message_handler::decode_order_message(encoded_msg_t encoded_message){
     order_msg_t order_msg;
-    order_msg.ack = static_cast<outside_buttons_t>(extract_bits(encoded_message, ACK_MASK, ACK_INDEX));
+    order_msg.clear_pending = static_cast<outside_buttons_t>(extract_bits(encoded_message, CLEAR_MASK, CLEAR_INDEX));    order_msg.ack = static_cast<outside_buttons_t>(extract_bits(encoded_message, ACK_MASK, ACK_INDEX));
     order_msg.order = static_cast<outside_buttons_t>(extract_bits(encoded_message, ORDER_MASK, ORDER_INDEX));
 
     return order_msg;
@@ -58,7 +58,7 @@ encoded_msg_t Message_handler::encode_status_message(status_msg_t status_msg){
     return (STATUS_MESSAGE_TYPE << TYPE_INDEX | status_msg.floor << FLOOR_INDEX) | (status_msg.dir << DIR_INDEX) | (order_bits << ORDER_LIST_INDEX);
 }
 encoded_msg_t Message_handler::encode_order_message(order_msg_t order_msg){
-    return  (ORDER_MESSAGE_TYPE << TYPE_INDEX) | (order_msg.order << ORDER_INDEX);
+    return (ORDER_MESSAGE_TYPE << TYPE_INDEX) | (order_msg.order << ORDER_INDEX);
 }
 
 
