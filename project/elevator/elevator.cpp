@@ -99,10 +99,10 @@ status_msg_t Elevator::get_status(){
     if (_current_orders == nullptr) {
         std::cout << PROMPT "current_orders is nullptr\n";
     }
-    for (int i = 0; i<N_ORDER_BUTTONS; i++) {
+    for (int i = 0; i<N_OUTSIDE_BUTTONS; i++) {
         msg.order_list[i] = _current_orders[i];
         std::cout << PROMPT "looping: " << i 
-            << " - current orders: " << msg.order_list[i+1] << std::endl;
+            << " - current orders: " << _current_orders[i] << std::endl;
     }
     msg.dir = get_dir();
     msg.floor = get_previous_floor();

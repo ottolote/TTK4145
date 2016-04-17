@@ -48,7 +48,7 @@ struct order_msg_t { outside_buttons_t order; int ack; int clear_pending; int ad
 class status_msg_t 
 { 
     public:
-        status_msg_t(): order_list( new bool[N_ORDER_BUTTONS]() ) {};
+        status_msg_t(): order_list( new bool[N_OUTSIDE_BUTTONS]() ) {};
         boost::shared_ptr<bool[N_OUTSIDE_BUTTONS]> order_list;
         direction_t dir;
         floor_t floor; 
