@@ -64,7 +64,8 @@ pick_from_pending
 
 
 
-
+// Help function prototypes
+int floor_to_order(floor_t floor, direction_t dir);
 
 
 
@@ -207,7 +208,12 @@ void Control::floor_sensor_routine(floor_t floor){
         set_internal_elevator_floor(floor);
 
         //Current floor is in order list
-        if (internal_elevator.is_current_floor_in_order_list(floor)){
+        if (
+                internal_elevator.is_current_floor_in_order_list(floor) 
+                || (get_furthest_order_in_direction(
+                        floor, internal_elevator.get_dir()) != floor_to_order(
+                            floor, internal_elevator.get_dir())
+                )){
             std::cout << PROMPT "Found order in order list\n";
             hardware->set_motor_direction(DIR_STOP);
             open_door();
@@ -679,3 +685,58 @@ void Control::print_pending_orders() {
     std::cout << "\n1U\t2D\t2U\t3D\t3U\t4D\tF1\tF2\tF3\tF4\n----------------------------------------------------------------------------\n" << std::endl;
 
 }
+
+
+
+
+
+
+//returns -1 if no orders in direction
+int Control::get_furthest_order_in_direction(floor_t current_floor, direction_t dir) {
+
+    int iterator_change;
+    int start_looking;
+    int stop_looking;
+
+    if (dir == DIR_UP) {
+        if (internal_elevator.get_order(FOURTH_DOWN)) {
+            return FOURTH_DOWN;
+        }
+
+        iterator_change = -1;
+        start_looking = FOURTH_DOWN;
+        stop_looking = 2*current_floor;
+
+    } else if (dir == DIR_DOWN) {
+        if (internal_elevator.get_order(FIRST_UP)) {
+            return FIRST_UP;
+        }
+
+        iterator_change = 1;
+        start_looking = FIRST_UP;
+        stop_looking = 2*current_floor - 1;
+    } else {
+        std::cout << PROMPT 
+            << ERROR "wrong arguments passed to get_furthest_order_in_direction\n";
+        return -1;
+    }
+
+
+    for (int i = start_looking; i<stop_looking; i+= 2*iterator_change) {
+        if (internal_elevator.get_order(i)) {
+            return i;
+        }
+
+    }
+}
+
+
+
+int floor_to_order(floor_t floor, direction_t dir) {
+    if (dir == DIR_UP) {
+        return floor*2;
+    } else {
+        return floor*2-1;
+    }
+}
+
