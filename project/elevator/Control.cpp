@@ -380,7 +380,7 @@ void Control::refresh_open_door_timer(){
 void Control::refresh_stranded_timer(){
     stranded_timer.cancel();
     stranded_timer.expires_from_now(boost::posix_time::milliseconds(STRANDED_TIMEOUT));
-    std::cout << PROMPT "starting stranded timer";
+    std::cout << PROMPT "starting stranded timer\n";
     stranded_timer.async_wait([&](const boost::system::error_code &e){
         elevator_stranded(e); });
 }
@@ -420,16 +420,18 @@ void Control::door_close(const boost::system::error_code &e){
 //this is ok
 void Control::elevator_stranded(const boost::system::error_code &e){
 
+    std::cout << PROMPT "elevator_stranded entered\n";
+
     if (e == boost::asio::error::operation_aborted) {return;}
 
     set_internal_elevator_direction(STRANDED);
 
     //Send all orders from outside to external elevators
-    for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
-        if (internal_elevator.get_order(i)){
-            send_order_to_closest_elevator(i);
-        }
-    }
+//    for (int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+//        if (internal_elevator.get_order(i)){
+//            send_order_to_closest_elevator(i);
+//        }
+//    }
 }
 
 
