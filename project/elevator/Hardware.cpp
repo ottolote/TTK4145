@@ -25,6 +25,10 @@ Control *control_thread;
 Hardware::Hardware() 
     :  Generic_thread(){
         io_init(ET_simulation);
+    	previous_floor_sensor_value = -1;
+        for(int i = 0; i < N_BUTTONS; i++){
+        	_previous_button_values[i] = 0
+        }
 }
 
 //Get functions
@@ -129,16 +133,19 @@ void Hardware::set_button_lamp(int button, bool light_value){
 
 }
 
+//this is ok
 void Hardware::poll_buttons(){
+	bool current_button_value;
 	for (int button = 0; button < N_BUTTONS; button++){
+		current_button_value = this->get_button_signal(button);
 		//Status of button changed
-		bool current_button_value = this->get_button_signal(button);
 		if (current_button_value != _previous_button_values[button]){
 			_previous_button_values[button] = current_button_value;
 			control_thread->deliver_button(button, current_button_value);
 		}
 	}
 }
+
 
 void Hardware::poll_floor_sensor_changes(){
 	floor_t current_floor = get_floor_sensor_signal();

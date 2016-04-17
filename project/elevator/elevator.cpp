@@ -95,3 +95,9 @@ status_msg_t Elevator::get_status(){
 
 	return msg;
 }
+
+void Elevator::exchange_order_list(bool *order_list){
+	for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
+		_current_orders[i] = order_list[i];
+	}
+}

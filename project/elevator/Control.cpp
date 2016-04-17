@@ -44,7 +44,6 @@ void Control::add_new_external_elevator(status_msg_t msg, std::string ip){
 void Control::button_routine(int button, bool button_value){
     if (button == STOP_BUTTON){
         stop_button_routine(button_value);
-        return;
     }
     else{
         order_button_routine(button, button_value);
@@ -308,6 +307,7 @@ void Control::door_close(const boost::system::error_code &e){
 
     refresh_stranded_timer();
     hardware_thread->set_door_open_lamp(0);
+    hardware_thread->set_stop_lamp(0);
 
     //Elevator stops if no more orders are waiting
     //Will move on to orders from pending list
