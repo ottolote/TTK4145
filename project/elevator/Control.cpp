@@ -210,10 +210,7 @@ void Control::floor_sensor_routine(floor_t floor){
         //Current floor is in order list
         if (
                 internal_elevator.is_current_floor_in_order_list(floor) 
-                || (get_furthest_order_in_direction(
-                        floor, internal_elevator.get_dir()) == floor_to_order(
-                            floor, internal_elevator.get_dir())
-                )){
+                || is_order_in_direction(floor, internal_elevator.get_dir()  )){
             std::cout << PROMPT "Found order in order list\n";
             hardware->set_motor_direction(DIR_STOP);
             open_door();
@@ -693,7 +690,8 @@ void Control::print_pending_orders() {
 
 
 //returns -1 if no orders in direction
-int Control::get_furthest_order_in_direction(floor_t current_floor, direction_t dir) {
+bool Control::is_order_in_direction(floor_t current_floor, direction_t dir) {
+
 
     int iterator_change;
     int start_looking;
@@ -701,21 +699,21 @@ int Control::get_furthest_order_in_direction(floor_t current_floor, direction_t 
 
     if (dir == DIR_UP) {
         if (internal_elevator.get_order(FOURTH_DOWN)) {
-            return FOURTH_DOWN;
+            return true;
         }
 
         iterator_change = -1;
-        start_looking = FOURTH_DOWN;
-        stop_looking = 2*current_floor;
+        start_looking = FOURTH;
+        stop_looking = current_floor + 1;
 
     } else if (dir == DIR_DOWN) {
         if (internal_elevator.get_order(FIRST_UP)) {
-            return FIRST_UP;
+            return true;
         }
 
         iterator_change = 1;
-        start_looking = FIRST_UP;
-        stop_looking = 2*current_floor - 1;
+        start_looking = FIRST;
+        stop_looking = current_floor - 1;
     } else {
         std::cout << PROMPT 
             << ERROR "wrong arguments passed to get_furthest_order_in_direction\n";
@@ -723,12 +721,12 @@ int Control::get_furthest_order_in_direction(floor_t current_floor, direction_t 
     }
 
 
-    for (int i = start_looking; i<stop_looking; i+= 2*iterator_change) {
+    for (int i = start_looking; i<stop_looking; i+= iterator_change) {
         if (internal_elevator.get_order(i)) {
-            return i;
+            return true;
         }
-
     }
+    return false;
 }
 
 

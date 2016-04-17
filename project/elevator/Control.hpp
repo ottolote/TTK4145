@@ -56,7 +56,7 @@ public:
     void set_internal_elevator_direction(direction_t dir);
     void set_internal_elevator_order(int order, bool value);
     void set_internal_elevator_floor(floor_t floor);
-    int get_furthest_order_in_direction(floor_t current_floor, direction_t dir);
+    bool is_order_in_direction(floor_t current_floor, direction_t dir);
 
     //Routines
     void button_routine(int button, bool button_value); //Called by deliver_button
