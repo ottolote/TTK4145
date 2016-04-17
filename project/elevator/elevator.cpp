@@ -95,7 +95,7 @@ status_msg_t Elevator::get_status(){
     status_msg_t msg;
 //    msg.order_list;
     msg.dir = get_dir();
-//    msg.floor = get_previous_floor();
+    msg.floor = get_previous_floor();
 //
     return msg;
 }
