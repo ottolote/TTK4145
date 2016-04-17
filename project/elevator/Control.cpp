@@ -98,7 +98,7 @@ void Control::floor_sensor_routine(floor_t floor){
     refresh_stranded_timer(); //Motor still working if floor sensor changes
     
     //Update status variables to this floor
-    if (floor != -1){
+    if (floor != NONE){
         set_internal_elevator_floor(floor); //crashed here
 
         //Current floor is in order list
@@ -470,7 +470,7 @@ void Control::set_internal_elevator_floor(floor_t floor){
     internal_elevator.set_previous_floor(floor);
 
     //hardware->set_floor_indicator(floor); //Might set this in hardware
-    communication->update_internal_status(internal_elevator.get_status());
+    //communication->update_internal_status(internal_elevator.get_status());
 }
 
 
