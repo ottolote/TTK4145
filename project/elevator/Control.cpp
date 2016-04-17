@@ -396,11 +396,12 @@ void Control::pick_from_pending_orders(){
 //Direction functions
 //this is ok
 void Control::reverse_elevator_direction(){
+    std::cout << PROMPT "reversing direction\n";
     if(internal_elevator.get_dir() == DIR_UP){
-        this->set_internal_elevator_direction(DIR_DOWN);
+        this->internal_elevator.set_dir(DIR_DOWN);
     }
     else{
-        this->set_internal_elevator_direction(DIR_UP);
+        this->internal_elevator.set_dir(DIR_UP);
     }
 }
 
