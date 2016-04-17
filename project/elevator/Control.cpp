@@ -130,7 +130,7 @@ void Control::stop_button_routine(bool button_value){
 
 //this is ok
 void Control::floor_sensor_routine(floor_t floor){
-    stranded_timer.cancel();
+    //stranded_timer.cancel();
     //start_stranded_timer(); //Motor still working if floor sensor changes
     
     //Update status variables to this floor
