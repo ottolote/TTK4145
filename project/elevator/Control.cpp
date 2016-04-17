@@ -6,13 +6,78 @@
 #include <iterator>
 
 #define PROMPT "[" TCOLOR_PURPLE "Control" TCOLOR_NC "] : "
+/*THIS IS HOW IT SHOULD WORK
+button_routine()
+    determine_best_elevator(order)
+    if(best elevator found)
+        send_order_to_best_elevator(order)
+    else
+        add to pending list
+
+floor_routine()
+    check_floor in order_list
+        if floor found
+            stop at floor and start timer
+            clear order from order_list
+
+            if order_list is empty
+                pick_from_pending
+
+pick_from_pending
+    if order in opposite direction is found or internal is found
+        reverse direction
+        clear from pending list
+
+    if pending is empty
+        set elevator in stop mode
 
 
 
-/*********THINGS TO WATCH OUT FOR************/
-//Several identical functions are implemented
-//in both elevator and control
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*******************TODO*********************/
+//Handle internal orders in opposite direction of current_dir
+//Handle order buttons
 
 /*********Implement in communication*********/
 //send_pending_order(int order); all elevators --------- update pending list with this order
@@ -41,7 +106,7 @@ Control::Control()
 
 void Control::door_timeout(const boost::system::error_code &e) {
     if (e == boost::asio::error::operation_aborted) {return;}
-
+    set_internal_elevator_direction(internal_elevator.get_dir());
     hardware->set_door_open_lamp(0);
     std::cout << PROMPT "door closed\n";
 }
@@ -71,19 +136,8 @@ void Control::button_routine(int button, bool button_value){
     std::cout<< PROMPT "entering button_routine, button: " 
         << button << " is " << button_value << std::endl;
 
-
-    //EPIC DEBUGGING
-    if(button == 6) {
-        open_door();
-    } else if(button == 7) {
-        dooor_timer.cancel();
-    } else if(button == 8) {
-        
-    }
-
-
     if (button == STOP_BUTTON){
-       //stop_button_routine(button_value);
+       stop_button_routine(button_value);
     }
     else{
         order_button_routine(button, button_value);
@@ -93,19 +147,20 @@ void Control::button_routine(int button, bool button_value){
 //Elevator will hold if a button at floor is continously pressed
 //this is ok
 void Control::order_button_routine(int button, bool button_value){
-    bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button) 
-                                      && direction_of_order(button) == internal_elevator.get_dir();
+    bool order_is_for_current_floor = internal_elevator.get_previous_floor() == button_to_floor(button);
+                                      //&& direction_of_order(button) == internal_elevator.get_dir();
 
     if(order_is_for_current_floor){
 
         std::cout << PROMPT "order is for current floor\n";
         //button is pressed
         if(button_value){
-
+            hardware->set_door_open_lamp(1);
+            dooor_timer.cancel();
         }
         //button is released
         else{
-            std::cout<< PROMPT "if it crashed after this you know where to look\n";
+            open_door();
         }
     }
     //Order wasn't to current floor and should be sent to closest elevator
@@ -137,12 +192,21 @@ void Control::floor_sensor_routine(floor_t floor){
     
     //Update status variables to this floor
     if (floor != NONE){
-        set_internal_elevator_floor(floor); //crashed here
+        set_internal_elevator_floor(floor);
 
         //Current floor is in order list
         if (internal_elevator.is_current_floor_in_order_list(floor)){
-            hardware->set_motor_direction(DIR_STOP); //don't change current_dir
-//            clear_orders_at_floor(floor);
+            std::cout << PROMPT "Found order in order list\n";
+            hardware->set_motor_direction(DIR_STOP);
+            open_door();
+            clear_orders_at_floor(floor);
+
+            //No more orders. Check pending list
+            if(internal_elevator.is_order_list_empty()){
+                pick_from_pending_orders();
+            }
+
+
         }
     }
 }
@@ -151,11 +215,35 @@ void Control::floor_sensor_routine(floor_t floor){
 //Algorithm functions//
 //Working but should probably clean this up
 //Maybe use find_closest_external_elevator() or something
-std::string Control::find_closest_elevator(int order){
-    //Order comes from inside
-    if (order > N_OUTSIDE_BUTTONS){
-        return "Internal elevator";
+
+//This one should work but it all looks kinda horrible
+bool Control::order_in_path(int order){
+    if(internal_elevator.get_dir() == DIR_UP){
+        return internal_elevator.get_previous_floor() - button_to_floor(order) < 0;
     }
+    else if(internal_elevator.get_dir() == DIR_DOWN){
+        return internal_elevator.get_previous_floor() - button_to_floor(order) > 0;
+    }
+    else{
+        return true;
+    }
+}
+
+
+std::string Control::find_closest_elevator(int order){
+
+    //Is inside order
+    if (order >= N_OUTSIDE_BUTTONS){
+        std::cout << PROMPT "Found an internal button press";
+        //Elevator headed to order
+        if(order_in_path(order)){
+            return "Internal elevator";
+        }
+        else{
+            return "";
+        }
+    }
+
 
     std::string closest_elevator_ip = "";
     int least_distance = N_FLOORS, temp;
@@ -176,12 +264,27 @@ std::string Control::find_closest_elevator(int order){
             closest_elevator_ip = it->first;
         }
     }
-    
+
     return closest_elevator_ip;
 }
 
 
 
+/*
+void Control::send_order_to_closest_elevator(int order, std::string closest_elevator_ip){
+    if(closest_elevator_ip.empty()){
+        add_to_external_orders(order);
+    }
+    else if(closest_elevator_ip == "Internal elevator"){
+        set_internal_elevator_order(order)
+    }
+    else{
+        communication->send_order(order, closest_elevator_ip);
+    }
+
+
+}
+*/
 
 
 
@@ -194,13 +297,14 @@ void Control::send_order_to_closest_elevator(int order){
     std::cout << PROMPT "sending order to closest elevator\n";
 
     std::string closest_elevator_ip = find_closest_elevator(order);
-
+    std::cout << PROMPT "Closest elevator " << closest_elevator_ip << std::endl;
     //All elevators going in the wrong direction
     //send to pending list
     if (closest_elevator_ip.empty()){
         if (order == STOP_BUTTON) {
             std::cout << PROMPT << ERROR "Attempted to send STOP to closest elevator\n";
         }else {
+            std::cout << PROMPT "---------------No elevators could handle order\n";
             pending_orders[order] = true;
             communication->send_pending_order(order, true); 
         }
@@ -240,10 +344,12 @@ void Control::pick_from_pending_orders(){
     //iterate through pending list
     //find order farthest away in opposite direction
     bool pending_orders_empty = true;
-    for(int order = 0; order < N_OUTSIDE_BUTTONS; order++){
+    for(int order = 0; order < N_ORDER_BUTTONS; order++){
         //Take all pending orders headed in opposite direction
-        if(pending_orders[order] && direction_of_order(order) != internal_elevator.get_dir()){
+        if(pending_orders[order] && direction_of_order(order) != internal_elevator.get_dir() || (pending_orders[order] && order > N_OUTSIDE_BUTTONS)){
+            std::cout << PROMPT "Found pending orders\n";
             pending_orders_empty = false;
+            pending_orders[order] = false; //Clear order from pending list
             communication->send_pending_order(order, false); //Should be implemented sometime
             set_internal_elevator_order(order, true);
             reverse_elevator_direction();
@@ -251,7 +357,8 @@ void Control::pick_from_pending_orders(){
 
     }
     //No more orders in pending list
-    if(pending_orders_empty){
+    if(pending_orders_empty && internal_elevator.is_order_list_empty()){
+        std::cout << PROMPT "No more orders what so ever\n";
         set_internal_elevator_direction(DIR_STOP);
     }
 }
@@ -324,7 +431,7 @@ void Control::deliver_floor_sensor_signal(floor_t floor){
 
 
 
-
+//set_button_lights in this function
 void Control::external_status_update_routine(status_msg_t message, std::string ip) {
     bool new_order_list[N_ORDER_BUTTONS] = {0};
     for(int i = 0; i < N_OUTSIDE_BUTTONS; i++){
@@ -447,6 +554,7 @@ void Control::elevator_stranded(const boost::system::error_code &e){
 
 //this is ok
 void Control::set_internal_elevator_direction(direction_t dir){
+    std::cout << "Setting internal direction to " << dir << std::endl;
     internal_elevator.set_dir(dir);
 
     if (dir == DIR_STOP || dir == STRANDED){
@@ -468,11 +576,11 @@ void Control::set_internal_elevator_order(int order, bool value){
 
     internal_elevator.set_order(order, value);
 
-    if(internal_elevator.is_order_list_empty()){
+    if(internal_elevator.get_dir() == DIR_STOP){
         head_to_order(order);
     }
-    
-    //hardware->set_button_lamp(order, value);
+
+    hardware->set_button_lamp(order, value);
     if(is_outside_order(order)){
         communication->update_internal_status(internal_elevator.get_status());
     }    
@@ -486,7 +594,7 @@ void Control::set_internal_elevator_order(int order, bool value){
 void Control::set_internal_elevator_floor(floor_t floor){
     internal_elevator.set_previous_floor(floor);
 
-    //hardware->set_floor_indicator(floor); //Might set this in hardware
+    hardware->set_floor_indicator(floor); //Might set this in hardware
     communication->update_internal_status(internal_elevator.get_status());
 }
 
@@ -499,17 +607,22 @@ void Control::set_internal_elevator_floor(floor_t floor){
 void Control::clear_orders_at_floor(floor_t floor){
     if (floor == FIRST){
         internal_elevator.set_order(FIRST_UP, false);
-        set_internal_elevator_order(N_OUTSIDE_BUTTONS + FIRST, false);
+        hardware->set_button_lamp(FIRST_UP, false);
     }
     else if (floor == FOURTH){
         internal_elevator.set_order(FOURTH_DOWN, false);
-        set_internal_elevator_order(N_OUTSIDE_BUTTONS + FOURTH, false);
+        hardware->set_button_lamp(FOURTH_DOWN, false);
     }
-    else{
-        internal_elevator.set_order(floor * 2 - 1, false);
-        internal_elevator.set_order(N_OUTSIDE_BUTTONS + floor, false);
-        set_internal_elevator_order(floor * 2, false);
+    else if (internal_elevator.get_dir() == DIR_UP){
+        internal_elevator.set_order(floor * 2, false); //up
+        hardware->set_button_lamp(floor*2, false);
     }
+    else if (internal_elevator.get_dir() == DIR_DOWN){
+        internal_elevator.set_order(floor * 2 - 1, false);   //down
+        hardware->set_button_lamp(floor*2 - 1, false);
+    }
+    set_internal_elevator_order(N_OUTSIDE_BUTTONS + floor, false); //internal
+    hardware->set_button_lamp(N_OUTSIDE_BUTTONS + floor, false); //internal
 }
 
 

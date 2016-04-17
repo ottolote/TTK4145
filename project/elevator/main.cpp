@@ -64,10 +64,6 @@ if (argc > 1) {
     boost::thread hardware_thread([&]{
             hardware->run(); });
           
-    hardware->set_motor_direction( DIR_DOWN );
-    sleep(1);
-    hardware->set_motor_direction( DIR_STOP );
-
 
     //comms->init_thread_pointers(comms, control, hardware);
     

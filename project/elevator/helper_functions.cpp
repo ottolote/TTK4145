@@ -18,7 +18,7 @@ int button_to_floor(int button){
 //Treated as being in the opposite direction
 //this is ok
 direction_t direction_of_order(int order){
-	if ((order == FIRST_UP || order % 2) && order != FOURTH_DOWN){
+	if ((order == (int)FIRST_UP || order % 2) && order != (int)FOURTH_DOWN){
 		return DIR_DOWN;
 	}
 	else{
