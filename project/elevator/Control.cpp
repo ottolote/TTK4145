@@ -102,7 +102,7 @@ void Control::order_button_routine(int button, bool button_value){
         }
         //button is released
         else{
-            //start_open_door_timer();;
+            start_open_door_timer();;
         }
     }
     //Order wasn't to current floor and should be sent to closest elevator
