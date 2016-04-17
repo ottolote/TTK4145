@@ -9,7 +9,7 @@
 
 //Construct timers
 Elevator::Elevator()
-    : _current_orders( new bool[N_ORDER_BUTTONS])
+    : _current_orders( new bool[N_ORDER_BUTTONS]())
 {
     for(int i = 0; i < N_ORDER_BUTTONS; i++){
         _current_orders[i] = false;
