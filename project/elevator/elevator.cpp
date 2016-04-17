@@ -102,7 +102,7 @@ status_msg_t Elevator::get_status(){
     for (int i = 0; i<N_ORDER_BUTTONS; i++) {
         msg.order_list[i] = _current_orders[i];
         std::cout << PROMPT "looping: " << i 
-            << " - current orders: " << _current_orders[i] << std::endl;
+            << " - current orders: " << _current_orders[i+1] << std::endl;
     }
     msg.dir = get_dir();
     msg.floor = get_previous_floor();
