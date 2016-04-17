@@ -329,6 +329,9 @@ void Control::send_order_to_closest_elevator(int order){
         }else {
             std::cout << PROMPT "closest elevator is self, setting internal order: "
                 << order << std::endl;
+
+            internal_elevator.print_current_orders();
+
             set_internal_elevator_order(order, true);
         }
     }
