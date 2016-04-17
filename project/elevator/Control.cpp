@@ -430,7 +430,7 @@ void Control::set_internal_elevator_direction(direction_t dir){
     //internal_elevator.set_dir(dir);
 
     if (dir == DIR_STOP || dir == STRANDED){
-        stranded_timer.cancel();
+        //stranded_timer.cancel();
     }
 
     //Send updated data to other threads
