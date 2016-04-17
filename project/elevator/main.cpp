@@ -7,6 +7,7 @@
 
 #include "Generic_thread.hpp"
 #include "Communication.hpp"
+#include "Hardware.hpp"
 
 #include "Control.hpp"
 
@@ -44,7 +45,7 @@ if (argc > 1) {
 
     //boost::shared_ptr<Network> NH( new Network );
 //    boost::shared_ptr<Communication> comms( new Communication );;
-    //boost::shared_ptr<Hardware> hardware( new Hardware );;
+    boost::shared_ptr<Hardware> hardware( new Hardware );;
 
 
     //thread NetworkThread([&NH, &cout_lock]  {
@@ -54,9 +55,19 @@ if (argc > 1) {
 //    boost::thread comms_thread([&]  {
 //        comms->run();   // Thread function
 //    });
+//
+    boost::thread hardware_thread([&]{
+            hardware->run(); });
+          
 
     //comms->init_thread_pointers(comms, control, hardware);
     
+    while(true) {
+        hardware->set_stop_lamp(true);
+        sleep(1);
+        hardware->set_stop_lamp(false);
+        sleep(1);
+    }
 
 //
 //    boost::shared_ptr<std::string> test(
@@ -76,6 +87,8 @@ if (argc > 1) {
 
 
 //    comms_thread.join();
+    
+    hardware_thread.join();
 
     return 0;
 }

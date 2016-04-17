@@ -25,3 +25,4 @@ direction_t direction_of_order(int order){
 		return DIR_UP;
 	}
 }
+bool is_outside_order(int order){return order < N_OUTSIDE_BUTTONS;}

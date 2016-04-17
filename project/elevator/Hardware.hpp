@@ -14,6 +14,7 @@ class Hardware: public Generic_thread{
 private:
 	bool _previous_button_values[N_BUTTONS];
 	floor_t previous_floor_sensor_value;
+        boost::asio::deadline_timer poll_tick_timer;
 
 public:
 	//Get functions
@@ -33,6 +34,8 @@ public:
 	//Poll function
 	void poll_buttons();
 	void poll_floor_sensor_changes();
+        void restart_poll_timer();
+        void poll(const boost::system::error_code &e);
 
 	
 };

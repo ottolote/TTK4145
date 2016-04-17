@@ -4,7 +4,14 @@
 #include "status.h"
 #include "Control.hpp"
 
+#include "terminalcolors.h"
 
+#include <iostream>
+
+
+#define POLL_TICK_DURATION_MS 500
+
+#define PROMPT "[" TCOLOR_LIGHTGREEN "Hardware" TCOLOR_NC "] : "
 
 int _button_channels[N_BUTTONS] = 
     { BUTTON_UP1, 
@@ -23,7 +30,12 @@ int light_channels[N_BUTTONS] =
 Control *control_thread;
 
 Hardware::Hardware() 
-    :  Generic_thread(){
+    :  Generic_thread(),
+       poll_tick_timer(io, boost::posix_time::milliseconds(POLL_TICK_DURATION_MS)){
+
+
+        poll_tick_timer.async_wait([&] (const boost::system::error_code &e) {
+                    poll(e);});
         io_init();
     	previous_floor_sensor_value = NONE;
         for(int i = 0; i < N_BUTTONS; i++){
@@ -35,6 +47,29 @@ Hardware::Hardware()
 bool Hardware::get_button_signal(int button){
 	return io_read_bit(_button_channels[button]);
 }
+
+
+
+void Hardware::restart_poll_timer() {
+    //poll_tick_timer.cancel();
+    poll_tick_timer.expires_from_now(boost::posix_time::milliseconds(POLL_TICK_DURATION_MS));
+    poll_tick_timer.async_wait([&](const boost::system::error_code &e) {
+        poll(e); });
+}
+
+
+void Hardware::poll(const boost::system::error_code &e) {
+
+    if (e == boost::asio::error::operation_aborted) {return;}
+
+    poll_buttons();
+    poll_floor_sensor_changes();
+    
+    restart_poll_timer();
+
+    std::cout << PROMPT "polling\n";
+}
+
 
 floor_t Hardware::get_floor_sensor_signal(){
 	if (io_read_bit(SENSOR_FLOOR1)) {
