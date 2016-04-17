@@ -164,6 +164,7 @@ void Control::send_order_to_closest_elevator(int order){
     
     //Internal elevator is closest or order came from inside
     else if (closest_elevator_ip == "Internal elevator"){
+        std::cout << PROMPT "closest elevator is self, setting internal order\n";
         set_internal_elevator_order(order, true);
     }
 //
@@ -434,7 +435,7 @@ void Control::set_internal_elevator_direction(direction_t dir){
 
     //Send updated data to other threads
     //hardware->set_motor_direction(dir);
-    communication->update_internal_status(internal_elevator.get_status()); //Should be implemented sometime
+    //communication->update_internal_status(internal_elevator.get_status()); //Should be implemented sometime
 }
 
 
